@@ -41,6 +41,8 @@ public enum IsoType {
 	LLVAR(false, 0),
 	/** A variable length alphanumeric value with a 3-digit header length. */
 	LLLVAR(false, 0),
+	/** A date in format YYYYMMddHHmmss */
+	DATE14(false, 14),
 	/** A date in format MMddHHmmss */
 	DATE10(false, 10),
 	/** A date in format MMdd */
@@ -82,7 +84,7 @@ public enum IsoType {
 		return length;
 	}
 
-	/** Formats a Date if the receiver is DATE10, DATE4, DATE_EXP, DATE12 or TIME; throws an exception
+	/** Formats a Date if the receiver is DATE10, DATE4, DATE_EXP, DATE12, DATE14 or TIME; throws an exception
 	 * otherwise. */
 	public String format(final Date value, final TimeZone tz) {
         final SimpleDateFormat sdf;
@@ -96,6 +98,8 @@ public enum IsoType {
             sdf = new SimpleDateFormat("HHmmss");
         } else if (this == DATE12) {
             sdf = new SimpleDateFormat("yyMMddHHmmss");
+		} else if (this == DATE14) {
+			sdf = new SimpleDateFormat("YYYYMMddHHmmss");
 		} else {
             throw new IllegalArgumentException("Cannot format date as " + this);
         }

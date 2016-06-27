@@ -113,6 +113,8 @@ public abstract class FieldParseInfo {
 			fpi = new Date10ParseInfo();
 		} else if (t == IsoType.DATE12) {
 			fpi = new Date12ParseInfo();
+		} else if (t == IsoType.DATE14) {
+			fpi = new Date14ParseInfo();
 		} else if (t == IsoType.DATE4) {
 			fpi = new Date4ParseInfo();
 		} else if (t == IsoType.DATE_EXP) {
