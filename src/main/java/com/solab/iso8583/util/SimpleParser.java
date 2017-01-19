@@ -73,7 +73,7 @@ public class SimpleParser {
                 for (int i = 2; i <= 128; i++) {
                     IsoValue<?> f = m.getField(i);
                     if (f != null) {
-                        System.out.printf("%5d %-6s [", i, f.getType());
+                        System.out.printf("%5d %-7s (%4d) [", i, f.getType(), f.getLength());
                         System.out.print(f.toString());
                         System.out.println(']');
                     }
