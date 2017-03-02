@@ -48,8 +48,8 @@ public class LllvarParseInfo extends FieldParseInfo {
 		}
         final int len = decodeLength(buf, pos, 3);
 		if (len < 0) {
-			throw new ParseException(String.format("Invalid LLLVAR length %d field %d pos %d",
-					len, field, pos), pos);
+            throw new ParseException(String.format("Invalid LLLVAR length %d(%s) field %d pos %d",
+                    len, new String(buf, pos, 3), field, pos), pos);
 		} else if (len+pos+3 > buf.length) {
 			throw new ParseException(String.format("Insufficient data for LLLVAR field %d, pos %d",
                     field, pos), pos);
