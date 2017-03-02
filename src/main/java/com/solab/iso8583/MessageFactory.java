@@ -327,9 +327,9 @@ public class MessageFactory<T extends IsoMessage> {
             type = Integer.parseInt(new String(buf, isoHeaderLength, 4, encoding), 16);
 		} else {
 			type = ((buf[isoHeaderLength] - 48) << 12)
-			| ((buf[isoHeaderLength + 1] - 48) << 8)
-			| ((buf[isoHeaderLength + 2] - 48) << 4)
-			| (buf[isoHeaderLength + 3] - 48);
+					| ((buf[isoHeaderLength + 1] - 48) << 8)
+                    | ((buf[isoHeaderLength + 2] - 48) << 4)
+                    | (buf[isoHeaderLength + 3] - 48);
 		}
 		m.setType(type);
 		//Parse the bitmap (primary first)
