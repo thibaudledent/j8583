@@ -441,7 +441,8 @@ public class MessageFactory<T extends IsoMessage> {
 		boolean abandon = false;
 		for (int i = 1; i < bs.length(); i++) {
 			if (bs.get(i) && !index.contains(i+1)) {
-				log.warn("ISO8583 MessageFactory cannot parse field {}: unspecified in parsing guide", i+1);
+                log.warn("ISO8583 MessageFactory cannot parse field {}: unspecified in parsing guide for type {}",
+                        i+1, Integer.toString(type, 16));
 				abandon = true;
 			}
 		}
