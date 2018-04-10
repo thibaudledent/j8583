@@ -55,7 +55,8 @@ public class LllbinParseInfo extends FieldParseInfo {
                     l, field, pos), pos);
 		} else if (l+pos+3 > buf.length) {
 			throw new ParseException(String.format(
-                    "Insufficient data for LLLBIN field %d, pos %d", field, pos), pos);
+                    "Insufficient data for LLLBIN field %d, pos %d len %d",
+                    field, pos, l), pos);
 		}
 		byte[] binval = l == 0 ? new byte[0] : HexCodec.hexDecode(new String(buf, pos + 3, l));
 		if (custom == null) {
@@ -68,7 +69,8 @@ public class LllbinParseInfo extends FieldParseInfo {
                         new IsoValue<>(type, dec, 0, custom);
             } catch (IndexOutOfBoundsException ex) {
                 throw new ParseException(String.format(
-                        "Insufficient data for LLLBIN field %d, pos %d", field, pos), pos);
+                        "Insufficient data for LLLBIN field %d, pos %d len %d",
+                        field, pos, l), pos);
             }
 		} else {
             try {
@@ -78,7 +80,8 @@ public class LllbinParseInfo extends FieldParseInfo {
                         new IsoValue<>(type, dec, l, custom);
             } catch (IndexOutOfBoundsException ex) {
                 throw new ParseException(String.format(
-                        "Insufficient data for LLLBIN field %d, pos %d", field, pos), pos);
+                        "Insufficient data for LLLBIN field %d, pos %d len %d",
+                        field, pos, l), pos);
             }
 		}
 	}
