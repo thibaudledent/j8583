@@ -25,6 +25,8 @@ public class CustomBinCodecs {
     private final BigInteger b29 = new BigInteger("12345678901234567890123456789");
     final byte[] longData2 = new byte[]{ 0x12, 0x34, 0x56, 0x78, (byte)0x90, 00, 00, 00, 00, 00 };
     final byte[] bigintData1 = new byte[]{ 1, 0x23, 0x45, 0x67, (byte)0x89, 1, 0x23, 0x45, 0x67, (byte)0x89, 1, 0x23, 0x45, 0x67, (byte)0x89, 00, 00, 00, 00, 00 };
+    final byte[] rlong = new byte[]{ 0x12, 0x34, 0x56, 0x78, (byte)0x9F };
+    final byte[] rbi = new byte[]{ 0x12, 0x34, 0x56, 0x78, (byte)0x90, 0x12, 0x34, 0x56, 0x78, (byte)0x9F };
 
     @Test
     public void testLongCodec() {
@@ -98,4 +100,11 @@ public class CustomBinCodecs {
         testFieldType(IsoType.LLLBIN, new LllbinParseInfo(), 12, 19);
     }
 
+    @Test
+    public void testRightPadding() {
+        final LongBcdCodec lc = new LongBcdCodec(true);
+        Assert.assertEquals(123456789L, (long) lc.decodeBinaryField(rlong, 0, 5));
+        final BigIntBcdCodec bc = new BigIntBcdCodec(true);
+        Assert.assertEquals(new BigInteger("1234567890123456789"), bc.decodeBinaryField(rbi, 0, 10));
+    }
 }

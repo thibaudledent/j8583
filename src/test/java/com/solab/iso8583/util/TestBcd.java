@@ -60,7 +60,7 @@ public class TestBcd {
         buf[0] = (byte)0x99;
         buf[1] = (byte)0x9f;
         Assert.assertEquals(999, Bcd.decodeRightPaddedToLong(buf,0,4));
-        Assert.assertEquals(new BigInteger("999"), Bcd.decodeRightPaddedToBigInteger(buf,0,3));
+        Assert.assertEquals(new BigInteger("999"), Bcd.decodeRightPaddedToBigInteger(buf,0,4));
     }
 
 }
