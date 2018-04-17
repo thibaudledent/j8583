@@ -26,6 +26,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -287,8 +288,13 @@ public class ConfigParser {
         if (cf == null) {
             return itype.needsLength() ? new IsoValue<>(itype, v, length) : new IsoValue<>(itype, v);
         }
-        return itype.needsLength() ? new IsoValue<>(itype, cf.decodeField(v), length, cf) :
+        IsoValue<?> rv = itype.needsLength() ? new IsoValue<>(itype, cf.decodeField(v), length, cf) :
                 new IsoValue<>(itype, cf.decodeField(v), cf);
+        if (f.hasAttribute("tz")) {
+            TimeZone tz = TimeZone.getTimeZone(f.getAttribute("tz"));
+            rv.setTimeZone(tz);
+        }
+        return rv;
     }
 
     protected static <T extends IsoMessage> FieldParseInfo getParser(
@@ -309,6 +315,10 @@ public class ConfigParser {
                 }
             }
             fpi.setDecoder(combo);
+        }
+        if (f.hasAttribute("tz") && fpi instanceof DateTimeParseInfo) {
+            TimeZone tz = TimeZone.getTimeZone(f.getAttribute("tz"));
+            ((DateTimeParseInfo)fpi).setTimeZone(tz);
         }
         return fpi;
     }
