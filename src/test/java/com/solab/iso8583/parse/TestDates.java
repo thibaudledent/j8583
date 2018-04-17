@@ -74,4 +74,21 @@ public class TestDates {
 		Assert.assertEquals(comp.getValue().getTime(), bin.getValue().getTime());
 	}
 
+    @Test
+    public void testDate6() throws ParseException, IOException {
+	    Date nye = new Date(1514700000000L);
+	    IsoValue<Date> f = new IsoValue<>(IsoType.DATE6, nye);
+	    Assert.assertEquals("171231", f.toString());
+	    IsoValue<Date> parsed = new Date6ParseInfo().parse(1, "171231".getBytes(), 0, null);
+        Assert.assertEquals("171231", parsed.toString());
+        Assert.assertEquals(f.getValue(), parsed.getValue());
+        byte[] buf = new byte[3];
+        buf[0] = 0x17;
+        buf[1] = 0x12;
+        buf[2] = 0x31;
+        parsed = new Date6ParseInfo().parseBinary(2, buf, 0, null);
+        Assert.assertEquals("171231", parsed.toString());
+        Assert.assertEquals(f.getValue(), parsed.getValue());
+    }
+
 }
