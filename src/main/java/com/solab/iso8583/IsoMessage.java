@@ -251,6 +251,7 @@ public class IsoMessage {
         } else {
             setValue(index, value, current.getEncoder(), current.getType(), current.getLength());
             getField(index).setCharacterEncoding(current.getCharacterEncoding());
+            getField(index).setTimeZone(current.getTimeZone());
         }
         return this;
     }
