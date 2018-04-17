@@ -147,17 +147,12 @@ public final class Bcd {
         int start = 0;
         int i = pos;
         int limit = pos + (length / 2) + (length % 2);
-        if (length % 2 == 1) {
-            limit--;
-        }
         for (;i < limit; i++) {
             digits[start++] = (char)(((buf[i] & 0xf0) >> 4) + 48);
-            digits[start++] = (char)((buf[i] & 0x0f) + 48);
+            int r = buf[i] & 0xf;
+            digits[start++] = r == 15 ? ' ' : (char)(r + 48);
         }
-        if (length % 2 == 1) {
-            digits[start] = (char)(((buf[i] & 0xf0) >> 4) + 48);
-        }
-        return new BigInteger(new String(digits));
+        return new BigInteger(new String(digits, 0, start).trim());
     }
 
 }
