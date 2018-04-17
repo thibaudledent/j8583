@@ -64,7 +64,9 @@ public enum IsoType {
     /** variable length byte array with 4-digit header length. */
     LLLLBIN(false, 0),
     /** Date in format yyMMddHHmmss. */
-   	DATE12(false,12);
+    DATE12(false,12),
+    /** Date in format yyMMdd */
+    DATE6(false,6);
 
 	private boolean needsLen;
 	private int length;
@@ -99,8 +101,10 @@ public enum IsoType {
         } else if (this == DATE12) {
             sdf = new SimpleDateFormat("yyMMddHHmmss");
 		} else if (this == DATE14) {
-			sdf = new SimpleDateFormat("YYYYMMddHHmmss");
-		} else {
+            sdf = new SimpleDateFormat("YYYYMMddHHmmss");
+        } else if (this == DATE6) {
+            sdf = new SimpleDateFormat("yyMMdd");
+        } else {
             throw new IllegalArgumentException("Cannot format date as " + this);
         }
         if (tz != null) {

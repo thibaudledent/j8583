@@ -86,11 +86,7 @@ public class Date4ParseInfo extends DateTimeParseInfo {
 		cal.set(Calendar.MONTH, tens[0] - 1);
 		cal.set(Calendar.DATE, tens[1]);
 		cal.set(Calendar.MILLISECOND,0);
-        if (tz != null) {
-            cal.setTimeZone(tz);
-        }
-		DateTimeParseInfo.adjustWithFutureTolerance(cal);
-		return new IsoValue<>(type, cal.getTime(), null);
+        return createValue(cal, true);
 	}
 
 }

@@ -94,11 +94,7 @@ public class Date12ParseInfo extends DateTimeParseInfo {
    		cal.set(Calendar.MINUTE, tens[4]);
    		cal.set(Calendar.SECOND, tens[5]);
    		cal.set(Calendar.MILLISECOND,0);
-           if (tz != null) {
-               cal.setTimeZone(tz);
-           }
-   		adjustWithFutureTolerance(cal);
-   		return new IsoValue<>(type, cal.getTime(), null);
+        return createValue(cal, true);
    	}
 
 }

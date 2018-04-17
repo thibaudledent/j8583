@@ -93,9 +93,6 @@ public class DateExpParseInfo extends DateTimeParseInfo {
 		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR)
 				- (cal.get(Calendar.YEAR) % 100) + tens[0]);
 		cal.set(Calendar.MONTH, tens[1] - 1);
-        if (tz != null) {
-            cal.setTimeZone(tz);
-        }
-		return new IsoValue<>(type, cal.getTime(), null);
+        return createValue(cal, false);
 	}
 }
