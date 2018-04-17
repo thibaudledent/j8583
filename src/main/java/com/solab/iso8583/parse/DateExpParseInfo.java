@@ -64,12 +64,7 @@ public class DateExpParseInfo extends DateTimeParseInfo {
                     + ((buf[pos] - 48) * 10) + buf[pos + 1] - 48);
             cal.set(Calendar.MONTH, ((buf[pos + 2] - 48) * 10) + buf[pos + 3] - 49);
         }
-        if (tz != null) {
-            cal.setTimeZone(tz);
-        } else if (getDefaultTimeZone() != null) {
-            cal.setTimeZone(getDefaultTimeZone());
-        }
-		return new IsoValue<>(type, cal.getTime(), null);
+        return createValue(cal, false);
 	}
 
 	@Override

@@ -59,12 +59,7 @@ public class TimeParseInfo extends DateTimeParseInfo {
             cal.set(Calendar.MINUTE, ((buf[pos + 2] - 48) * 10) + buf[pos + 3] - 48);
             cal.set(Calendar.SECOND, ((buf[pos + 4] - 48) * 10) + buf[pos + 5] - 48);
         }
-        if (tz != null) {
-            cal.setTimeZone(tz);
-        } else if (getDefaultTimeZone() != null) {
-            cal.setTimeZone(getDefaultTimeZone());
-        }
-		return new IsoValue<>(type, cal.getTime(), null);
+        return createValue(cal, false);
 	}
 
 	@Override

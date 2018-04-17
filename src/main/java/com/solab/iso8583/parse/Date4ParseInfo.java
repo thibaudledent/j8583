@@ -62,13 +62,7 @@ public class Date4ParseInfo extends DateTimeParseInfo {
             cal.set(Calendar.MONTH, ((buf[pos] - 48) * 10) + buf[pos + 1] - 49);
             cal.set(Calendar.DATE, ((buf[pos + 2] - 48) * 10) + buf[pos + 3] - 48);
         }
-        if (tz != null) {
-            cal.setTimeZone(tz);
-        } else if (getDefaultTimeZone() != null) {
-            cal.setTimeZone(getDefaultTimeZone());
-        }
-		Date10ParseInfo.adjustWithFutureTolerance(cal);
-		return new IsoValue<>(type, cal.getTime(), null);
+        return createValue(cal, true);
 	}
 
 	@Override
