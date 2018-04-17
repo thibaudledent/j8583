@@ -240,9 +240,18 @@ public class MessageFactory<T extends IsoMessage> {
 		if (traceGen != null) {
 			m.setValue(11, traceGen.nextTrace(), IsoType.NUMERIC, 6);
 		}
-		if (setDate) {
-			m.setValue(7, new Date(), IsoType.DATE10, 10);
-		}
+        if (setDate) {
+            if (m.hasField(7)) {
+                //We may have a field with a timezone but no value
+                m.updateValue(7, new Date());
+            } else {
+                IsoValue<Date> now = new IsoValue<>(IsoType.DATE10, new Date());
+                if (DateTimeParseInfo.getDefaultTimeZone() != null) {
+                    now.setTimeZone(DateTimeParseInfo.getDefaultTimeZone());
+                }
+                m.setField(7, now);
+            }
+        }
 		return m;
 	}
 
