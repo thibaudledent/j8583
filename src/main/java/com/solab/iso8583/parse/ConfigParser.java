@@ -275,8 +275,13 @@ public class ConfigParser {
                     }
                 }
             }
-            return itype.needsLength() ? new IsoValue<>(itype, cf, length, cf) :
+            IsoValue<?> rv = itype.needsLength() ? new IsoValue<>(itype, cf, length, cf) :
                     new IsoValue<>(itype, cf, cf);
+            if (f.hasAttribute("tz")) {
+                TimeZone tz = TimeZone.getTimeZone(f.getAttribute("tz"));
+                rv.setTimeZone(tz);
+            }
+            return rv;
         }
         final String v;
         if (f.getChildNodes().getLength() == 0) {
@@ -285,11 +290,13 @@ public class ConfigParser {
             v = f.getChildNodes().item(0).getNodeValue();
         }
         final CustomField<Object> cf = toplevel ? mfact.getCustomField(num) : null;
+        IsoValue<?> rv;
         if (cf == null) {
-            return itype.needsLength() ? new IsoValue<>(itype, v, length) : new IsoValue<>(itype, v);
+            rv = itype.needsLength() ? new IsoValue<>(itype, v, length) : new IsoValue<>(itype, v);
+        } else {
+            rv = itype.needsLength() ? new IsoValue<>(itype, cf.decodeField(v), length, cf) :
+                    new IsoValue<>(itype, cf.decodeField(v), cf);
         }
-        IsoValue<?> rv = itype.needsLength() ? new IsoValue<>(itype, cf.decodeField(v), length, cf) :
-                new IsoValue<>(itype, cf.decodeField(v), cf);
         if (f.hasAttribute("tz")) {
             TimeZone tz = TimeZone.getTimeZone(f.getAttribute("tz"));
             rv.setTimeZone(tz);
@@ -298,7 +305,7 @@ public class ConfigParser {
     }
 
     protected static <T extends IsoMessage> FieldParseInfo getParser(
-            Element f, MessageFactory<T> mfact) throws IOException {
+            Element f, MessageFactory<T> mfact) {
         IsoType itype = IsoType.valueOf(f.getAttribute("type"));
         int length = 0;
         if (f.getAttribute("length").length() > 0) {
