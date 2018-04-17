@@ -24,7 +24,7 @@ public class TestParsing {
 
 	@Before
 	public void init() throws IOException {
-		mf = new MessageFactory<IsoMessage>();
+		mf = new MessageFactory<>();
 		mf.setCharacterEncoding("UTF-8");
 		mf.setCustomField(48, new CustomField48());
 		mf.setConfigPath("config.xml");
@@ -138,4 +138,15 @@ public class TestParsing {
         Assert.assertEquals(TimeZone.getTimeZone("GMT+0100"), m.getField(7).getTimeZone());
     }
 
+    @Test
+    public void testTimezoneInResponse() throws ParseException, IOException {
+        mf.setTimezoneForParseGuide(0x600, 7, TimeZone.getTimeZone("UTC"));
+        IsoMessage m = mf.parseMessage("060002000000000000000125213456".getBytes(), 0);
+        Assert.assertEquals(TimeZone.getTimeZone("UTC"), m.getField(7).getTimeZone());
+        IsoMessage r = mf.createResponse(m);
+        Assert.assertEquals(0x610, r.getType());
+        Assert.assertTrue(r.hasField(7));
+        Assert.assertTrue(m.getField(7) != r.getField(7));
+        Assert.assertEquals(TimeZone.getTimeZone("UTC"), r.getField(7).getTimeZone());
+    }
 }
