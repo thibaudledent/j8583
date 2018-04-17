@@ -137,4 +137,27 @@ public final class Bcd {
         return new BigInteger(new String(digits));
     }
 
+    /** Decodes a right-padded BCD-encoded number as a BigInteger.
+     * @param buf The byte buffer containing the BCD data.
+     * @param pos The starting position in the buffer.
+     * @param length The number of DIGITS (not bytes) to read. */
+    public static BigInteger decodeRightPaddedToBigInteger(byte[] buf, int pos, int length)
+            throws IndexOutOfBoundsException {
+        char[] digits = new char[length];
+        int start = 0;
+        int i = pos;
+        int limit = pos + (length / 2) + (length % 2);
+        if (length % 2 == 1) {
+            limit--;
+        }
+        for (;i < limit; i++) {
+            digits[start++] = (char)(((buf[i] & 0xf0) >> 4) + 48);
+            digits[start++] = (char)((buf[i] & 0x0f) + 48);
+        }
+        if (length % 2 == 1) {
+            digits[start] = (char)(((buf[i] & 0xf0) >> 4) + 48);
+        }
+        return new BigInteger(new String(digits));
+    }
+
 }
