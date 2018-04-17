@@ -32,16 +32,30 @@ import java.math.BigInteger;
  */
 public class BigIntBcdCodec implements CustomBinaryField<BigInteger> {
 
+    private final boolean rightPadded;
+
+    public BigIntBcdCodec() {
+        this(false);
+    }
+    public BigIntBcdCodec(boolean rightPadded) {
+        this.rightPadded = rightPadded;
+    }
+
     @Override
     public BigInteger decodeBinaryField(byte[] value, int pos, int len) {
-        return Bcd.decodeToBigInteger(value, pos, len*2);
+        return rightPadded ? Bcd.decodeRightPaddedToBigInteger(value, pos, len*2)
+            : Bcd.decodeToBigInteger(value, pos, len*2);
     }
 
     @Override
     public byte[] encodeBinaryField(BigInteger value) {
         final String s = value.toString(10);
         final byte[] buf = new byte[s.length() / 2 + s.length() % 2];
-        Bcd.encode(s, buf);
+        if (rightPadded) {
+            Bcd.encodeRightPadded(s, buf);
+        } else {
+            Bcd.encode(s, buf);
+        }
         return buf;
     }
 
