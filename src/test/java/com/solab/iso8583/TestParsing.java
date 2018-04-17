@@ -120,20 +120,20 @@ public class TestParsing {
         Assert.assertEquals(25, cal.get(Calendar.DATE));
         Assert.assertEquals(21, cal.get(Calendar.HOUR_OF_DAY));
 		Assert.assertEquals("debug string should match", "060002000000000000000125213456", m.debugString());
-        mf.setTimezoneForParseGuide(0x600, 7, TimeZone.getTimeZone("GMT"));
+        mf.setTimezoneForParseGuide(0x600, 7, TimeZone.getTimeZone("UTC"));
         m = mf.parseMessage("060002000000000000000125213456".getBytes(), 0);
         f = m.getObjectValue(7);
         cal.setTime(f);
         Assert.assertEquals(Calendar.JANUARY, cal.get(Calendar.MONTH));
         Assert.assertEquals(25, cal.get(Calendar.DATE));
-        Assert.assertEquals(15, cal.get(Calendar.HOUR_OF_DAY));
+        Assert.assertEquals("Hour of day mismatch", 15, cal.get(Calendar.HOUR_OF_DAY));
         mf.setTimezoneForParseGuide(0x600, 7, TimeZone.getTimeZone("GMT+0100"));
         m = mf.parseMessage("060002000000000000000125213456".getBytes(), 0);
         f = m.getObjectValue(7);
         cal.setTime(f);
         Assert.assertEquals(Calendar.JANUARY, cal.get(Calendar.MONTH));
         Assert.assertEquals(25, cal.get(Calendar.DATE));
-        Assert.assertEquals(14, cal.get(Calendar.HOUR_OF_DAY));
+        Assert.assertEquals("Hour of day mismatch", 14, cal.get(Calendar.HOUR_OF_DAY));
     }
 
 }
