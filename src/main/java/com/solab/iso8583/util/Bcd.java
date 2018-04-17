@@ -51,6 +51,28 @@ public final class Bcd {
         return l;
     }
 
+    public static long decodeRightPaddedToLong(byte[] buf, int pos, int length)
+            throws IndexOutOfBoundsException {
+        if (length > 18) {
+            throw new IndexOutOfBoundsException("Buffer too big to decode as long");
+        }
+        long l = 0;
+        long power = 1L;
+        int end = pos + (length / 2) + (length % 2) - 1;
+        if ((buf[end] & 0xf) == 0xf) {
+            l += (buf[end] & 0xf0) >> 4;
+            power *= 10L;
+            end--;
+        }
+        for (int i = end; i >= pos; i--) {
+            l += (buf[i] & 0x0f) * power;
+            power *= 10L;
+            l += ((buf[i] & 0xf0) >> 4) * power;
+            power *= 10L;
+        }
+        return l;
+    }
+
     /** Encode the value as BCD and put it in the buffer. The buffer must be big enough
    	 * to store the digits in the original value (half the length of the string). */
     public static void encode(String value, byte[] buf) {
