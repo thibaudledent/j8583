@@ -22,16 +22,17 @@ public class TestTimezones {
 
    	@Before
    	public void init() throws IOException {
-   		mf = new MessageFactory<>();
-   		mf.setCharacterEncoding("UTF-8");
-   		mf.setConfigPath("timezones.xml");
-   		mf.setAssignDate(true);
+        mf = new MessageFactory<>();
+        mf.setCharacterEncoding("UTF-8");
+        mf.setConfigPath("timezones.xml");
+        mf.setAssignDate(true);
    	}
 
     @Test
     public void testTemplate() {
-   	    IsoMessage t = mf.getMessageTemplate(0x100);
-   	    Assert.assertEquals(utc, t.getField(7).getTimeZone());
+        IsoMessage t = mf.getMessageTemplate(0x100);
+        Assert.assertTrue(t.hasEveryField(7, 12, 13));
+        Assert.assertEquals(utc, t.getField(7).getTimeZone());
         Assert.assertEquals(gmt5, t.getField(12).getTimeZone());
         Assert.assertNull(t.getField(13).getTimeZone());
         t = mf.newMessage(0x100);
@@ -41,9 +42,9 @@ public class TestTimezones {
 
     @Test
     public void testParsingGuide() throws ParseException, IOException {
-   	    String trama = "011002180000000000001231112233112233112233";
-   	    IsoMessage m = mf.parseMessage(trama.getBytes(), 0);
-   	    Assert.assertTrue(m.hasEveryField(7, 12, 13));
+        String trama = "011002180000000000001231112233112233112233";
+        IsoMessage m = mf.parseMessage(trama.getBytes(), 0);
+        Assert.assertTrue(m.hasEveryField(7, 12, 13));
         Assert.assertEquals(utc, m.getField(7).getTimeZone());
         Assert.assertEquals(gmt5, m.getField(12).getTimeZone());
         Assert.assertNull(m.getField(13).getTimeZone());
