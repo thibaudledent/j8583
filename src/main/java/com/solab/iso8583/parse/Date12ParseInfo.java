@@ -61,6 +61,8 @@ public class Date12ParseInfo extends DateTimeParseInfo {
         cal.set(Calendar.MILLISECOND,0);
         if (tz != null) {
             cal.setTimeZone(tz);
+        } else if (getDefaultTimeZone() != null) {
+            cal.setTimeZone(getDefaultTimeZone());
         }
    		adjustWithFutureTolerance(cal);
    		return new IsoValue<>(type, cal.getTime(), null);

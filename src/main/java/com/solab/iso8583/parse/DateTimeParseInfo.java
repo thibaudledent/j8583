@@ -15,10 +15,18 @@ public abstract class DateTimeParseInfo extends FieldParseInfo {
 
     protected static final long FUTURE_TOLERANCE;
     protected TimeZone tz;
+    private static TimeZone defaultTimezone;
 
    	static {
    		FUTURE_TOLERANCE = Long.parseLong(System.getProperty("j8583.future.tolerance", "900000"));
    	}
+
+   	public static void setDefaultTimeZone(TimeZone tz) {
+   	    defaultTimezone = tz;
+    }
+    public static TimeZone getDefaultTimeZone() {
+   	    return defaultTimezone;
+    }
 
     protected DateTimeParseInfo(IsoType type, int length) {
         super(type, length);

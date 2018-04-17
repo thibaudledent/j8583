@@ -64,6 +64,8 @@ public class Date4ParseInfo extends DateTimeParseInfo {
         }
         if (tz != null) {
             cal.setTimeZone(tz);
+        } else if (getDefaultTimeZone() != null) {
+            cal.setTimeZone(getDefaultTimeZone());
         }
 		Date10ParseInfo.adjustWithFutureTolerance(cal);
 		return new IsoValue<>(type, cal.getTime(), null);

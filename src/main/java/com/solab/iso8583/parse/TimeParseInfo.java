@@ -61,8 +61,10 @@ public class TimeParseInfo extends DateTimeParseInfo {
         }
         if (tz != null) {
             cal.setTimeZone(tz);
+        } else if (getDefaultTimeZone() != null) {
+            cal.setTimeZone(getDefaultTimeZone());
         }
-		return new IsoValue<Date>(type, cal.getTime(), null);
+		return new IsoValue<>(type, cal.getTime(), null);
 	}
 
 	@Override
