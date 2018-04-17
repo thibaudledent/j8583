@@ -127,6 +127,7 @@ public class TestParsing {
         Assert.assertEquals(Calendar.JANUARY, cal.get(Calendar.MONTH));
         Assert.assertEquals(25, cal.get(Calendar.DATE));
         Assert.assertEquals("Hour of day mismatch", 15, cal.get(Calendar.HOUR_OF_DAY));
+        Assert.assertEquals(TimeZone.getTimeZone("UTC"), m.getField(7).getTimeZone());
         mf.setTimezoneForParseGuide(0x600, 7, TimeZone.getTimeZone("GMT+0100"));
         m = mf.parseMessage("060002000000000000000125213456".getBytes(), 0);
         f = m.getObjectValue(7);
@@ -134,6 +135,7 @@ public class TestParsing {
         Assert.assertEquals(Calendar.JANUARY, cal.get(Calendar.MONTH));
         Assert.assertEquals(25, cal.get(Calendar.DATE));
         Assert.assertEquals("Hour of day mismatch", 14, cal.get(Calendar.HOUR_OF_DAY));
+        Assert.assertEquals(TimeZone.getTimeZone("GMT+0100"), m.getField(7).getTimeZone());
     }
 
 }
