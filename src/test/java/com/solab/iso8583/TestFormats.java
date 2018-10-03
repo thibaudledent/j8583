@@ -17,12 +17,20 @@ public class TestFormats {
 
 	@Test
 	public void testDateFormats() {
-		Assert.assertEquals("0125213456", IsoType.DATE10.format(date, null));
-        Assert.assertEquals("0125", IsoType.DATE4.format(date, null));
-        Assert.assertEquals("7301", IsoType.DATE_EXP.format(date, null));
-        Assert.assertEquals("213456", IsoType.TIME.format(date, null));
-        Assert.assertEquals("730125213456", IsoType.DATE12.format(date, null));
-		Assert.assertEquals("19730125213456", IsoType.DATE14.format(date, null));
+		TimeZone defaulTz = TimeZone.getDefault();
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT-0600"));
+		try {
+			Assert.assertEquals("0125213456", IsoType.DATE10.format(date, null));
+			Assert.assertEquals("0125", IsoType.DATE4.format(date, null));
+			Assert.assertEquals("7301", IsoType.DATE_EXP.format(date, null));
+			Assert.assertEquals("213456", IsoType.TIME.format(date, null));
+			Assert.assertEquals("730125213456", IsoType.DATE12.format(date, null));
+			Assert.assertEquals("19730125213456", IsoType.DATE14.format(date, null));
+		}
+		finally {
+			TimeZone.setDefault(defaulTz);
+		}
+
         //Now with GMT
         TimeZone gmt = TimeZone.getTimeZone("GMT");
         Assert.assertEquals("0126033456", IsoType.DATE10.format(date, gmt));
