@@ -42,8 +42,10 @@ public class IsoMessage {
 
 	/** The message type. */
     private int type;
-    /** Indicates if the message is binary-coded. */
-    private boolean binary;
+
+    private boolean binaryHeader;
+    private boolean binaryFields;
+
     /** This is where the values are stored. */
     @SuppressWarnings("rawtypes")
 	private IsoValue[] fields = new IsoValue[129];
@@ -148,11 +150,32 @@ public class IsoMessage {
      * To encode the message as text but the bitmap in binary format, you can set the
      * binaryBitmap flag. */
     public void setBinary(boolean flag) {
-    	binary = flag;
+    	binaryHeader = binaryFields = flag;
     }
+
     /** Returns true if the message is binary coded; default is false. */
     public boolean isBinary() {
-    	return binary;
+    	return binaryHeader && binaryFields;
+    }
+
+    /** header information is binary encoded */
+    public void setBinaryHeader(boolean flag) {
+        binaryHeader = flag;
+    }
+
+    /** header information is binary encoded */
+    public boolean isBinaryHeader(){
+        return binaryHeader;
+    }
+
+    /** field data is binary encoded */
+    public void setBinaryFields(boolean flag){
+        binaryFields = flag;
+    }
+
+    /** field data is binary encoded */
+    public boolean isBinaryFields(){
+       return binaryFields;
     }
 
     /** Sets the ETX character, which is sent at the end of the message as a terminator.
@@ -378,7 +401,7 @@ public class IsoMessage {
             }
         }
     	//Message Type
-    	if (binary) {
+    	if (binaryHeader) {
         	bout.write((type & 0xff00) >> 8);
         	bout.write(type & 0xff);
     	} else {
@@ -392,7 +415,7 @@ public class IsoMessage {
     	//Bitmap
         BitSet bs = createBitmapBitSet();
     	//Write bitmap to stream
-    	if (binary || binBitmap) {
+    	if (binaryHeader || binBitmap) {
     		int pos = 128;
     		int b = 0;
     		for (int i = 0; i < bs.size(); i++) {
@@ -442,7 +465,7 @@ public class IsoMessage {
     		IsoValue<?> v = fields[i];
     		if (v != null) {
         		try {
-        			v.write(bout, binary, forceStringEncoding);
+        			v.write(bout, binaryFields, forceStringEncoding);
         		} catch (IOException ex) {
         			//should never happen, writing to a ByteArrayOutputStream
         		}
