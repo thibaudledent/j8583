@@ -64,8 +64,13 @@ public class MessageFactory<T extends IsoMessage> {
 	private Map<Integer, CustomField> customFields = new HashMap<>();
 	/** Indicates if the current date should be set on new messages (field 7). */
 	private boolean setDate;
-	/** Indicates if the factory should create binary messages and also parse binary messages. */
-	private boolean useBinary;
+
+	/** Indicates that the header should be written/parsed as binary */
+	private boolean binaryHeader;
+
+	/** Indicates that the fields should be written/parsed as binary */
+	private boolean binaryFields;
+
 	private int etx = -1;
 	/** Flag to specify if missing fields should be ignored as long as they're at
 	 * the end of the message. */
@@ -187,15 +192,41 @@ public class MessageFactory<T extends IsoMessage> {
 	}
 
 	/** Tells the receiver to create and parse binary messages if the flag is true.
-	 * Default is false, that is, create and parse ASCII messages. */
+	 * Default is false, that is, create and parse ASCII messages. Sets both binaryHeader and fields to the flag.
+	 */
 	public void setUseBinaryMessages(boolean flag) {
-		useBinary = flag;
+		binaryHeader = binaryFields = flag;
 	}
 	/** Returns true is the factory is set to create and parse binary messages,
-	 * false if it uses ASCII messages. Default is false. */
+	 * false if it uses ASCII messages. Default is false. True if both binaryHeader & binaryFields are set to true*/
 	public boolean getUseBinaryMessages() {
-		return useBinary;
+		return binaryHeader && binaryFields;
 	}
+
+	/** header portion of the message is written/parsed in binary, default is false */
+	public void setBinaryHeader(boolean flag){
+		binaryHeader = flag;
+	}
+
+	/** header portion of the message is written/parsed in binary, default is false */
+	public boolean isBinaryHeader(){
+		return binaryHeader;
+	}
+
+	/** fields portion of the message is written/parsed in binary, default is false */
+	public void setBinaryFields(boolean flag){
+		binaryHeader = flag;
+	}
+
+	/** fields portion of the message is written/parsed in binary, default is false */
+	public boolean isBinaryFields(){
+		return binaryHeader;
+	}
+
+
+
+	/** fields portion of the message is written/parsed in binary */
+
 
 	/** Sets the ETX character to be sent at the end of the message. This is optional and the
 	 * default is -1, which means nothing should be sent as terminator.
@@ -220,7 +251,8 @@ public class MessageFactory<T extends IsoMessage> {
         }
 		m.setType(type);
 		m.setEtx(etx);
-		m.setBinary(useBinary);
+		m.setBinaryHeader(isBinaryHeader());
+		m.setBinaryFields(isBinaryFields());
 		m.setForceSecondaryBitmap(forceb2);
         m.setBinaryBitmap(binBitmap);
 		m.setCharacterEncoding(encoding);
@@ -262,7 +294,8 @@ public class MessageFactory<T extends IsoMessage> {
 	public T createResponse(T request) {
 		T resp = createIsoMessage(isoHeaders.get(request.getType() + 16));
 		resp.setCharacterEncoding(request.getCharacterEncoding());
-		resp.setBinary(request.isBinary());
+		resp.setBinaryHeader(request.isBinaryHeader());
+		resp.setBinaryFields(request.isBinaryFields());
         resp.setBinaryBitmap(request.isBinaryBitmap());
 		resp.setType(request.getType() + 16);
 		resp.setEtx(etx);
@@ -318,7 +351,7 @@ public class MessageFactory<T extends IsoMessage> {
 	 * and the rest of the message must come. */
 	public T parseMessage(byte[] buf, int isoHeaderLength, boolean binaryIsoHeader)
         	throws ParseException, UnsupportedEncodingException {
-		final int minlength = isoHeaderLength+(useBinary?2:4)+(binBitmap||useBinary ? 8:16);
+		final int minlength = isoHeaderLength+(binaryHeader?2:4)+(binBitmap||binaryHeader ? 8:16);
 		if (buf.length < minlength) {
 			throw new ParseException("Insufficient buffer length, needs to be at least " + minlength, 0);
 		}
@@ -333,7 +366,7 @@ public class MessageFactory<T extends IsoMessage> {
         }
 		m.setCharacterEncoding(encoding);
 		final int type;
-		if (useBinary) {
+		if (binaryHeader) {
 			type = ((buf[isoHeaderLength] & 0xff) << 8) | (buf[isoHeaderLength + 1] & 0xff);
         } else if (forceStringEncoding) {
             type = Integer.parseInt(new String(buf, isoHeaderLength, 4, encoding), 16);
@@ -347,8 +380,8 @@ public class MessageFactory<T extends IsoMessage> {
 		//Parse the bitmap (primary first)
 		final BitSet bs = new BitSet(64);
 		int pos = 0;
-		if (useBinary || binBitmap) {
-            final int bitmapStart = isoHeaderLength + (useBinary ? 2 : 4);
+		if (binaryHeader || binBitmap) {
+            final int bitmapStart = isoHeaderLength + (binaryHeader ? 2 : 4);
 			for (int i = bitmapStart; i < 8+bitmapStart; i++) {
 				int bit = 128;
 				for (int b = 0; b < 8; b++) {
@@ -462,7 +495,7 @@ public class MessageFactory<T extends IsoMessage> {
 			throw new ParseException("ISO8583 MessageFactory cannot parse fields", 0);
 		}
 		//Now we parse each field
-		if (useBinary) {
+		if (binaryFields) {
 			for (Integer i : index) {
 				FieldParseInfo fpi = parseGuide.get(i);
 				if (bs.get(i - 1)) {
@@ -527,7 +560,8 @@ public class MessageFactory<T extends IsoMessage> {
 				}
 			}
 		}
-		m.setBinary(useBinary);
+		m.setBinaryHeader(binaryHeader);
+		m.setBinaryFields(binaryFields);
         m.setBinaryBitmap(binBitmap);
 		return m;
 	}
