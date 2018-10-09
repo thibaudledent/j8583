@@ -197,8 +197,12 @@ public class MessageFactory<T extends IsoMessage> {
 	public void setUseBinaryMessages(boolean flag) {
 		binaryHeader = binaryFields = flag;
 	}
-	/** Returns true is the factory is set to create and parse binary messages,
-	 * false if it uses ASCII messages. Default is false. True if both binaryHeader & binaryFields are set to true*/
+    /** Returns true is the factory is set to create and parse binary messages,
+     * false if it uses ASCII messages. Default is false. True if both binaryHeader &amp; binaryFields
+     * are set to true
+     * @deprecated Check the new flags binaryHeader and binaryFields instead.
+     */
+    @Deprecated
 	public boolean getUseBinaryMessages() {
 		return binaryHeader && binaryFields;
 	}

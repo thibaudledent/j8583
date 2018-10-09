@@ -153,7 +153,10 @@ public class IsoMessage {
     	binaryHeader = binaryFields = flag;
     }
 
-    /** Returns true if the message is binary coded; default is false. */
+    /** Returns true if the message is binary coded (both header and fields); default is false.
+     * @deprecated Use the new flags isBinaryHeader and isBinaryFields instead.
+     */
+    @Deprecated
     public boolean isBinary() {
     	return binaryHeader && binaryFields;
     }
@@ -559,7 +562,7 @@ public class IsoMessage {
     }
 
     /** Returns true is the message contains all the specified fields.
-     * A convenience for m.hasField(x) && m.hasField(y) && m.hasField(z) && ... */
+     * A convenience for m.hasField(x) &amp;&amp; m.hasField(y) &amp;&amp; m.hasField(z) &amp;&amp; ... */
     public boolean hasEveryField(int... idx) {
         for (int i : idx) {
             if (!hasField(i)) {
