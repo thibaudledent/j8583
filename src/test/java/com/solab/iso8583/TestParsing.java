@@ -110,6 +110,7 @@ public class TestParsing {
 
     @Test
     public void testDates() throws ParseException, UnsupportedEncodingException {
+		com.solab.iso8583.parse.DateTimeParseInfo.setDefaultTimeZone(TimeZone.getTimeZone("GMT-0700"));
 		Calendar cal = new GregorianCalendar();
 
         IsoMessage m = mf.parseMessage("060002000000000000000125213456".getBytes(), 0);
@@ -124,6 +125,7 @@ public class TestParsing {
         Assert.assertEquals("Hour of Day", 21, cal.get(Calendar.HOUR_OF_DAY));
 		Assert.assertEquals("debug string should match", "060002000000000000000125213456", m.debugString());
 
+		com.solab.iso8583.parse.DateTimeParseInfo.setDefaultTimeZone(null);
 		TimeZone utcTz = TimeZone.getTimeZone("UTC");
 		mf.setTimezoneForParseGuide(0x600, 7, utcTz);
 
