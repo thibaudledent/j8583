@@ -72,8 +72,8 @@ uploadArchives {
 				}
 				licenses {
 					license {
-						name 'GNU Lesser General Public License, version 2.1'
-						url 'http://www.gnu.org/licenses/lgpl-2.1.html'
+						name 'GNU Lesser General Public License, version 3'
+						url 'http://www.gnu.org/licenses/lgpl-3.0.html'
 						distribution 'repo'
 					}
 				}
