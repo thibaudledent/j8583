@@ -12,6 +12,9 @@ public class TestBinAsciiGeneration {
     public void generateBinAscii800() throws Exception{
         MessageFactory mf = ConfigParser.createDefault();
         IsoMessage msg = mf.newMessage(0x800);
+        Assert.assertFalse("Bin Header should default to false", msg.isBinaryHeader());
+        Assert.assertFalse("Bin Fields should default to false", msg.isBinaryFields());
+
         msg.setBinaryHeader(true);
 
         msg.setField(7,new IsoValue(IsoType.DATE10, "0322220001"));

@@ -219,12 +219,12 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/** fields portion of the message is written/parsed in binary, default is false */
 	public void setBinaryFields(boolean flag){
-		binaryHeader = flag;
+		binaryFields = flag;
 	}
 
 	/** fields portion of the message is written/parsed in binary, default is false */
 	public boolean isBinaryFields(){
-		return binaryHeader;
+		return binaryFields;
 	}
 
 
