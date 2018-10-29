@@ -510,11 +510,11 @@ public class IsoMessage {
             IsoValue<?> v = fields[i];
             if (v != null) {
                 String desc = v.toString();
-                if (v.getType() == IsoType.LLBIN || v.getType() == IsoType.LLVAR) {
+                if (v.getType() == IsoType.LLBIN || v.getType() == IsoType.LLBCDBIN || v.getType() == IsoType.LLVAR) {
                     sb.append(String.format("%02d", desc.length()));
-                } else if (v.getType() == IsoType.LLLBIN || v.getType() == IsoType.LLLVAR) {
+                } else if (v.getType() == IsoType.LLLBIN || v.getType() == IsoType.LLLBCDBIN || v.getType() == IsoType.LLLVAR) {
                     sb.append(String.format("%03d", desc.length()));
-                } else if (v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLVAR) {
+                } else if (v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLBCDBIN || v.getType() == IsoType.LLLLVAR) {
                     sb.append(String.format("%04d", desc.length()));
                 }
                 sb.append(desc);

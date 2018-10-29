@@ -18,14 +18,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 package com.solab.iso8583.parse;
 
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-
 import com.solab.iso8583.CustomBinaryField;
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.HexCodec;
+
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 
 /** This class is used to parse fields of type LLLBIN.
  * 
@@ -97,7 +97,7 @@ public class LllbinParseInfo extends FieldParseInfo {
             throw new ParseException(String.format("Insufficient LLLBIN header field %d",
                              field), pos);
 		}
-		final int l = ((buf[pos] & 0x0f) * 100) + (((buf[pos + 1] & 0xf0) >> 4) * 10) + (buf[pos + 1] & 0x0f);
+		final int l = getLengthForBinaryParsing(buf, pos);
 		if (l < 0) {
             throw new ParseException(String.format("Invalid LLLBIN length %d field %d pos %d",
                              l, field, pos), pos);
@@ -126,6 +126,10 @@ public class LllbinParseInfo extends FieldParseInfo {
             return dec == null ? new IsoValue<>(type, _v, null) :
                     new IsoValue<>(type, dec, custom);
 		}
+	}
+
+	protected int getLengthForBinaryParsing(final byte[] buf, final int pos) {
+		return ((buf[pos] & 0x0f) * 100) + (((buf[pos + 1] & 0xf0) >> 4) * 10) + (buf[pos + 1] & 0x0f);
 	}
 
 }

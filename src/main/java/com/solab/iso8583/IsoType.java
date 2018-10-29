@@ -63,6 +63,12 @@ public enum IsoType {
     LLLLVAR(false, 0),
     /** variable length byte array with 4-digit header length. */
     LLLLBIN(false, 0),
+	/** Similar to LLBIN but with a BCD encoded length. */
+	LLBCDBIN(false, 0),
+	/** Similar to LLLBIN but with a BCD encoded length. */
+	LLLBCDBIN(false, 0),
+	/** Similar to LLLLBIN but with a BCD encoded length. */
+	LLLLBCDBIN(false, 0),
     /** Date in format yyMMddHHmmss. */
     DATE12(false,12),
     /** Date in format yyMMdd */
@@ -164,7 +170,7 @@ public enum IsoType {
 	        }
 	        return new String(c);
 
-		} else if (this == LLBIN || this == LLLBIN || this == LLLLBIN) {
+		} else if (this == LLBIN || this == LLLBIN || this == LLLLBIN || this == LLBCDBIN || this == LLLBCDBIN || this == LLLLBCDBIN) {
 			return value;
 		}
 		throw new IllegalArgumentException("Cannot format String as " + this);
@@ -182,7 +188,7 @@ public enum IsoType {
 			return format(Long.toString(value), length);
 		} else if (this == AMOUNT) {
 			return String.format("%010d00", value);
-		} else if (this == BINARY || this == LLBIN || this == LLLBIN || this == LLLLBIN) {
+		} else if (this == BINARY || this == LLBIN || this == LLLBIN || this == LLLLBIN || this == LLBCDBIN || this == LLLBCDBIN || this == LLLLBCDBIN) {
 			//TODO
 		}
 		throw new IllegalArgumentException("Cannot format number as " + this);
@@ -196,7 +202,7 @@ public enum IsoType {
 			return format(value.longValue(), length);
 		} else if (this == ALPHA || this == LLVAR || this == LLLVAR || this == LLLLVAR) {
 			return format(value.toString(), length);
-		} else if (this == BINARY || this == LLBIN || this == LLLBIN || this == LLLLBIN) {
+		} else if (this == BINARY || this == LLBIN || this == LLLBIN || this == LLLLBIN || this == LLBCDBIN || this == LLLBCDBIN || this == LLLLBCDBIN) {
 			//TODO
 		}
 		throw new IllegalArgumentException("Cannot format BigDecimal as " + this);

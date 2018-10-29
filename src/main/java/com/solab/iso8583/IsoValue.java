@@ -104,6 +104,12 @@ public class IsoValue<T> implements Cloneable {
             } else if (t == IsoType.LLLLBIN && length > 9999) {
                 throw new IllegalArgumentException("LLLLBIN can only hold values up to 9999 chars");
 			}
+		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
+			if (value instanceof byte[]) {
+				length = ((byte[])value).length * 2;
+			} else {
+				length = value.toString().length();
+			}
 		} else {
 			length = type.getLength();
 		}
@@ -155,6 +161,12 @@ public class IsoValue<T> implements Cloneable {
 				throw new IllegalArgumentException("LLLBIN can only hold values up to 999 chars");
             } else if (t == IsoType.LLLLBIN && length > 9999) {
                 throw new IllegalArgumentException("LLLLBIN can only hold values up to 9999 chars");
+			}
+		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
+			if (value instanceof byte[]) {
+				length = ((byte[])value).length * 2;
+			} else {
+				length = value.toString().length();
 			}
 		}
 	}
@@ -232,6 +244,14 @@ public class IsoValue<T> implements Cloneable {
 				final String _s = encoder == null ? value.toString() : encoder.encodeField(value);
 				return (_s.length() % 2 == 1) ? String.format("0%s", _s) : _s;
 			}
+		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
+			if (value instanceof byte[]) {
+                final byte[] _v = (byte[])value;
+				return encoder == null ? HexCodec.hexEncode(_v, 0, _v.length / 2) : encoder.encodeField(value);
+			} else {
+				final String _s = encoder == null ? value.toString() : encoder.encodeField(value);
+				return ((_s.length() / 2) % 2 == 1) ? String.format("0%s", _s) : _s;
+			}
 		}
 		return encoder == null ? value.toString() : encoder.encodeField(value);
 	}
@@ -271,9 +291,9 @@ public class IsoValue<T> implements Cloneable {
                                      final boolean binary, final boolean forceStringEncoding)
             throws IOException {
         final int digits;
-        if (type == IsoType.LLLLBIN || type == IsoType.LLLLVAR) {
+        if (type == IsoType.LLLLBIN || type == IsoType.LLLLVAR || type == IsoType.LLLLBCDBIN) {
             digits = 4;
-        } else if (type == IsoType.LLLBIN || type == IsoType.LLLVAR) {
+        } else if (type == IsoType.LLLBIN || type == IsoType.LLLVAR || type == IsoType.LLLBCDBIN) {
             digits = 3;
         } else {
             digits = 2;
@@ -326,6 +346,8 @@ public class IsoValue<T> implements Cloneable {
             writeLengthHeader(length, outs, type, binary, forceStringEncoding);
 		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN) {
             writeLengthHeader(binary ? length : length*2, outs, type, binary, forceStringEncoding);
+		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
+            writeLengthHeader(length, outs, type, binary, forceStringEncoding);
 		} else if (binary) {
 			//numeric types in binary are coded like this
 			byte[] buf = null;
@@ -345,7 +367,7 @@ public class IsoValue<T> implements Cloneable {
 				return;
 			}
 		}
-		if (binary && (type == IsoType.BINARY || type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN)) {
+		if (binary && (type == IsoType.BINARY || type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN || type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN)) {
 			int missing = 0;
 			if (value instanceof byte[]) {
 				outs.write((byte[])value);
