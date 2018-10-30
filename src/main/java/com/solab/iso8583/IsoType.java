@@ -20,7 +20,11 @@ package com.solab.iso8583;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TimeZone;
 
 /** Defines the possible values types that can be used in the fields.
@@ -73,6 +77,8 @@ public enum IsoType {
 	DATE12(false,12),
 	/** Date in format yyMMdd */
 	DATE6(false,6);
+
+    private static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN)));
 
 	private boolean needsLen;
 	private int length;
@@ -170,7 +176,7 @@ public enum IsoType {
 	        }
 	        return new String(c);
 
-		} else if (this == LLBIN || this == LLLBIN || this == LLLLBIN || this == LLBCDBIN || this == LLLBCDBIN || this == LLLLBCDBIN) {
+		} else if (VARIABLE_LENGTH_BIN_TYPES.contains(this)) {
 			return value;
 		}
 		throw new IllegalArgumentException("Cannot format String as " + this);
@@ -188,7 +194,7 @@ public enum IsoType {
 			return format(Long.toString(value), length);
 		} else if (this == AMOUNT) {
 			return String.format("%010d00", value);
-		} else if (this == BINARY || this == LLBIN || this == LLLBIN || this == LLLLBIN || this == LLBCDBIN || this == LLLBCDBIN || this == LLLLBCDBIN) {
+		} else if (this == BINARY || VARIABLE_LENGTH_BIN_TYPES.contains(this)) {
 			//TODO
 		}
 		throw new IllegalArgumentException("Cannot format number as " + this);
@@ -202,7 +208,7 @@ public enum IsoType {
 			return format(value.longValue(), length);
 		} else if (this == ALPHA || this == LLVAR || this == LLLVAR || this == LLLLVAR) {
 			return format(value.toString(), length);
-		} else if (this == BINARY || this == LLBIN || this == LLLBIN || this == LLLLBIN || this == LLBCDBIN || this == LLLBCDBIN || this == LLLLBCDBIN) {
+		} else if (this == BINARY || VARIABLE_LENGTH_BIN_TYPES.contains(this)) {
 			//TODO
 		}
 		throw new IllegalArgumentException("Cannot format BigDecimal as " + this);
