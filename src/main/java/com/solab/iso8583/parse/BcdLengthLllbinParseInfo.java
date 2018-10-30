@@ -5,12 +5,9 @@ package com.solab.iso8583.parse;
  */
 public class BcdLengthLllbinParseInfo extends LllbinParseInfo {
 
-    public BcdLengthLllbinParseInfo() {
-        super();
-    }
-
     @Override
     protected int getLengthForBinaryParsing(final byte[] buf, final int pos) {
         return super.getLengthForBinaryParsing(buf, pos) / 2;
     }
+
 }
