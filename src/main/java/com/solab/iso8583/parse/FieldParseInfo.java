@@ -26,7 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
 /** This class is used to parse a field from a message buffer. There are concrete subclasses for each IsoType.
- * 
+ *
  * @author Enrique Zamudio
  */
 public abstract class FieldParseInfo {
@@ -132,16 +132,16 @@ public abstract class FieldParseInfo {
 		} else if (t == IsoType.TIME) {
 			fpi = new TimeParseInfo();
 		} else if (t == IsoType.LLLLVAR) {
-            fpi = new LlllvarParseInfo();
-        } else if (t == IsoType.LLLLBIN) {
-            fpi = new LlllbinParseInfo();
+			fpi = new LlllvarParseInfo();
+		} else if (t == IsoType.LLLLBIN) {
+			fpi = new LlllbinParseInfo();
 		} else if (t == IsoType.LLBCDBIN) {
 			fpi = new BcdLengthLlbinParseInfo();
 		} else if (t == IsoType.LLLBCDBIN) {
 			fpi = new BcdLengthLllbinParseInfo();
 		} else if (t == IsoType.LLLLBCDBIN) {
 			fpi = new BcdLengthLlllbinParseInfo();
-        }
+		}
 		if (fpi == null) {
 	 		throw new IllegalArgumentException(String.format("Cannot parse type %s", t));
 		}

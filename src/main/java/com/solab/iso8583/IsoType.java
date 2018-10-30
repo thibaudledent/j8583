@@ -59,20 +59,20 @@ public enum IsoType {
 	LLBIN(false, 0),
 	/** Similar to LLLVAR but holds byte arrays instead of strings. */
 	LLLBIN(false, 0),
-    /** variable length with 4-digit header length. */
-    LLLLVAR(false, 0),
-    /** variable length byte array with 4-digit header length. */
-    LLLLBIN(false, 0),
+	/** variable length with 4-digit header length. */
+	LLLLVAR(false, 0),
+	/** variable length byte array with 4-digit header length. */
+	LLLLBIN(false, 0),
 	/** Similar to LLBIN but with a BCD encoded length. */
 	LLBCDBIN(false, 0),
 	/** Similar to LLLBIN but with a BCD encoded length. */
 	LLLBCDBIN(false, 0),
 	/** Similar to LLLLBIN but with a BCD encoded length. */
 	LLLLBCDBIN(false, 0),
-    /** Date in format yyMMddHHmmss. */
-    DATE12(false,12),
-    /** Date in format yyMMdd */
-    DATE6(false,6);
+	/** Date in format yyMMddHHmmss. */
+	DATE12(false,12),
+	/** Date in format yyMMdd */
+	DATE6(false,6);
 
 	private boolean needsLen;
 	private int length;
