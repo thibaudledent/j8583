@@ -8,7 +8,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.text.ParseException;
 
-public class TestBCdLengthLlbin {
+public class TestBcdLengthLlbin {
 
     @Test
     public void shouldSerializeAndDeserializeWithBcdBin() throws IOException, ParseException {
