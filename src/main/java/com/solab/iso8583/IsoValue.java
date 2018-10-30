@@ -18,15 +18,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 package com.solab.iso8583;
 
-import com.solab.iso8583.util.Bcd;
-import com.solab.iso8583.util.HexCodec;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.TimeZone;
+
+import com.solab.iso8583.util.Bcd;
+import com.solab.iso8583.util.HexCodec;
 
 /** Represents a value that is stored in a field inside an ISO8583 message.
  * It can format the value when the message is generated.
@@ -241,7 +241,7 @@ public class IsoValue<T> implements Cloneable {
 				final byte[] _v = (byte[])value;
 				return encoder == null ? HexCodec.hexEncode(_v, 0, _v.length) : encoder.encodeField(value);
 			} else {
-				final String _s = encoder == null ? value.toString() : encoder.encodeField(value);
+				final String _s = getStringEncodedForBinTypes();
 				return (_s.length() % 2 == 1) ? String.format("0%s", _s) : _s;
 			}
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
@@ -249,10 +249,14 @@ public class IsoValue<T> implements Cloneable {
 				final byte[] _v = (byte[])value;
 				return encoder == null ? HexCodec.hexEncode(_v, 0, _v.length / 2) : encoder.encodeField(value);
 			} else {
-				final String _s = encoder == null ? value.toString() : encoder.encodeField(value);
+				final String _s = getStringEncodedForBinTypes();
 				return ((_s.length() / 2) % 2 == 1) ? String.format("0%s", _s) : _s;
 			}
 		}
+		return encoder == null ? value.toString() : encoder.encodeField(value);
+	}
+
+	private String getStringEncodedForBinTypes() {
 		return encoder == null ? value.toString() : encoder.encodeField(value);
 	}
 
