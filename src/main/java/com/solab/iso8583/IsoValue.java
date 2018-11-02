@@ -395,7 +395,7 @@ public class IsoValue<T> implements Cloneable {
 		}
 	}
 
-	private void throwIllegalArgumentException(final IsoType t, final int maxLength) {
+	private void throwIllegalArgumentException(IsoType t, int maxLength) {
 		throw new IllegalArgumentException(t.name() + " can only hold values up to " + maxLength + " chars");
 	}
 
