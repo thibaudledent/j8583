@@ -54,7 +54,7 @@ public class TestBcdLengthLlbin {
 
         final IsoMessage msg = mf.newMessage(0x1100);
 
-        // For the LL fields, we use odd length in this tests
+        // For the LL fields, we use odd lengths in this test
         msg.setField(2, new IsoValue(IsoType.LLBCDBIN, "12345678901234567"));
         msg.setField(3, new IsoValue(IsoType.NUMERIC, "000000", "000000".length()));
         msg.setField(22, new IsoValue(IsoType.ALPHA, "123456", "123456".length()));
