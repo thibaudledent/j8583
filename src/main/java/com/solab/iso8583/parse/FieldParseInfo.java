@@ -26,7 +26,7 @@ import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 
 /** This class is used to parse a field from a message buffer. There are concrete subclasses for each IsoType.
- *
+ * 
  * @author Enrique Zamudio
  */
 public abstract class FieldParseInfo {
