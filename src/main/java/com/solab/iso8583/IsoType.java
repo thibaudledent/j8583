@@ -20,10 +20,9 @@ package com.solab.iso8583;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -78,7 +77,7 @@ public enum IsoType {
 	/** Date in format yyMMdd */
 	DATE6(false,6);
 
-    private static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN)));
+    private static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(EnumSet.of(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN));
 
 	private boolean needsLen;
 	private int length;
