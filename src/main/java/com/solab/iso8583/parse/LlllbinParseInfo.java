@@ -28,10 +28,9 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
 /**
- * Blabla.
+ * This class is used to parse fields of type LLLLBIN.
  *
  * @author Enrique Zamudio
- *         Date: 19/02/15 18:29
  */
 public class LlllbinParseInfo  extends FieldParseInfo {
 
