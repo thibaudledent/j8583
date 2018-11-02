@@ -101,9 +101,9 @@ public class IsoValue<T> implements Cloneable {
 				throw new IllegalArgumentException("LLBIN can only hold values up to 99 chars");
 			} else if (t == IsoType.LLLBIN && length > 999) {
 				throw new IllegalArgumentException("LLLBIN can only hold values up to 999 chars");
-			} else if (t == IsoType.LLLLBIN && length > 9999) {
-				throw new IllegalArgumentException("LLLLBIN can only hold values up to 9999 chars");
-			}
+            } else if (t == IsoType.LLLLBIN && length > 9999) {
+                throw new IllegalArgumentException("LLLLBIN can only hold values up to 9999 chars");
+            }
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
 			if (value instanceof byte[]) {
 				length = ((byte[])value).length * 2;
@@ -159,9 +159,9 @@ public class IsoValue<T> implements Cloneable {
 				throw new IllegalArgumentException("LLBIN can only hold values up to 99 chars");
 			} else if (t == IsoType.LLLBIN && length > 999) {
 				throw new IllegalArgumentException("LLLBIN can only hold values up to 999 chars");
-			} else if (t == IsoType.LLLLBIN && length > 9999) {
-				throw new IllegalArgumentException("LLLLBIN can only hold values up to 9999 chars");
-			}
+            } else if (t == IsoType.LLLLBIN && length > 9999) {
+                throw new IllegalArgumentException("LLLLBIN can only hold values up to 9999 chars");
+            }
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
 			if (value instanceof byte[]) {
 				length = ((byte[])value).length * 2;
