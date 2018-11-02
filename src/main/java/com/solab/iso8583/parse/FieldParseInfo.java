@@ -18,12 +18,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 package com.solab.iso8583.parse;
 
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 
 /** This class is used to parse a field from a message buffer. There are concrete subclasses for each IsoType.
  *
