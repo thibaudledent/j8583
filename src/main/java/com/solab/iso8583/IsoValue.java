@@ -74,13 +74,7 @@ public class IsoValue<T> implements Cloneable {
 				}
 				length = enc.length();
 			}
-			if (t == IsoType.LLVAR && length > 99) {
-				throw new IllegalArgumentException("LLVAR can only hold values up to 99 chars");
-			} else if (t == IsoType.LLLVAR && length > 999) {
-				throw new IllegalArgumentException("LLLVAR can only hold values up to 999 chars");
-			} else if (t == IsoType.LLLLVAR && length > 9999) {
-                throw new IllegalArgumentException("LLLLVAR can only hold values up to 9999 chars");
-            }
+			validateTypeWithVariableLength(t, length);
 		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN) {
 			if (custom == null) {
 				if (value instanceof byte[]) {
@@ -97,19 +91,14 @@ public class IsoValue<T> implements Cloneable {
 				}
 				length = enc.length();
 			}
-			if (t == IsoType.LLBIN && length > 99) {
-				throw new IllegalArgumentException("LLBIN can only hold values up to 99 chars");
-			} else if (t == IsoType.LLLBIN && length > 999) {
-				throw new IllegalArgumentException("LLLBIN can only hold values up to 999 chars");
-            } else if (t == IsoType.LLLLBIN && length > 9999) {
-                throw new IllegalArgumentException("LLLLBIN can only hold values up to 9999 chars");
-            }
+			validateTypeWithVariableLength(t, length);
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
 			if (value instanceof byte[]) {
 				length = ((byte[])value).length * 2;
 			} else {
 				length = value.toString().length();
 			}
+			validateTypeWithVariableLength(t, length);
 		} else {
 			length = type.getLength();
 		}
@@ -137,13 +126,7 @@ public class IsoValue<T> implements Cloneable {
 			if (len == 0) {
 				length = custom == null ? val.toString().length() : custom.encodeField(value).length();
 			}
-			if (t == IsoType.LLVAR && length > 99) {
-				throw new IllegalArgumentException("LLVAR can only hold values up to 99 chars");
-			} else if (t == IsoType.LLLVAR && length > 999) {
-				throw new IllegalArgumentException("LLLVAR can only hold values up to 999 chars");
-            } else if (t == IsoType.LLLLVAR && length > 9999) {
-                throw new IllegalArgumentException("LLLLVAR can only hold values up to 9999 chars");
-			}
+			validateTypeWithVariableLength(t, length);
 		} else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN) {
 			if (len == 0) {
                 if (custom == null) {
@@ -155,19 +138,14 @@ public class IsoValue<T> implements Cloneable {
                 }
 				length = custom == null ? ((byte[])val).length : custom.encodeField(value).length();
 			}
-			if (t == IsoType.LLBIN && length > 99) {
-				throw new IllegalArgumentException("LLBIN can only hold values up to 99 chars");
-			} else if (t == IsoType.LLLBIN && length > 999) {
-				throw new IllegalArgumentException("LLLBIN can only hold values up to 999 chars");
-            } else if (t == IsoType.LLLLBIN && length > 9999) {
-                throw new IllegalArgumentException("LLLLBIN can only hold values up to 9999 chars");
-            }
+			validateTypeWithVariableLength(t, length);
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
 			if (value instanceof byte[]) {
 				length = ((byte[])value).length * 2;
 			} else {
 				length = value.toString().length();
 			}
+			validateTypeWithVariableLength(t, length);
 		}
 	}
 
@@ -226,7 +204,7 @@ public class IsoValue<T> implements Cloneable {
 		} else if (type == IsoType.ALPHA) {
 			return type.format(encoder == null ? value.toString() : encoder.encodeField(value), length);
 		} else if (type == IsoType.LLVAR || type == IsoType.LLLVAR || type == IsoType.LLLLVAR) {
-			return encoder == null ? value.toString() : encoder.encodeField(value);
+			return getStringEncoded();
 		} else if (value instanceof Date) {
 			return type.format((Date)value, tz);
 		} else if (type == IsoType.BINARY) {
@@ -241,7 +219,7 @@ public class IsoValue<T> implements Cloneable {
                 final byte[] _v = (byte[])value;
 				return encoder == null ? HexCodec.hexEncode(_v, 0, _v.length) : encoder.encodeField(value);
 			} else {
-				final String _s = getStringEncodedForBinTypes();
+				final String _s = getStringEncoded();
 				return (_s.length() % 2 == 1) ? String.format("0%s", _s) : _s;
 			}
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
@@ -249,14 +227,14 @@ public class IsoValue<T> implements Cloneable {
 				final byte[] _v = (byte[])value;
 				return encoder == null ? HexCodec.hexEncode(_v, 0, _v.length / 2) : encoder.encodeField(value);
 			} else {
-				final String _s = getStringEncodedForBinTypes();
+				final String _s = getStringEncoded();
 				return ((_s.length() / 2) % 2 == 1) ? String.format("0%s", _s) : _s;
 			}
 		}
-		return encoder == null ? value.toString() : encoder.encodeField(value);
+		return getStringEncoded();
 	}
 
-	private String getStringEncodedForBinTypes() {
+	private String getStringEncoded() {
 		return encoder == null ? value.toString() : encoder.encodeField(value);
 	}
 
@@ -371,7 +349,7 @@ public class IsoValue<T> implements Cloneable {
 				return;
 			}
 		}
-		if (binary && (type == IsoType.BINARY || type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN || type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN)) {
+		if (binary && (type == IsoType.BINARY || IsoType.VARIABLE_LENGTH_BIN_TYPES.contains(type))) {
 			int missing = 0;
 			if (value instanceof byte[]) {
 				outs.write((byte[])value);
@@ -393,6 +371,32 @@ public class IsoValue<T> implements Cloneable {
 		} else {
 			outs.write(encoding == null ? toString().getBytes() : toString().getBytes(encoding));
 		}
+	}
+
+	void validateTypeWithVariableLength(IsoType type, int length) {
+		if (type == IsoType.LLVAR && length > 99) {
+			throwIllegalArgumentException(type, 99);
+		} else if (type == IsoType.LLLVAR && length > 999) {
+			throwIllegalArgumentException(type, 999);
+		} else if (type == IsoType.LLLLVAR && length > 9999) {
+			throwIllegalArgumentException(type, 9999);
+		} else if (type == IsoType.LLBIN && length > 99) {
+			throwIllegalArgumentException(type, 99);
+		} else if (type == IsoType.LLLBIN && length > 999) {
+			throwIllegalArgumentException(type, 999);
+		} else if (type == IsoType.LLLLBIN && length > 9999) {
+			throwIllegalArgumentException(type, 9999);
+		} else if (type == IsoType.LLBCDBIN && length > 99) {
+			throwIllegalArgumentException(type, 99);
+		} else if (type == IsoType.LLLBCDBIN && length > 999) {
+			throwIllegalArgumentException(type, 999);
+		} else if (type == IsoType.LLLLBCDBIN && length > 9999) {
+			throwIllegalArgumentException(type, 9999);
+		}
+	}
+
+	private void throwIllegalArgumentException(final IsoType t, final int maxLength) {
+		throw new IllegalArgumentException(t.name() + " can only hold values up to " + maxLength + " chars");
 	}
 
 }
