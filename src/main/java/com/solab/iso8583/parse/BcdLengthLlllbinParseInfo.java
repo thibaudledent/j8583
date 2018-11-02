@@ -7,7 +7,8 @@ public class BcdLengthLlllbinParseInfo extends LlllbinParseInfo {
 
     @Override
     protected int getLengthForBinaryParsing(byte[] buf, int pos) {
-        return super.getLengthForBinaryParsing(buf, pos) / 2;
+        final int length = super.getLengthForBinaryParsing(buf, pos);
+        return length % 2 == 0 ? length / 2 : (length / 2) + 1;
     }
 
 }
