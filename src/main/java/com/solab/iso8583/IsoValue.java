@@ -373,25 +373,25 @@ public class IsoValue<T> implements Cloneable {
 		}
 	}
 
-	void validateTypeWithVariableLength(IsoType type, int length) {
-		if (type == IsoType.LLVAR && length > 99) {
+	void validateTypeWithVariableLength(IsoType type, int valueLength) {
+		if (type == IsoType.LLVAR && valueLength > 99) {
 			throwIllegalArgumentException(type, 99);
-		} else if (type == IsoType.LLLVAR && length > 999) {
+		} else if (type == IsoType.LLLVAR && valueLength > 999) {
 			throwIllegalArgumentException(type, 999);
-		} else if (type == IsoType.LLLLVAR && length > 9999) {
+		} else if (type == IsoType.LLLLVAR && valueLength > 9999) {
 			throwIllegalArgumentException(type, 9999);
-		} else if (type == IsoType.LLBIN && length > 99) {
+		} else if (type == IsoType.LLBIN && valueLength > 99) {
 			throwIllegalArgumentException(type, 99);
-		} else if (type == IsoType.LLLBIN && length > 999) {
+		} else if (type == IsoType.LLLBIN && valueLength > 999) {
 			throwIllegalArgumentException(type, 999);
-		} else if (type == IsoType.LLLLBIN && length > 9999) {
+		} else if (type == IsoType.LLLLBIN && valueLength > 9999) {
 			throwIllegalArgumentException(type, 9999);
-		} else if (type == IsoType.LLBCDBIN && length > 99) {
-			throwIllegalArgumentException(type, 99);
-		} else if (type == IsoType.LLLBCDBIN && length > 999) {
-			throwIllegalArgumentException(type, 999);
-		} else if (type == IsoType.LLLLBCDBIN && length > 9999) {
-			throwIllegalArgumentException(type, 9999);
+		} else if (type == IsoType.LLBCDBIN && valueLength > 50) {
+			throwIllegalArgumentException(type, 50);
+		} else if (type == IsoType.LLLBCDBIN && valueLength > 500) {
+			throwIllegalArgumentException(type, 500);
+		} else if (type == IsoType.LLLLBCDBIN && valueLength > 5000) {
+			throwIllegalArgumentException(type, 5000);
 		}
 	}
 
