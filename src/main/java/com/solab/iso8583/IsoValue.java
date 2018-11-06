@@ -74,7 +74,7 @@ public class IsoValue<T> implements Cloneable {
 				}
 				length = enc.length();
 			}
-			validateTypeWithVariableLength(t, length);
+			validateTypeWithVariableLength();
 		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN) {
 			if (custom == null) {
 				if (value instanceof byte[]) {
@@ -91,14 +91,14 @@ public class IsoValue<T> implements Cloneable {
 				}
 				length = enc.length();
 			}
-			validateTypeWithVariableLength(t, length);
+			validateTypeWithVariableLength();
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
 			if (value instanceof byte[]) {
 				length = ((byte[])value).length * 2;
 			} else {
 				length = value.toString().length();
 			}
-			validateTypeWithVariableLength(t, length);
+			validateTypeWithVariableLength();
 		} else {
 			length = type.getLength();
 		}
@@ -126,7 +126,7 @@ public class IsoValue<T> implements Cloneable {
 			if (len == 0) {
 				length = custom == null ? val.toString().length() : custom.encodeField(value).length();
 			}
-			validateTypeWithVariableLength(t, length);
+			validateTypeWithVariableLength();
 		} else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN) {
 			if (len == 0) {
                 if (custom == null) {
@@ -138,14 +138,16 @@ public class IsoValue<T> implements Cloneable {
                 }
 				length = custom == null ? ((byte[])val).length : custom.encodeField(value).length();
 			}
-			validateTypeWithVariableLength(t, length);
-		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
-			if (value instanceof byte[]) {
-				length = ((byte[])value).length * 2;
-			} else {
-				length = value.toString().length();
+			validateTypeWithVariableLength();
+		} else if (t == IsoType.LLBCDBIN || t == IsoType.LLLBCDBIN || t == IsoType.LLLLBCDBIN) {
+			if (len == 0) {
+				if (value instanceof byte[]) {
+					length = ((byte[]) value).length * 2;
+				} else {
+					length = value.toString().length();
+				}
 			}
-			validateTypeWithVariableLength(t, length);
+			validateTypeWithVariableLength();
 		}
 	}
 
@@ -373,24 +375,24 @@ public class IsoValue<T> implements Cloneable {
 		}
 	}
 
-	void validateTypeWithVariableLength(IsoType type, int valueLength) {
-		if (type == IsoType.LLVAR && valueLength > 99) {
+	void validateTypeWithVariableLength() {
+		if (type == IsoType.LLVAR && length > 99) {
 			throwIllegalArgumentException(type, 99);
-		} else if (type == IsoType.LLLVAR && valueLength > 999) {
+		} else if (type == IsoType.LLLVAR && length > 999) {
 			throwIllegalArgumentException(type, 999);
-		} else if (type == IsoType.LLLLVAR && valueLength > 9999) {
+		} else if (type == IsoType.LLLLVAR && length > 9999) {
 			throwIllegalArgumentException(type, 9999);
-		} else if (type == IsoType.LLBIN && valueLength > 99) {
+		} else if (type == IsoType.LLBIN && length > 99) {
 			throwIllegalArgumentException(type, 99);
-		} else if (type == IsoType.LLLBIN && valueLength > 999) {
+		} else if (type == IsoType.LLLBIN && length > 999) {
 			throwIllegalArgumentException(type, 999);
-		} else if (type == IsoType.LLLLBIN && valueLength > 9999) {
+		} else if (type == IsoType.LLLLBIN && length > 9999) {
 			throwIllegalArgumentException(type, 9999);
-		} else if (type == IsoType.LLBCDBIN && valueLength > 50) {
+		} else if (type == IsoType.LLBCDBIN && length > 50) {
 			throwIllegalArgumentException(type, 50);
-		} else if (type == IsoType.LLLBCDBIN && valueLength > 500) {
+		} else if (type == IsoType.LLLBCDBIN && length > 500) {
 			throwIllegalArgumentException(type, 500);
-		} else if (type == IsoType.LLLLBCDBIN && valueLength > 5000) {
+		} else if (type == IsoType.LLLLBCDBIN && length > 5000) {
 			throwIllegalArgumentException(type, 5000);
 		}
 	}
