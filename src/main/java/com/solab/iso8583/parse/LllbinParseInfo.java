@@ -33,7 +33,10 @@ import com.solab.iso8583.util.HexCodec;
  */
 public class LllbinParseInfo extends FieldParseInfo {
 
-	
+    public LllbinParseInfo(IsoType t, int len) {
+        super(t, len);
+    }
+
 	public LllbinParseInfo() {
 		super(IsoType.LLLBIN, 0);
 	}

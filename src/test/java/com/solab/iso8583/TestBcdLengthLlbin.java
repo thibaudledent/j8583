@@ -17,32 +17,41 @@ public class TestBcdLengthLlbin {
         mf.setUseBinaryBitmap(true);
         mf.setUseBinaryMessages(true);
 
-        final IsoMessage msg = mf.newMessage(0x1100);
+        final IsoMessage isoMessage1 = mf.newMessage(0x1100);
 
-        msg.setField(2, new IsoValue(IsoType.LLBCDBIN, "1234567890111213"));
-        msg.setField(3, new IsoValue(IsoType.NUMERIC, "000000", "000000".length()));
-        msg.setField(22, new IsoValue(IsoType.ALPHA, "123456", "123456".length()));
-        msg.setField(24, new IsoValue(IsoType.LLLLBCDBIN, "12345678900000000000"));
-        msg.setField(25, new IsoValue(IsoType.LLLBCDBIN, "01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101"));
-        msg.setField(64, new IsoValue(IsoType.BINARY, "1111111111111111", 8));
+        isoMessage1.setField(2, new IsoValue(IsoType.LLBCDBIN, "1234567890111213"));
+        isoMessage1.setField(3, new IsoValue(IsoType.NUMERIC, "000000", "000000".length()));
+        isoMessage1.setField(22, new IsoValue(IsoType.ALPHA, "123456", "123456".length()));
+        isoMessage1.setField(24, new IsoValue(IsoType.LLLLBCDBIN, "12345678900000000000"));
+        isoMessage1.setField(25, new IsoValue(IsoType.LLLBCDBIN, "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678"));
+        isoMessage1.setField(64, new IsoValue(IsoType.BINARY, "1111111111111111", 8));
 
-        // When - Serialization
-        final byte[] message = msg.writeData();
+        // When - Serialize
+        final byte[] message1 = isoMessage1.writeData();
 
         // Then
-        Assert.assertEquals("110060000580000000011612345678901112130000003132333435360020123456789000000000000110010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101011111111111111111", DatatypeConverter.printHexBinary(message));
+        Assert.assertEquals("110060000580000000011612345678901112130000003132333435360020123456789000000000000128123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781111111111111111", DatatypeConverter.printHexBinary(message1));
 
-        // When - Deserialization
+        // When - Deserialize
         mf.setConfigPath("llbcdbin.xml");
-        final IsoMessage isoMessage = mf.parseMessage(message, 0);
+        final IsoMessage isoMessage2 = mf.parseMessage(message1, 0);
 
         // Then
-        Assert.assertEquals("1234567890111213", isoMessage.getField(2).toString());
-        Assert.assertEquals("000000", isoMessage.getField(3).toString());
-        Assert.assertEquals("123456", isoMessage.getField(22).toString());
-        Assert.assertEquals("12345678900000000000", isoMessage.getField(24).toString());
-        Assert.assertEquals("01010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101", isoMessage.getField(25).toString());
-        Assert.assertEquals("1111111111111111", isoMessage.getField(64).toString());
+        Assert.assertEquals("LLBCDBIN", isoMessage2.getField(2).getType().name());
+        Assert.assertEquals("1234567890111213", isoMessage2.getField(2).toString());
+        Assert.assertEquals("000000", isoMessage2.getField(3).toString());
+        Assert.assertEquals("123456", isoMessage2.getField(22).toString());
+        Assert.assertEquals("LLLLBCDBIN", isoMessage2.getField(24).getType().name());
+        Assert.assertEquals("12345678900000000000", isoMessage2.getField(24).toString());
+        Assert.assertEquals("LLLBCDBIN", isoMessage2.getField(25).getType().name());
+        Assert.assertEquals("12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678", isoMessage2.getField(25).toString());
+        Assert.assertEquals("1111111111111111", isoMessage2.getField(64).toString());
+
+        // When - Serialize again
+        final byte[] message2 = isoMessage2.writeData();
+
+        // Then
+        Assert.assertEquals("110060000580000000011612345678901112130000003132333435360020123456789000000000000128123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781111111111111111", DatatypeConverter.printHexBinary(message2));
     }
 
     @Test
@@ -52,33 +61,42 @@ public class TestBcdLengthLlbin {
         mf.setUseBinaryBitmap(true);
         mf.setUseBinaryMessages(true);
 
-        final IsoMessage msg = mf.newMessage(0x1100);
+        final IsoMessage isoMessage1 = mf.newMessage(0x1100);
 
         // For the LL fields, we use odd lengths in this test
-        msg.setField(2, new IsoValue(IsoType.LLBCDBIN, "12345678901234567"));
-        msg.setField(3, new IsoValue(IsoType.NUMERIC, "000000", "000000".length()));
-        msg.setField(22, new IsoValue(IsoType.ALPHA, "123456", "123456".length()));
-        msg.setField(24, new IsoValue(IsoType.LLLLBCDBIN, "112345678900000000000"));
-        msg.setField(25, new IsoValue(IsoType.LLLBCDBIN, "001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101"));
-        msg.setField(64, new IsoValue(IsoType.BINARY, "1111111111111111", 8));
+        isoMessage1.setField(2, new IsoValue(IsoType.LLBCDBIN, "12345678901234567"));
+        isoMessage1.setField(3, new IsoValue(IsoType.NUMERIC, "000000", "000000".length()));
+        isoMessage1.setField(22, new IsoValue(IsoType.ALPHA, "123456", "123456".length()));
+        isoMessage1.setField(24, new IsoValue(IsoType.LLLLBCDBIN, "112345678900000000000"));
+        isoMessage1.setField(25, new IsoValue(IsoType.LLLBCDBIN, "0123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"));
+        isoMessage1.setField(64, new IsoValue(IsoType.BINARY, "1111111111111111", 8));
 
-        // When - Serialization
-        final byte[] message = msg.writeData();
+        // When - Serialize
+        final byte[] message1 = isoMessage1.writeData();
 
         // Then
-        Assert.assertEquals("110060000580000000011701234567890123456700000031323334353600210112345678900000000000011100010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101011111111111111111", DatatypeConverter.printHexBinary(message));
+        Assert.assertEquals("1100600005800000000117012345678901234567000000313233343536002101123456789000000000000109001234567891234567891234567891234567891234567891234567891234567891234567891234567891234567891234567891234567891111111111111111", DatatypeConverter.printHexBinary(message1));
 
-        // When - Deserialization
+        // When - Deserialize
         mf.setConfigPath("llbcdbin.xml");
-        final IsoMessage isoMessage = mf.parseMessage(message, 0);
+        final IsoMessage isoMessage2 = mf.parseMessage(message1, 0);
 
         // Then
-        Assert.assertEquals("012345678901234567", isoMessage.getField(2).toString());
-        Assert.assertEquals("000000", isoMessage.getField(3).toString());
-        Assert.assertEquals("123456", isoMessage.getField(22).toString());
-        Assert.assertEquals("0112345678900000000000", isoMessage.getField(24).toString());
-        Assert.assertEquals("0001010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101", isoMessage.getField(25).toString());
-        Assert.assertEquals("1111111111111111", isoMessage.getField(64).toString());
+        Assert.assertEquals("LLBCDBIN", isoMessage2.getField(2).getType().name());
+        Assert.assertEquals("012345678901234567", isoMessage2.getField(2).toString());
+        Assert.assertEquals("000000", isoMessage2.getField(3).toString());
+        Assert.assertEquals("123456", isoMessage2.getField(22).toString());
+        Assert.assertEquals("LLLLBCDBIN", isoMessage2.getField(24).getType().name());
+        Assert.assertEquals("0112345678900000000000", isoMessage2.getField(24).toString());
+        Assert.assertEquals("LLLBCDBIN", isoMessage2.getField(25).getType().name());
+        Assert.assertEquals("00123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789", isoMessage2.getField(25).toString());
+        Assert.assertEquals("1111111111111111", isoMessage2.getField(64).toString());
+
+        // When - Serialize again
+        final byte[] message2 = isoMessage2.writeData();
+
+        // Then
+        Assert.assertEquals("1100600005800000000117012345678901234567000000313233343536002101123456789000000000000109001234567891234567891234567891234567891234567891234567891234567891234567891234567891234567891234567891234567891111111111111111", DatatypeConverter.printHexBinary(message2));
     }
 
 }

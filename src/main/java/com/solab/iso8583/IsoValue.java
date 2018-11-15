@@ -94,7 +94,7 @@ public class IsoValue<T> implements Cloneable {
 			validateTypeWithVariableLength();
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
 			if (value instanceof byte[]) {
-				length = ((byte[])value).length * 2;
+                length = ((byte[])value).length * 2;
 			} else {
 				length = value.toString().length();
 			}
@@ -227,7 +227,7 @@ public class IsoValue<T> implements Cloneable {
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
 			if (value instanceof byte[]) {
 				final byte[] _v = (byte[])value;
-				return encoder == null ? HexCodec.hexEncode(_v, 0, _v.length / 2) : encoder.encodeField(value);
+				return encoder == null ? HexCodec.hexEncode(_v, 0, _v.length) : encoder.encodeField(value);
 			} else {
 				final String _s = getStringEncoded();
 				return ((_s.length() / 2) % 2 == 1) ? String.format("0%s", _s) : _s;
@@ -331,7 +331,13 @@ public class IsoValue<T> implements Cloneable {
 		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN) {
 			writeLengthHeader(binary ? length : length*2, outs, type, binary, forceStringEncoding);
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
-			writeLengthHeader(length, outs, type, binary, forceStringEncoding);
+            if (value instanceof byte[]) {
+                // Handle odd length for LL..BCDBIN fields
+                final int headerLength = (((byte[]) value).length % 2 == 0) ? length : length - 1;
+                writeLengthHeader(headerLength, outs, type, binary, forceStringEncoding);
+            } else {
+                writeLengthHeader(length, outs, type, binary, forceStringEncoding);
+            }
 		} else if (binary) {
 			//numeric types in binary are coded like this
 			byte[] buf = null;
