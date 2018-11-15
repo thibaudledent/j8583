@@ -525,12 +525,14 @@ public class MessageFactory<T extends IsoMessage> {
 							} else {
 								pos += val.getLength();
 							}
-							if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN) {
+							if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN ) {
 								pos++;
 							} else if (val.getType() == IsoType.LLLVAR
 									|| val.getType() == IsoType.LLLBIN
+									|| val.getType() == IsoType.LLLBCDBIN
                                     || val.getType() == IsoType.LLLLVAR
-									|| val.getType() == IsoType.LLLLBIN) {
+									|| val.getType() == IsoType.LLLLBIN
+									|| val.getType() == IsoType.LLLLBCDBIN) {
                                 pos += 2;
                             }
 						}
@@ -553,11 +555,11 @@ public class MessageFactory<T extends IsoMessage> {
 						m.setField(i, val);
 						//To get the correct next position, we need to get the number of bytes, not chars
 						pos += val.toString().getBytes(fpi.getCharacterEncoding()).length;
-						if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN) {
+						if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN) {
 							pos += 2;
-						} else if (val.getType() == IsoType.LLLVAR || val.getType() == IsoType.LLLBIN) {
+						} else if (val.getType() == IsoType.LLLVAR || val.getType() == IsoType.LLLBIN || val.getType() == IsoType.LLLBCDBIN) {
 							pos += 3;
-						} else if (val.getType() == IsoType.LLLLVAR || val.getType() == IsoType.LLLLBIN) {
+						} else if (val.getType() == IsoType.LLLLVAR || val.getType() == IsoType.LLLLBIN || val.getType() == IsoType.LLLLBCDBIN) {
                             pos += 4;
                         }
 					}

@@ -97,7 +97,7 @@ public class LlbinParseInfo extends FieldParseInfo {
 			throw new ParseException(String.format("Insufficient bin LLBIN header field %d",
                     field), pos);
 		}
-		final int l = (((buf[pos] & 0xf0) >> 4) * 10) + (buf[pos] & 0x0f);
+		final int l = getLengthForBinaryParsing(buf[pos]);
 		if (l < 0) {
 			throw new ParseException(String.format("Invalid bin LLBIN length %d pos %d", l, pos), pos);
 		}
@@ -125,6 +125,10 @@ public class LlbinParseInfo extends FieldParseInfo {
             return dec == null ? new IsoValue<>(type, _v, null) :
                     new IsoValue<>(type, dec, custom);
 		}
+	}
+
+	protected int getLengthForBinaryParsing(final byte b) {
+		return (((b & 0xf0) >> 4) * 10) + (b & 0x0f);
 	}
 
 }

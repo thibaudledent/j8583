@@ -28,10 +28,9 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
 /**
- * Blabla.
+ * This class is used to parse fields of type LLLLBIN.
  *
  * @author Enrique Zamudio
- *         Date: 19/02/15 18:29
  */
 public class LlllbinParseInfo  extends FieldParseInfo {
 
@@ -96,8 +95,7 @@ public class LlllbinParseInfo  extends FieldParseInfo {
             throw new ParseException(String.format("Insufficient LLLLBIN header field %d",
                              field), pos);
 		}
-		final int l = ((buf[pos] & 0xf0) * 1000) + ((buf[pos] & 0x0f) * 100)
-                + (((buf[pos + 1] & 0xf0) >> 4) * 10) + (buf[pos + 1] & 0x0f);
+		final int l = getLengthForBinaryParsing(buf, pos);
 		if (l < 0) {
             throw new ParseException(String.format("Invalid LLLLBIN length %d field %d pos %d",
                              l, field, pos), pos);
@@ -126,5 +124,10 @@ public class LlllbinParseInfo  extends FieldParseInfo {
             return dec == null ? new IsoValue<>(type, _v, null) :
                     new IsoValue<>(type, dec, custom);
 		}
+	}
+
+	protected int getLengthForBinaryParsing(final byte[] buf, final int pos) {
+		return ((buf[pos] & 0xf0) * 1000) + ((buf[pos] & 0x0f) * 100)
+                + (((buf[pos + 1] & 0xf0) >> 4) * 10) + (buf[pos + 1] & 0x0f);
 	}
 }

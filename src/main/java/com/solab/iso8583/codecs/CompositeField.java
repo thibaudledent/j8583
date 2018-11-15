@@ -110,10 +110,10 @@ public class CompositeField implements CustomBinaryField<CompositeField> {
                     } else {
                         pos += v.getLength();
                     }
-                    if (v.getType() == IsoType.LLVAR || v.getType() == IsoType.LLBIN) {
+                    if (v.getType() == IsoType.LLVAR || v.getType() == IsoType.LLBIN || v.getType() == IsoType.LLBCDBIN ) {
                         pos++;
-                    } else if (v.getType() == IsoType.LLLVAR || v.getType() == IsoType.LLLBIN
-                            || v.getType() == IsoType.LLLLVAR || v.getType() == IsoType.LLLLBIN) {
+                    } else if (v.getType() == IsoType.LLLVAR || v.getType() == IsoType.LLLBIN || v.getType() == IsoType.LLLBCDBIN
+                            || v.getType() == IsoType.LLLLVAR || v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLBCDBIN) {
                         pos+=2;
                     }
                     vals.add(v);
@@ -142,11 +142,11 @@ public class CompositeField implements CustomBinaryField<CompositeField> {
                 IsoValue<?> v = fpi.parse(0, buf, pos, fpi.getDecoder());
                 if (v != null) {
                     pos += v.toString().getBytes(fpi.getCharacterEncoding()).length;
-                    if (v.getType() == IsoType.LLVAR || v.getType() == IsoType.LLBIN) {
+                    if (v.getType() == IsoType.LLVAR || v.getType() == IsoType.LLBIN || v.getType() == IsoType.LLBCDBIN) {
                         pos+=2;
-                    } else if (v.getType() == IsoType.LLLVAR || v.getType() == IsoType.LLLBIN) {
+                    } else if (v.getType() == IsoType.LLLVAR || v.getType() == IsoType.LLLBIN || v.getType() == IsoType.LLLBCDBIN) {
                         pos+=3;
-                    } else if (v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLVAR) {
+                    } else if (v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLBCDBIN || v.getType() == IsoType.LLLLVAR) {
                         pos+=4;
                     }
                     vals.add(v);
