@@ -34,6 +34,9 @@ import java.text.ParseException;
  */
 public class LlllbinParseInfo  extends FieldParseInfo {
 
+    public LlllbinParseInfo(IsoType t, int len) {
+        super(t, len);
+    }
 
 	public LlllbinParseInfo() {
 		super(IsoType.LLLLBIN, 0);
