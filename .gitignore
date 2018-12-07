@@ -1,5 +1,5 @@
-target
-.gradle
-build
-out
+target/
+/.idea
 *.iws
+*.iml
+.DS_Store
