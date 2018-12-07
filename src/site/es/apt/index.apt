@@ -1,0 +1,50 @@
+	-----
+	Introducción a j8583
+	-----
+
+¿Qué es j8583?
+
+  Puesto de manera muy simple, j8583 es una biblioteca de clases de Java para generar y leer mensajes de ISO8583.
+  No maneja el envío y recepción de dichos mensajes a través de una conexión de red, pero sí procesa las tramas
+  que se lean de un socket y puede generar las tramas que hay que enviar, o escribirlas directamente a un
+  OutputStream.
+
+* ¿Qué es ISO8583?
+
+  ISO8583 es un formato de mensajería utilizado principalmente para transacciones de tarjetas de crédito,
+  para comunicación con bancos y otras entidades comerciales o financieras. Hay una variante ASCII y una binaria,
+  y la especificación es bastante enredada y algo difícil de implementar.
+
+  El formato principal de un mensaje ISO8583 es más o menos así:
+
++-----
+Encabezado ISO (opcional)|Tipo de mensaje|bitmap primario|bitmap secundario (opcional)|campos de datos
++-----
+
+  El encabezado ISO es una cadena que contiene ciertos códigos que varían según el tipo de mensaje.
+
+  El tipo de mensaje es un número de 4 dígitos hexadecimales (o 2 bytes cuando se usa formato binario).
+
+  El bitmap contiene 64 bits y se codifica como 16 caracteres hexadecimales, como 8 bytes en formato binario.
+  Cada bit encendido en el bitmap indica que el campo correspondiente está presente en el mensaje. Si el primer
+  bit está encendido, entonces el mensaje contiene el campo 1, etc.
+
+  Los campos en el mensaje están numerados del 1 al 64. El campo 1 es el bitmap secundario y permite que el mensaje
+  contenga campos del 64 al 128.
+
+  Puedes {{{iso8583.html}leer la guía de ISO8583}} para mayor información; Wikipedia tiene un
+  {{{http://es.wikipedia.org/wiki/ISO_8583}excelente artículo}} que abarca la especificación de manera más
+  completa.
+
+* ¿Cómo funciona j8583?
+
+  j8583 ofrece una clase MessageFactory, que una vez configurada, puede crear mensajes de distintos tipos
+  con algunos valores predefinidos, y también puede leer un arreglo de bytes y convertirlo en un mensaje ISO.
+  Los mensajes son representados por objetos de la clase IsoMessage, los cuales almacenan instancias de la
+  clase IsoValue como valores en sus campos. Se puede trabajar directamente son los IsoValues o se pueden
+  usar algunos métodos de conveniencia del IsoMessage para trabajar directamente con los datos almacenados.
+
+  j8583 puede manejar de forma directa los tipos de datos básicos: valores numéricos, cadenas, montos, fechas
+  y arreglos de bytes.
+  Si deseas guardar objetos de otra clase en un campo, puedes implementar tu propio codificador/decodificador
+  de datos para ese campo. En la {{{guide.html}guía del usuario}} hay más información al respecto.

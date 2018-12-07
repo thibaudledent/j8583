@@ -1,0 +1,167 @@
+	-----
+	ISO8583
+	-----
+
+Introducción al protocolo ISO8583
+
+  La especificación completa está disponible en el sitio iso.org y es bastante complicada; esta es únicamente
+  una introducción muy simple a las generalidades del protocolo. Wikipedia tiene un
+  {{{http://en.wikipedia.org/wiki/ISO_8583}artículo bastante completo}} que abarca la especificación completa
+  en sus distintas versiones.
+
+* Tipos de datos
+
+  ISO 8583 especifica muchos tipos de datos, de los cuales se eligieron los más comunes para ser implementados
+  en j8583 por medio del enum <<<IsoType>>>. A continuación se presenta una tabla con los tipos ISO más comunes
+  y su contraparte en j8583:
+
+*--------------*----------------*-----------------+
+| <<Tipo ISO>> | <<Tipo j8583>> | <<Descripción>> |
+*--------------*----------------*-----------------+
+| Numérico     | NUMERIC        | Valores numéricos de longitud fija, rellenos con ceros a la izquierda.
+| de longitud  |                |
+| fija         |                |
+*--------------*----------------*-----------------+
+| Alfanumérico | ALPHA          | Valores alfanuméricos de longitud fija, rellenos con espacios a la derecha.
+| de longitud  |                |
+| fija         |                |
+*--------------*----------------*-----------------+
+| Fecha        | DATE10         | Fecha en formato mmddHHMMSS, con longitud fija de 10.
+*--------------*----------------*-----------------+
+| Fecha        | DATE4          | Fecha en formato mmdd, con longitud fija de 4.
+*--------------*----------------*-----------------+
+| Fecha de expiración | DATE_EXP     | Fecha en formato aamm, con longitud fija de 4. Se usa por ejemplo para fechas de expiración de tarjetas de crédito.
+*--------------*----------------*-----------------+
+| Hora         | TIME           | Hora del día en formato HHMMSS, con longitud fija de 6. |
+*--------------*----------------*-----------------+
+| Monto        | AMOUNT         | Monto en alguna moneda, expresado en centavos, con una longitud fija de 12. Por ejemplo un dólar se codifica como 000000000100
+*--------------*----------------*-----------------+
+| LLVAR        | LLVAR          | Valor alfanumérico de longitud variable, hasta 99 caracteres. La longitud del valor se codifica en los dos primeros caracteres del valor; por ejemplo "HOLA" se codifica como 04HOLA
+*--------------*----------------*-----------------+
+| LLLVAR       | LLLVAR         | Valor alfanumérico de longitud variable, hasta 999 caracteres. La longitud del valor se codifica en los dos primeros caracteres del valor; por ejemplo "HOLA" se codifica como 004HOLA
+*---------------*----------------*-----------------+
+| Binario de    |                | Similar al tipo ALPHA, pero maneja bytes directamente en vez de texto.
+| longitud fija | BINARY         |
+*---------------*----------------*-----------------+
+| LLVAR         | LLBIN          | Similar al tipo LLVAR, pero maneja bytes directamente en vez de texto.
+| binario       |                |
+*---------------*----------------*-----------------+
+| LLLVAR        | LLLBIN         | Similar al tipo LLLVAR, pero maneja bytes directamente en vez de texto.
+| binario       |                |
+*---------------*----------------*-----------------+
+Tipos de ISO8583 y sus contrapartes en j8583
+
+* Escenarios típicos
+
+  Las implementaciones de ISO8583 pueden variar mucho dependiendo del proveedor, así como de los productos o
+  servicios manejados y las transacciones que se van a procesar, pero casi siempre hay ciertos campos que se
+  utilizan de la misma manera. A continuación se describen estos campos. <<ADVERTENCIA:>> Esto es algo que he
+  aprendido únicamente por experiencia, la cual ha sido limitada principalmente a proveedores de telefonía celular.
+  Aquí me enfoco más a describir un campo por su tipo y número, más que el uso que se le pueda dar.
+
+** Tipos de mensaje
+
+  Estos son algunos de los tipos de mensaje más común. Estos tipos siguen cierta lógica, si se les ve como
+  valores de 2 bytes; el primer byte indica el tipo de operación: 02 son pagos, 04 son reversos, 08 son pruebas;
+  el segundo byte indica si es una petición o una respuesta. Y en ocasiones, los reenvíos de peticiones deben
+  terminar en 1 en vez de 0, por ejemplo un reverso se envía por primera vez como 0400 pero en ocasiones
+  subsecuentes se debe reenviar como 0401.
+
+*------:--+
+| 0200 | Una petición de pago o venta.
+*------:--+
+| 0210 | Una respuesta de pago o venta.
+*------:--+
+| 0400 | Petición de reverso (para revertir una operación 0200 previa).
+*------:--+
+| 0410 | Respuesta de reverso.
+*------:--+
+| 0600 | Una consulta (por ejemplo de saldo o de una operación previa).
+*------:--+
+| 0610 | Respuesta de consulta.
+*------:--+
+| 0800 | Petición de eco (para mantener viva una conexión y asegurarse que el otro lado de la conexión sigue respondiendo).
+*------:--+
+| 0810 | Respuesta de eco.
+*------:--+
+
+  Algunas implementaciones requieren que se envíe 0400 cuando solamente se tiene la petición 0200 sin haber obtenido
+  respuesta (en caso de expirar el tiempo de espera para el 0210), y enviar 0420 cuando ya se obtuvo respuesta
+  (en caso de que ocurra algún otro error en el sistema, después de recibir el 0210).
+
+** Campos comunes
+
+  [Field 3] Código de operación, NUMERIC de longitud 6.
+
+  [Field 4] Monto, tipo AMOUNT.
+
+  [Field 7] Fecha de la transacción, tipo DATE10.
+
+  [Field 11] Número de trace, NUMERIC de longitud 6.
+
+  [Field 17] Fecha de la transacción, tipo DATE4.
+
+  [Field 37] Número de referencia, NUMERIC de longitud 12.
+
+  [Field 38] Número de confirmación, NUMERIC de longitud 6.
+
+  [Field 39] Código de respuesta, NUMERIC de longitud 2.
+
+  [Field 41] Identificador de la terminal de venta, ALPHA de longitud 8 ó 16.
+
+  [Field 49] Código de moneda, NUMERIC de longitud 3. Ver la tabla de códigos {{{http://es.wikipedia.org/wiki/ISO_4217}ISO 4217}}.
+
+  [Field 128] MAC (Código de autenticación de mensaje). Generalmente ALPHA o NUMERIC de longitud 16.
+[]
+
+** Transmisión y recepción asíncrona
+
+  Cuando se comunican dos sistemas con ISO8583, generalmente la comunicación es asíncrona y todos los mensajes
+  se manejan por una misma conexión. Entre una terminal y un sistema de mayor tamaño, la comunicación suele ser
+  síncrona.
+
+  En la comunicación asíncrona, el cliente puede enviar cualquier cantidad de peticiones al servidor, y el servidor
+  puede enviar las respuestas en un orden distinto. Es por esto que el número de traza (campo 11) es tan importante
+  y no se debe repetir en periodos cortos de tiempo; si el cliente envía peticiones con trazas 123000, 123001 y
+  123002, el server puede contestar primero la 123001, luego 123002, y finalmente la 123000. El cliente sabrá
+  a qué petición corresponde cada respuesta por medio del número de traza.
+
+  Los mensajes pueden variar en su longitud según el tipo de mensaje y los campos que contenga. El protocolo fue
+  diseñado de modo que un mensaje se pueda leer en partes; primero el tipo de mensaje, luego el bitmap primario,
+  y a partir de ahí se leerá cada campo que indique el bitmap, uno por uno. Esto es muy conveniente para
+  dispositivos pequeños con poca memoria, como terminales de punto de venta, pero no es muy eficiente en sistemas
+  grandes que procesan un gran volumen de operaciones. En estos casos, generalmente se envía primero un encabezado
+  de longitud indicando el tamaño del mensaje como un entero sin signo de 2 ó 4 bytes (con el bit más significativo
+  primero). De esta forma, el receptor siempre lee primero 2 ó 4 bytes, los interpreta como un entero sin signo
+  y después lee tantos bytes como indique ese encabezado, para convertir esa trama en un IsoMessage. Un encabezado
+  de 2 bytes permite mensajes hasta de 65535 bytes, mientras que un encabezado de 4 bytes permite mensajes de
+  2147 millones de bytes, lo cual es más que suficiente, dado que un mensaje puede medir hasta 127290 bytes,
+  si se codifica en ASCII y tiene 127 campos tipo LLLVAR cada uno con 999 caracteres.
+
+*** Terminador de mensaje
+
+  El encabezado de longitud que se envía antes de un mensaje es muy útil para separar la operación de lectura
+  de la operación de procesamiento del mensaje; se puede dedicar un hilo a leer de un socket y encolar esas
+  tramas para que otro hilo las convierta en IsoMessages. Sin embargo, el encabezado de longitud únicamente indica
+  cuántos bytes hay que leer, para que el receptor sepa que tiene que recibir al menos ese número de bytes, pero
+  ¿qué pasa si el mensaje en realidad es <más largo> de lo que dice la longitud? Habrá problemas leyendo el
+  siguiente mensaje. Para evitar este error, algunos sistemas implementa un terminador de mensaje, que es
+  simplemente un caracter que va al final de cada mensaje. Si los mensajes se codifican como texto, un terminador
+  común es ASCII 0x03. El terminador puede ser contado como parte del mensaje (incluido en el encabezado de
+  longitud) o ser contado aparte, depende de la implementación. Se puede especificar el terminador en la propiedad
+  <<<etx>>> de un IsoMessage, y también en la misma propiedad de la MessageFactory para que todos los mensajes
+  creados por la fábrica ya contengan el terminador y lo incluyan al generar sus tramas. Para no utilizar un
+  terminador, se debe indicar -1 en el <<<etx>>> (este es el valor por defecto).
+
+** Codificación binaria
+
+  Muchas implementaciones de ISO8583 utilizan texto simple para los mensajes (aunque el encabezado de longitud
+  sea binario). Pero algunas implementaciones codifican sus mensajes en binario. Entre las diferencias
+  principales tenemos que el tipo de mensaje es de 2 bytes en vez de 4 (la versión ASCII de hecho es una
+  representación de texto hexadecimal el tipo de mensaje), el bitmap no viene codificado en hexadecimal por lo
+  que mide sólo 8 bytes; y todos los valores numéricos (incluyendo campos tipo fecha/hora) se codifican usando
+  {{{http://es.wikipedia.org/wiki/Binary-coded_decimal}BCD}} (incluyendo los encabezados de campos LLVAR y LLLVAR).
+
+  Se pueden codificar un mensaje en formato binario activando la propiedad <<<binary>>> de un IsoMessage, o la
+  propiedad <<<useBinaryMessages>>> de la MessageFactory, para afectar los mensajes creados a partir de ese momento.
+  Además para poder leer mensajes en formato binario se debe activar la propiedad en la MessageFactory.

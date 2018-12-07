@@ -1,0 +1,46 @@
+	-----
+	Introduction to j8583
+	-----
+
+What is j8583?
+
+  Simply put, j8583 is a Java library to generate and read ISO8583 messages. It does not handle sending or
+  reading them over a network connection, but it does parse the data you have read and can generate the
+  data you need to write, or write it directly to an OutputStream.
+
+* What is ISO8583?
+
+  ISO8583 is a message format used for credit card transactions, banking and other commercial interaction between
+  different systems. It has an ASCII variant and a binary one, and it is somewhat convoluted and difficult to
+  implement.
+
+  The main format of the ISO8583 is something like this:
+
++-----
+ISO header (optional)|Message Type|primary bitmap|secondary bitmap (optional)|data fields
++-----
+
+  The ISO header is a string containing some code that can vary according to the message type.
+
+  The message type is a number expressed as 4 hex digits (or 2 bytes when using binary format).
+
+  The bitmap is 64 bits long and it is encoded as 16 hex characters or as 8 bytes when using binary format.
+  Every bit that is set in the bitmap indicates that the corresponding field is present. If the first bit is set,
+  then field 1 is present, and so on.
+
+  The fields in the message are numbered from 1 to 64. Field 1 is the secondary bitmap, if present. The secondary
+  bitmap allows for the message to have fields from 65 to 128.
+
+  You can {{{iso8583.html}check the ISO8583 guide}} for more information; Wikipedia has
+  {{{http://en.wikipedia.org/wiki/ISO_8583}a very good article}} on the whole specification.
+
+* How does j8583 work?
+
+  j8583 offers a MessageFactory, which once properly configured, can create different message types with
+  some values predefined, and can also parse a byte array to create an ISO message. Messages are represented
+  by IsoMessage objects, which store IsoValue instances for their data fields. You can work with the IsoValues
+  or use the convenience methods of IsoMessage to work directly with the stored values.
+
+  j8583 can directly handle the basic data types: numeric values, strings, amounts, dates and byte arrays.
+  If you want to encode a custom object in a field, you can implement a custom field encoder. More information
+  is available in the {{{guide.html}user's guide}}.
