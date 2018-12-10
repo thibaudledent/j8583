@@ -1,6 +1,16 @@
 image: maven:3.6.0-jdk-8-slim
 
 pipelines:
+  custom:
+    release-to-maven-central:
+      - step:
+        script:
+          - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+          - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+          - mvn -V B -s settings.xml deploy -DskipRelease=false
+          # -V triggers an output of the Maven and Java versions at the beginning of the build
+          # -B batch mode makes Maven less verbose
+          # -s causes the usage of the local settings with the required credentials
   default:
     - step:
         caches:
