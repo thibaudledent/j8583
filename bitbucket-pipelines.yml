@@ -1,14 +1,21 @@
-# This is a sample build configuration for Java (Maven).
-# Check our guides at https://confluence.atlassian.com/x/zd-5Mw for more examples.
-# Only use spaces to indent your .yml configuration.
-# -----
-# You can specify a custom docker image from Docker Hub as your build environment.
 image: maven:3.6.0-jdk-8-slim
 
 pipelines:
+  custom:
+    release-to-maven-central:
+      - step:
+        script:
+          - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+          - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+          - mvn -V B -s settings.xml deploy -DskipRelease=false
+          # -V triggers an output of the Maven and Java versions at the beginning of the build
+          # -B batch mode makes Maven less verbose
+          # -s causes the usage of the local settings with the required credentials
   default:
     - step:
         caches:
           - maven
-        script: # Modify the commands below to build your repository.
-          - mvn -B clean install # -B batch mode makes Maven less verbose
+        script:
+          - mvn -V -B clean install
+          # -V triggers an output of the Maven and Java versions at the beginning of the build
+          # -B batch mode makes Maven less verbose
