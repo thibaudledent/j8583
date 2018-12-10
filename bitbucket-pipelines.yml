@@ -5,8 +5,8 @@ pipelines:
     release-to-maven-central:
       - step:
           script:
-            - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
-            - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+            - echo $GPG_SECRET_KEYS | base64 --decode | gpg --import
+            - echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
             - mvn -V B -s settings.xml deploy -DskipRelease=false
             # -V triggers an output of the Maven and Java versions at the beginning of the build
             # -B batch mode makes Maven less verbose
