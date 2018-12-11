@@ -18,14 +18,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 package com.solab.iso8583.parse;
 
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-
 import com.solab.iso8583.CustomBinaryField;
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.HexCodec;
+
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 
 /** This class is used to parse fields of type LLLBIN.
  * 
@@ -113,7 +113,8 @@ public class LllbinParseInfo extends FieldParseInfo {
 		byte[] _v = new byte[l];
 		System.arraycopy(buf, pos+2, _v, 0, l);
 		if (custom == null) {
-			return new IsoValue<>(type, _v, null);
+            int len = getFieldLength(buf, pos);
+            return new IsoValue<>(type, _v, len);
         } else if (custom instanceof CustomBinaryField) {
             try {
                 T dec = ((CustomBinaryField<T>)custom).decodeBinaryField(
@@ -132,7 +133,11 @@ public class LllbinParseInfo extends FieldParseInfo {
 	}
 
 	protected int getLengthForBinaryParsing(final byte[] buf, final int pos) {
-		return ((buf[pos] & 0x0f) * 100) + (((buf[pos + 1] & 0xf0) >> 4) * 10) + (buf[pos + 1] & 0x0f);
+		return getFieldLength(buf, pos);
 	}
+
+	private int getFieldLength(final byte[] buf, final int pos) {
+        return ((buf[pos] & 0x0f) * 100) + (((buf[pos + 1] & 0xf0) >> 4) * 10) + (buf[pos + 1] & 0x0f);
+    }
 
 }
