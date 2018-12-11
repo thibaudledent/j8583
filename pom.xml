@@ -11,6 +11,7 @@
     <description>Java implementation of the ISO 8583 protocol, focused on making the creation, edition and reading of
         ISO8583 messages as simple and flexible as possible.
     </description>
+    <url>https://bitbucket.org/thibaudledent/j8583</url>
 
     <licenses>
         <license>
