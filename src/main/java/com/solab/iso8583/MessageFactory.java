@@ -18,17 +18,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 package com.solab.iso8583;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.util.*;
-
+import com.solab.iso8583.parse.ConfigParser;
 import com.solab.iso8583.parse.DateTimeParseInfo;
+import com.solab.iso8583.parse.FieldParseInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.solab.iso8583.parse.ConfigParser;
-import com.solab.iso8583.parse.FieldParseInfo;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 /** This class is used to create messages, either from scratch or from an existing String or byte
  * buffer. It can be configured to put default values on newly created messages, and also to know
@@ -522,10 +528,10 @@ public class MessageFactory<T extends IsoMessage> {
 									|| val.getType() == IsoType.AMOUNT
 									|| val.getType() == IsoType.TIME) {
 								pos += (val.getLength() / 2) + (val.getLength() % 2);
-							} else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN) {
-								pos += val.getLength() / 2;
-							} else {
-								pos += val.getLength();
+                            } else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN) {
+								pos += val.getLength() / 2 + ((val.getLength() % 2 == 0) ? 0 : 1);
+                            } else {
+							    pos += val.getLength();
                             }
 							if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN ) {
 								pos++;
