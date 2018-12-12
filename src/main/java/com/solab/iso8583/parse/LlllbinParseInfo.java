@@ -18,14 +18,14 @@
  */
 package com.solab.iso8583.parse;
 
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-
 import com.solab.iso8583.CustomBinaryField;
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.HexCodec;
+
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 
 /**
  * This class is used to parse fields of type LLLLBIN.
