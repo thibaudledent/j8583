@@ -84,7 +84,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.1</version>
-                <!--Workaround SUREFIRE-1588-->
+                <!-- Workaround SUREFIRE-1588 -->
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
@@ -146,6 +146,8 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
+                            <!-- Configuration to prevent the 'Signing Prompt' or the 'gpg: signing failed: No such file or directory' error -->
+                            <!-- See https://myshittycode.com/2017/08/07/maven-gpg-plugin-prevent-signing-prompt-or-gpg-signing-failed-no-such-file-or-directory-error/ -->
                             <gpgArguments>
                                 <arg>--pinentry-mode</arg>
                                 <arg>loopback</arg>
@@ -162,7 +164,7 @@
                 <configuration>
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <!-- Set this to true and the release will automatically proceed and sync to Central Repository will follow  -->
+                    <!-- Set this to true and the release will automatically proceed and sync to Central Repository will follow -->
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
