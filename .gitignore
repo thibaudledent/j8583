@@ -1,5 +1,5 @@
-target/
-/.idea
+target
+.gradle
+build
+out
 *.iws
-*.iml
-.DS_Store
