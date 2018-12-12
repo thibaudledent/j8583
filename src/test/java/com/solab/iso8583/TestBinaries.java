@@ -1,15 +1,16 @@
 package com.solab.iso8583;
 
-import com.solab.iso8583.util.HexCodec;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.solab.iso8583.util.HexCodec;
 
 /** Test binary message encoding and binary fields. */
 public class TestBinaries {

@@ -23,11 +23,12 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.*;
 
-import com.solab.iso8583.parse.ConfigParser;
 import com.solab.iso8583.parse.DateTimeParseInfo;
-import com.solab.iso8583.parse.FieldParseInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.solab.iso8583.parse.ConfigParser;
+import com.solab.iso8583.parse.FieldParseInfo;
 
 /** This class is used to create messages, either from scratch or from an existing String or byte
  * buffer. It can be configured to put default values on newly created messages, and also to know
