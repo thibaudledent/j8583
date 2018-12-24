@@ -230,8 +230,7 @@ public class IsoValue<T> implements Cloneable {
 				final String val = encoder == null ? HexCodec.hexEncode(_v, 0, _v.length) : encoder.encodeField(value);
 				return val.substring(val.length() - length);
 			} else {
-				final String _s = getStringEncoded();
-				return ((_s.length() / 2) % 2 == 1) ? String.format("0%s", _s) : _s;
+				return getStringEncoded();
 			}
 		}
 		return getStringEncoded();

@@ -101,4 +101,21 @@ public class TestBcdLengthLlbin {
         Assert.assertEquals(expectedHexMessage, DatatypeConverter.printHexBinary(message2));
     }
 
+    @Test
+    public void shouldReturnOriginalLLBCDBINValue() throws IOException {
+        // Given
+        final MessageFactory mf = ConfigParser.createDefault();
+        mf.setUseBinaryBitmap(true);
+        mf.setUseBinaryMessages(true);
+
+        final IsoMessage isoMessage = mf.newMessage(0x1100);
+        isoMessage.setField(2, new IsoValue(IsoType.LLBCDBIN, "012345"));
+
+        // When
+        final IsoValue<Object> field = isoMessage.getField(2);
+
+        // Then
+        Assert.assertEquals("012345", field.toString());
+    }
+
 }
