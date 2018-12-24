@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.bitbucket.thibaudledent.j8583</groupId>
     <artifactId>j8583</artifactId>
-    <version>1.13.1</version>
+    <version>1.13.2</version>
     <packaging>jar</packaging>
     <name>j8583</name>
 
