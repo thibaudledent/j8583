@@ -67,7 +67,7 @@ public class Date10ParseInfo extends DateTimeParseInfo {
             cal.set(Calendar.SECOND, ((buf[pos + 8] - 48) * 10) + buf[pos + 9] - 48);
         }
         cal.set(Calendar.MILLISECOND,0);
-        return createValue(cal, true);
+        return createValue(cal, false);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class Date10ParseInfo extends DateTimeParseInfo {
 		cal.set(Calendar.MINUTE, tens[3]);
 		cal.set(Calendar.SECOND, tens[4]);
 		cal.set(Calendar.MILLISECOND,0);
-        return createValue(cal, true);
+        return createValue(cal, false);
 	}
 
 }
