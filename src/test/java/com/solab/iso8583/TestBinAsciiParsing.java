@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
-
+import java.util.Objects;
 
 /** author Dave King, djking@gmail.com */
 public class TestBinAsciiParsing {
@@ -26,38 +26,32 @@ public class TestBinAsciiParsing {
     }
 
     @Test
-    public void binAscii810Message() throws Exception{
+    public void binAscii810Message() throws Exception {
         MessageFactory mf = ConfigParser.createFromClasspathConfig("bin_ascii.conf.xml");
         mf.setBinaryHeader(true);
 
         byte[] data = loadData("bin_ascii_810.bin");
-        IsoMessage msg = mf.parseMessage(data,0);
+        IsoMessage msg = mf.parseMessage(data, 0);
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         c.clear();
-        c.set(year,Calendar.MARCH,22,22,00,01);
+        c.set(year, Calendar.MARCH, 22, 22, 0, 1);
 
         long expected = c.getTime().getTime();
-        long actual = ((Date)(msg.getField(7).getValue())).getTime();
+        long actual = ((Date) (msg.getField(7).getValue())).getTime();
 
-
-        Assert.assertEquals("DateTime",expected,actual);
-        Assert.assertEquals("810 msg type","001",msg.getField(70).getValue());
+        Assert.assertEquals("DateTime", expected, actual);
+        Assert.assertEquals("810 msg type", "001", msg.getField(70).getValue());
     }
 
-
-    public static byte[] loadData(String s) throws IOException {
-        InputStream ins = new BufferedInputStream (TestBinAsciiParsing.class.getClassLoader().getResourceAsStream(s));
-        if(ins == null){
-            throw new IllegalArgumentException(s + " not found");
-        }
+    static byte[] loadData(String s) throws IOException {
+        InputStream ins = new BufferedInputStream(Objects.requireNonNull(TestBinAsciiParsing.class.getClassLoader().getResourceAsStream(s)));
         byte[] data = new byte[0];
         byte[] buffer = new byte[1024];
         int r;
 
-
-        while((r = ins.read(buffer,0,buffer.length)) > -1){
-            data = append(data,buffer,r);
+        while ((r = ins.read(buffer, 0, buffer.length)) > -1) {
+            data = append(data, buffer, r);
         }
         return data;
     }

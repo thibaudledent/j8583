@@ -44,7 +44,7 @@ public enum IsoType {
 	LLVAR(false, 0),
 	/** A variable length alphanumeric value with a 3-digit header length. */
 	LLLVAR(false, 0),
-	/** A date in format YYYYMMddHHmmss */
+	/** A date in format yyyyMMddHHmmss */
 	DATE14(false, 14),
 	/** A date in format MMddHHmmss */
 	DATE10(false, 10),
@@ -112,7 +112,7 @@ public enum IsoType {
         } else if (this == DATE12) {
             sdf = new SimpleDateFormat("yyMMddHHmmss");
 		} else if (this == DATE14) {
-            sdf = new SimpleDateFormat("YYYYMMddHHmmss");
+            sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         } else if (this == DATE6) {
             sdf = new SimpleDateFormat("yyMMdd");
         } else {
