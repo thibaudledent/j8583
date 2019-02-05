@@ -1,9 +1,11 @@
 package com.solab.iso8583;
 
+import com.solab.iso8583.parse.ConfigParser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -140,6 +142,46 @@ public class TestIsoMessage {
         Assert.assertSame(f3.getEncoder(), nf3.getEncoder());
         iso.updateValue(4, "INVALID!");
         throw new RuntimeException("Update failed!");
+    }
+
+    @Test
+    public void shouldWriteAndParseIBM1047Message() throws IOException, ParseException {
+        // Given
+        final MessageFactory mf = ConfigParser.createFromClasspathConfig("issue10.xml");
+        mf.setUseBinaryBitmap(true);
+        mf.setCharacterEncoding("Cp1047"); // IBM1047 encoding
+        mf.setForceStringEncoding(true);
+
+        final IsoMessage toWrite = mf.newMessage(0x1804);
+        toWrite.setField(7, new IsoValue<>(IsoType.NUMERIC, "0204111422", 10));
+        toWrite.setField(11, new IsoValue<>(IsoType.NUMERIC, "771930", 6));
+        toWrite.setField(12, new IsoValue<>(IsoType.NUMERIC, "190204121422", 12));
+        toWrite.setField(24, new IsoValue<>(IsoType.NUMERIC, "860", 3));
+        toWrite.setField(37, new IsoValue<>(IsoType.ALPHA, "900312771930", 12));
+        toWrite.setField(93, new IsoValue<>(IsoType.LLVAR, "50191150446"));
+        toWrite.setField(94, new IsoValue<>(IsoType.LLVAR, "50191150020"));
+
+        // When - writing
+        final byte[] bytes = toWrite.writeData();
+
+        // Then
+        final String hexBinary = DatatypeConverter.printHexBinary(bytes);
+        System.out.println(hexBinary);
+        final String expected = "F1F8F0F482300100080000000000000C00000000F0F2F0F4F1F1F1F4F2F2F7F7F1F9F3F0F1F9F0F2F0F4F1F2F1F4F2F2F8F6F0F9F0F0F3F1F2F7F7F1F9F3F0F1F1F5F0F1F9F1F1F5F0F4F4F6F1F1F5F0F1F9F1F1F5F0F0F2F0";
+        Assert.assertEquals(formatWithSpace(expected), formatWithSpace(hexBinary));
+
+        // When - parsing
+        final IsoMessage parseMessage = mf.parseMessage(bytes, 0);
+        final byte[] parseBytes = parseMessage.writeData();
+
+        // Then
+        final String hexParseBinary = DatatypeConverter.printHexBinary(parseBytes);
+        System.out.println(hexParseBinary);
+        Assert.assertEquals(formatWithSpace(expected), formatWithSpace(hexParseBinary));
+    }
+
+    private static String formatWithSpace(final String toFormat) {
+        return toFormat.replaceAll("..", "$0 ");
     }
 
     private void testFields(IsoMessage m, List<Integer> fields) {

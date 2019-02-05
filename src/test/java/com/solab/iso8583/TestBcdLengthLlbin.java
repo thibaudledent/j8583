@@ -20,12 +20,12 @@ public class TestBcdLengthLlbin {
 
         final IsoMessage isoMessage1 = mf.newMessage(0x1100);
 
-        isoMessage1.setField(2, new IsoValue(IsoType.LLBCDBIN, "1234567890111213"));
-        isoMessage1.setField(3, new IsoValue(IsoType.NUMERIC, "000000", "000000".length()));
-        isoMessage1.setField(22, new IsoValue(IsoType.ALPHA, "123456", "123456".length()));
-        isoMessage1.setField(24, new IsoValue(IsoType.LLLLBCDBIN, "12345678900000000000"));
-        isoMessage1.setField(25, new IsoValue(IsoType.LLLBCDBIN, "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678"));
-        isoMessage1.setField(64, new IsoValue(IsoType.BINARY, "1111111111111111", 8));
+        isoMessage1.setField(2, new IsoValue<>(IsoType.LLBCDBIN, "1234567890111213"));
+        isoMessage1.setField(3, new IsoValue<>(IsoType.NUMERIC, "000000", "000000".length()));
+        isoMessage1.setField(22, new IsoValue<>(IsoType.ALPHA, "123456", "123456".length()));
+        isoMessage1.setField(24, new IsoValue<>(IsoType.LLLLBCDBIN, "12345678900000000000"));
+        isoMessage1.setField(25, new IsoValue<>(IsoType.LLLBCDBIN, "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678"));
+        isoMessage1.setField(64, new IsoValue<>(IsoType.BINARY, "1111111111111111", 8));
 
         // When - Serialize
         final byte[] message1 = isoMessage1.writeData();
@@ -66,12 +66,12 @@ public class TestBcdLengthLlbin {
         final IsoMessage isoMessage1 = mf.newMessage(0x1100);
 
         // For the LL fields, we use odd lengths in this test
-        isoMessage1.setField(2, new IsoValue(IsoType.LLBCDBIN, "12345678901234567"));
-        isoMessage1.setField(3, new IsoValue(IsoType.NUMERIC, "000000", "000000".length()));
-        isoMessage1.setField(22, new IsoValue(IsoType.ALPHA, "123456", "123456".length()));
-        isoMessage1.setField(24, new IsoValue(IsoType.LLLLBCDBIN, "112345678900000000000"));
-        isoMessage1.setField(25, new IsoValue(IsoType.LLLBCDBIN, "0123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"));
-        isoMessage1.setField(64, new IsoValue(IsoType.BINARY, "1111111111111111", 8));
+        isoMessage1.setField(2, new IsoValue<>(IsoType.LLBCDBIN, "12345678901234567"));
+        isoMessage1.setField(3, new IsoValue<>(IsoType.NUMERIC, "000000", "000000".length()));
+        isoMessage1.setField(22, new IsoValue<>(IsoType.ALPHA, "123456", "123456".length()));
+        isoMessage1.setField(24, new IsoValue<>(IsoType.LLLLBCDBIN, "112345678900000000000"));
+        isoMessage1.setField(25, new IsoValue<>(IsoType.LLLBCDBIN, "0123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"));
+        isoMessage1.setField(64, new IsoValue<>(IsoType.BINARY, "1111111111111111", 8));
 
         // When - Serialize
         final byte[] message1 = isoMessage1.writeData();
@@ -109,7 +109,7 @@ public class TestBcdLengthLlbin {
         mf.setUseBinaryMessages(true);
 
         final IsoMessage isoMessage = mf.newMessage(0x1100);
-        isoMessage.setField(2, new IsoValue(IsoType.LLBCDBIN, "012345"));
+        isoMessage.setField(2, new IsoValue<>(IsoType.LLBCDBIN, "012345"));
 
         // When
         final IsoValue<Object> field = isoMessage.getField(2);
