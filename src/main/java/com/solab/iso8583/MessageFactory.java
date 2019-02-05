@@ -577,6 +577,7 @@ public class MessageFactory<T extends IsoMessage> {
 		m.setBinaryHeader(binaryHeader);
 		m.setBinaryFields(binaryFields);
         m.setBinaryBitmap(binBitmap);
+        m.setForceStringEncoding(forceStringEncoding);
 		return m;
 	}
 
