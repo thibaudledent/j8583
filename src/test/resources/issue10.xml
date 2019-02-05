@@ -1,0 +1,11 @@
+<j8583-config>
+    <parse type="1804">
+        <field num="7" type="NUMERIC" length="10"/>
+        <field num="11" type="NUMERIC" length="6"/>
+        <field num="12" type="NUMERIC" length="12"/>
+        <field num="24" type="NUMERIC" length="3"/>
+        <field num="37" type="ALPHA" length="12"/>
+        <field num="93" type="LLVAR"/>
+        <field num="94" type="LLVAR"/>
+    </parse>
+</j8583-config>
