@@ -41,7 +41,7 @@ public class IsoValue<T> implements Cloneable {
 
 	private IsoType type;
 	private T value;
-	private CustomField<T> encoder;
+	private CustomFieldEncoder<T> encoder;
 	private int length;
 	private String encoding;
     private TimeZone tz;
@@ -55,9 +55,9 @@ public class IsoValue<T> implements Cloneable {
 	 * like DATE10, DATE4, AMOUNT, etc.
 	 * @param t the ISO type.
 	 * @param value The value to be stored.
-	 * @param custom An optional CustomField to encode/decode a custom value.
+	 * @param custom An optional CustomFieldEncoder for the value.
 	 */
-	public IsoValue(IsoType t, T value, CustomField<T> custom) {
+	public IsoValue(IsoType t, T value, CustomFieldEncoder<T> custom) {
 		if (t.needsLength()) {
 			throw new IllegalArgumentException("Fixed-value types must use constructor that specifies length");
 		}
@@ -113,9 +113,9 @@ public class IsoValue<T> implements Cloneable {
 	 * @param t The ISO8583 type for this field.
 	 * @param val The value to store in the field.
 	 * @param len The length for the value.
-	 * @param custom An optional CustomField to encode/decode a custom value.
+	 * @param custom An optional CustomFieldEncoder for the value.
 	 */
-	public IsoValue(IsoType t, T val, int len, CustomField<T> custom) {
+	public IsoValue(IsoType t, T val, int len, CustomFieldEncoder<T> custom) {
 		type = t;
 		value = val;
 		length = len;
@@ -266,8 +266,8 @@ public class IsoValue<T> implements Cloneable {
 		return value == null ? 0 : toString().hashCode();
 	}
 
-	/** Returns the CustomField encoder for this value. */
-	public CustomField<T> getEncoder() {
+	/** Returns the CustomFieldEncoder for this value. */
+	public CustomFieldEncoder<T> getEncoder() {
 		return encoder;
 	}
 
@@ -352,7 +352,7 @@ public class IsoValue<T> implements Cloneable {
 			}
 		}
 		if (binary && (type == IsoType.BINARY || IsoType.VARIABLE_LENGTH_BIN_TYPES.contains(type))) {
-			int missing = 0;
+			int missing;
 			if (value instanceof byte[]) {
 				outs.write((byte[])value);
 				missing = length - ((byte[])value).length;
@@ -375,7 +375,7 @@ public class IsoValue<T> implements Cloneable {
 		}
 	}
 
-	void validateTypeWithVariableLength() {
+	private void validateTypeWithVariableLength() {
 		if (type == IsoType.LLVAR && length > 99) {
 			throwIllegalArgumentException(type, 99);
 		} else if (type == IsoType.LLLVAR && length > 999) {
