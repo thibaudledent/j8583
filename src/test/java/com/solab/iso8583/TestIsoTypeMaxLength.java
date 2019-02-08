@@ -40,7 +40,7 @@ public class TestIsoTypeMaxLength {
     public void shouldThrowIllegalArgumentExceptionWhenUsingLengthInConstructor() {
         try {
             // When
-            new IsoValue(type, "value", 1000000);
+            new IsoValue<>(type, "value", 1000000);
             Assert.fail("IllegalArgumentException expected.");
         } catch (IllegalArgumentException e) {
             // Then
@@ -52,7 +52,7 @@ public class TestIsoTypeMaxLength {
     public void shouldThrowIllegalArgumentExceptionWhithoutUsingLengthInConstructor() {
         try {
             // When
-            new IsoValue(type, LONG_VALUE);
+            new IsoValue<>(type, LONG_VALUE);
             Assert.fail("IllegalArgumentException expected.");
         } catch (IllegalArgumentException e) {
             // Then

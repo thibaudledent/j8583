@@ -15,8 +15,8 @@ import com.solab.iso8583.util.HexCodec;
 /** Test binary message encoding and binary fields. */
 public class TestBinaries {
 
-	private MessageFactory<IsoMessage> mfactAscii = new MessageFactory<IsoMessage>();
-	private MessageFactory<IsoMessage> mfactBin = new MessageFactory<IsoMessage>();
+	private MessageFactory<IsoMessage> mfactAscii = new MessageFactory<>();
+	private MessageFactory<IsoMessage> mfactBin = new MessageFactory<>();
 
 	@Before
 	public void setup() throws IOException {
@@ -127,7 +127,7 @@ public class TestBinaries {
 
     @Test
     public void testLLBCDBINWithoutZero() throws IOException, ParseException {
-        MessageFactory messageFactory = new MessageFactory();
+        MessageFactory<IsoMessage> messageFactory = new MessageFactory<>();
         messageFactory.setCharacterEncoding("UTF-8");
         messageFactory.setConfigPath("config.xml");
         messageFactory.setUseBinaryMessages(true);
@@ -143,7 +143,7 @@ public class TestBinaries {
 
     @Test
     public void testLLBCDBINWithZero() throws IOException, ParseException {
-        MessageFactory messageFactory = new MessageFactory();
+        MessageFactory<IsoMessage> messageFactory = new MessageFactory<>();
         messageFactory.setCharacterEncoding("UTF-8");
         messageFactory.setConfigPath("config.xml");
         messageFactory.setUseBinaryMessages(true);
@@ -159,7 +159,7 @@ public class TestBinaries {
 
     @Test
     public void testLLLBCDBINWithoutZero() throws IOException, ParseException {
-        MessageFactory messageFactory = new MessageFactory();
+        MessageFactory<IsoMessage> messageFactory = new MessageFactory<>();
         messageFactory.setCharacterEncoding("UTF-8");
         messageFactory.setConfigPath("config.xml");
         messageFactory.setUseBinaryMessages(true);
@@ -175,7 +175,7 @@ public class TestBinaries {
 
     @Test
     public void testLLLBCDBINWithZero() throws IOException, ParseException {
-        MessageFactory messageFactory = new MessageFactory();
+        MessageFactory<IsoMessage> messageFactory = new MessageFactory<>();
         messageFactory.setCharacterEncoding("UTF-8");
         messageFactory.setConfigPath("config.xml");
         messageFactory.setUseBinaryMessages(true);
@@ -191,7 +191,7 @@ public class TestBinaries {
 
     @Test
     public void testLLLLBCDBINWithoutZero() throws IOException, ParseException {
-        MessageFactory messageFactory = new MessageFactory();
+        MessageFactory<IsoMessage> messageFactory = new MessageFactory<>();
         messageFactory.setCharacterEncoding("UTF-8");
         messageFactory.setConfigPath("config.xml");
         messageFactory.setUseBinaryMessages(true);
@@ -207,7 +207,7 @@ public class TestBinaries {
 
     @Test
     public void testLLLLBCDBINWithZero() throws IOException, ParseException {
-        MessageFactory messageFactory = new MessageFactory();
+        MessageFactory<IsoMessage> messageFactory = new MessageFactory<>();
         messageFactory.setCharacterEncoding("UTF-8");
         messageFactory.setConfigPath("config.xml");
         messageFactory.setUseBinaryMessages(true);

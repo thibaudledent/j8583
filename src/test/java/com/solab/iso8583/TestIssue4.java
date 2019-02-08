@@ -18,7 +18,7 @@ public class TestIssue4 {
 
     @Test
     public void testTextBitmap() throws IOException, ParseException {
-        MessageFactory<IsoMessage> tmf = new MessageFactory<IsoMessage>();
+        MessageFactory<IsoMessage> tmf = new MessageFactory<>();
         ConfigParser.configureFromClasspathConfig(tmf, "issue4.xml");
         IsoMessage tm = tmf.newMessage(0x800);
         final ByteBuffer bb = tm.writeToBuffer(2);
@@ -26,7 +26,7 @@ public class TestIssue4 {
                 70, bb.array().length);
         Assert.assertEquals(68, bb.getShort());
 
-        MessageFactory<IsoMessage> tmfp = new MessageFactory<IsoMessage>();
+        MessageFactory<IsoMessage> tmfp = new MessageFactory<>();
         ConfigParser.configureFromClasspathConfig(tmfp, "issue4.xml");
         byte[] buf2 = new byte[bb.remaining()];
         bb.get(buf2);
@@ -38,7 +38,7 @@ public class TestIssue4 {
 
     @Test
     public void testBinaryBitmap() throws IOException, ParseException {
-        MessageFactory<IsoMessage> mf = new MessageFactory<IsoMessage>();
+        MessageFactory<IsoMessage> mf = new MessageFactory<>();
         ConfigParser.configureFromClasspathConfig(mf, "issue4.xml");
         IsoMessage bm = mf.getMessageTemplate(0x800);
         bm.setBinaryBitmap(true);
@@ -46,7 +46,7 @@ public class TestIssue4 {
         Assert.assertEquals("Wrong message length for new BIN", 62, bb.array().length);
         Assert.assertEquals(60, bb.getShort());
 
-        MessageFactory<IsoMessage> mfp = new MessageFactory<IsoMessage>();
+        MessageFactory<IsoMessage> mfp = new MessageFactory<>();
         mfp.setUseBinaryBitmap(true);
         ConfigParser.configureFromClasspathConfig(mfp, "issue4.xml");
         byte[] buf2 = new byte[bb.remaining()];
