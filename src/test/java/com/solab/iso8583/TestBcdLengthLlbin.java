@@ -14,18 +14,18 @@ public class TestBcdLengthLlbin {
     public void shouldSerializeAndDeserializeWithBcdBin() throws IOException, ParseException {
         // Given
         final String expectedHexMessage = "110060000580000000011612345678901112130000003132333435360020123456789000000000000128123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781111111111111111";
-        final MessageFactory mf = ConfigParser.createDefault();
+        final MessageFactory<IsoMessage> mf = ConfigParser.createDefault();
         mf.setUseBinaryBitmap(true);
         mf.setUseBinaryMessages(true);
 
         final IsoMessage isoMessage1 = mf.newMessage(0x1100);
 
-        isoMessage1.setField(2, new IsoValue(IsoType.LLBCDBIN, "1234567890111213"));
-        isoMessage1.setField(3, new IsoValue(IsoType.NUMERIC, "000000", "000000".length()));
-        isoMessage1.setField(22, new IsoValue(IsoType.ALPHA, "123456", "123456".length()));
-        isoMessage1.setField(24, new IsoValue(IsoType.LLLLBCDBIN, "12345678900000000000"));
-        isoMessage1.setField(25, new IsoValue(IsoType.LLLBCDBIN, "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678"));
-        isoMessage1.setField(64, new IsoValue(IsoType.BINARY, "1111111111111111", 8));
+        isoMessage1.setField(2, new IsoValue<>(IsoType.LLBCDBIN, "1234567890111213"));
+        isoMessage1.setField(3, new IsoValue<>(IsoType.NUMERIC, "000000", "000000".length()));
+        isoMessage1.setField(22, new IsoValue<>(IsoType.ALPHA, "123456", "123456".length()));
+        isoMessage1.setField(24, new IsoValue<>(IsoType.LLLLBCDBIN, "12345678900000000000"));
+        isoMessage1.setField(25, new IsoValue<>(IsoType.LLLBCDBIN, "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678"));
+        isoMessage1.setField(64, new IsoValue<>(IsoType.BINARY, "1111111111111111", 8));
 
         // When - Serialize
         final byte[] message1 = isoMessage1.writeData();
@@ -59,19 +59,19 @@ public class TestBcdLengthLlbin {
     public void shouldSerializeAndDeserializeWithBcdBinAndOddLength() throws IOException, ParseException {
         // Given
         final String expectedHexMessage = "1100600005800000000117012345678901234567000000313233343536002101123456789000000000000109001234567891234567891234567891234567891234567891234567891234567891234567891234567891234567891234567891234567891111111111111111";
-        final MessageFactory mf = ConfigParser.createDefault();
+        final MessageFactory<IsoMessage> mf = ConfigParser.createDefault();
         mf.setUseBinaryBitmap(true);
         mf.setUseBinaryMessages(true);
 
         final IsoMessage isoMessage1 = mf.newMessage(0x1100);
 
         // For the LL fields, we use odd lengths in this test
-        isoMessage1.setField(2, new IsoValue(IsoType.LLBCDBIN, "12345678901234567"));
-        isoMessage1.setField(3, new IsoValue(IsoType.NUMERIC, "000000", "000000".length()));
-        isoMessage1.setField(22, new IsoValue(IsoType.ALPHA, "123456", "123456".length()));
-        isoMessage1.setField(24, new IsoValue(IsoType.LLLLBCDBIN, "112345678900000000000"));
-        isoMessage1.setField(25, new IsoValue(IsoType.LLLBCDBIN, "0123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"));
-        isoMessage1.setField(64, new IsoValue(IsoType.BINARY, "1111111111111111", 8));
+        isoMessage1.setField(2, new IsoValue<>(IsoType.LLBCDBIN, "12345678901234567"));
+        isoMessage1.setField(3, new IsoValue<>(IsoType.NUMERIC, "000000", "000000".length()));
+        isoMessage1.setField(22, new IsoValue<>(IsoType.ALPHA, "123456", "123456".length()));
+        isoMessage1.setField(24, new IsoValue<>(IsoType.LLLLBCDBIN, "112345678900000000000"));
+        isoMessage1.setField(25, new IsoValue<>(IsoType.LLLBCDBIN, "0123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"));
+        isoMessage1.setField(64, new IsoValue<>(IsoType.BINARY, "1111111111111111", 8));
 
         // When - Serialize
         final byte[] message1 = isoMessage1.writeData();
@@ -102,17 +102,20 @@ public class TestBcdLengthLlbin {
     }
 
     @Test
-    public void shouldReturnOriginalLLBCDBINValue() throws IOException {
+    public void shouldReturnOriginalLLBCDBINValue() throws IOException, ParseException {
         // Given
-        final MessageFactory mf = ConfigParser.createDefault();
+        final MessageFactory<IsoMessage> mf = ConfigParser.createDefault();
         mf.setUseBinaryBitmap(true);
         mf.setUseBinaryMessages(true);
 
         final IsoMessage isoMessage = mf.newMessage(0x1100);
-        isoMessage.setField(2, new IsoValue(IsoType.LLBCDBIN, "012345"));
+        isoMessage.setField(2, new IsoValue<>(IsoType.LLBCDBIN, "012345"));
 
+        byte[] buf = isoMessage.writeData();
+        mf.setConfigPath("llbcdbin.xml");
         // When
-        final IsoValue<Object> field = isoMessage.getField(2);
+        final IsoMessage m2 = mf.parseMessage(buf, 0);
+        final IsoValue<Object> field = m2.getField(2);
 
         // Then
         Assert.assertEquals("012345", field.toString());
