@@ -33,7 +33,10 @@ import com.solab.iso8583.util.HexCodec;
  */
 public class LlbinParseInfo extends FieldParseInfo {
 
-	
+    public LlbinParseInfo(IsoType t, int len) {
+        super(t, len);
+    }
+
 	public LlbinParseInfo() {
 		super(IsoType.LLBIN, 0);
 	}
@@ -109,7 +112,8 @@ public class LlbinParseInfo extends FieldParseInfo {
 		byte[] _v = new byte[l];
 		System.arraycopy(buf, pos+1, _v, 0, l);
 		if (custom == null) {
-			return new IsoValue<>(type, _v, null);
+            int len = getFieldLength(buf[pos]);
+            return new IsoValue<>(type, _v, len);
         } else if (custom instanceof CustomBinaryField) {
             try {
                 T dec = ((CustomBinaryField<T>)custom).decodeBinaryField(buf, pos + 1, l);
@@ -128,7 +132,10 @@ public class LlbinParseInfo extends FieldParseInfo {
 	}
 
 	protected int getLengthForBinaryParsing(final byte b) {
-		return (((b & 0xf0) >> 4) * 10) + (b & 0x0f);
+		return getFieldLength(b);
 	}
 
+	private int getFieldLength(final byte b) {
+        return (((b & 0xf0) >> 4) * 10) + (b & 0x0f);
+    }
 }

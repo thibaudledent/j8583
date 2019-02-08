@@ -123,5 +123,101 @@ public class TestBinaries {
         System.out.println(HexCodec.hexEncode(buf, 0, buf.length));
 		iso2 = mfactBin.parseMessage(buf, 0);
 		Assert.assertEquals(bignum, iso2.getObjectValue(3));
-	}
+    }
+
+    @Test
+    public void testLLBCDBINWithoutZero() throws IOException, ParseException {
+        MessageFactory messageFactory = new MessageFactory();
+        messageFactory.setCharacterEncoding("UTF-8");
+        messageFactory.setConfigPath("config.xml");
+        messageFactory.setUseBinaryMessages(true);
+
+        IsoMessage iso1 = messageFactory.newMessage(0x281);
+        iso1.setField(3, new IsoValue<>(IsoType.LLBCDBIN, "12345"));
+        byte[] buf = iso1.writeData();
+
+        IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
+        String value = iso2.getField(3).toString();
+        Assert.assertEquals("12345", value);
+    }
+
+    @Test
+    public void testLLBCDBINWithZero() throws IOException, ParseException {
+        MessageFactory messageFactory = new MessageFactory();
+        messageFactory.setCharacterEncoding("UTF-8");
+        messageFactory.setConfigPath("config.xml");
+        messageFactory.setUseBinaryMessages(true);
+
+        IsoMessage iso1 = messageFactory.newMessage(0x281);
+        iso1.setField(3, new IsoValue<>(IsoType.LLBCDBIN, "012345"));
+        byte[] buf = iso1.writeData();
+        
+        IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
+        String value = iso2.getField(3).toString();
+        Assert.assertEquals("012345", value);
+    }
+
+    @Test
+    public void testLLLBCDBINWithoutZero() throws IOException, ParseException {
+        MessageFactory messageFactory = new MessageFactory();
+        messageFactory.setCharacterEncoding("UTF-8");
+        messageFactory.setConfigPath("config.xml");
+        messageFactory.setUseBinaryMessages(true);
+
+        IsoMessage iso1 = messageFactory.newMessage(0x282);
+        iso1.setField(3, new IsoValue<>(IsoType.LLLBCDBIN, "123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD"));
+        byte[] buf = iso1.writeData();
+
+        IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
+        String value = iso2.getField(3).toString();
+        Assert.assertEquals("123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
+    }
+
+    @Test
+    public void testLLLBCDBINWithZero() throws IOException, ParseException {
+        MessageFactory messageFactory = new MessageFactory();
+        messageFactory.setCharacterEncoding("UTF-8");
+        messageFactory.setConfigPath("config.xml");
+        messageFactory.setUseBinaryMessages(true);
+
+        IsoMessage iso1 = messageFactory.newMessage(0x282);
+        iso1.setField(3, new IsoValue<>(IsoType.LLLBCDBIN, "0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD"));
+        byte[] buf = iso1.writeData();
+
+        IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
+        String value = iso2.getField(3).toString();
+        Assert.assertEquals("0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
+    }
+
+    @Test
+    public void testLLLLBCDBINWithoutZero() throws IOException, ParseException {
+        MessageFactory messageFactory = new MessageFactory();
+        messageFactory.setCharacterEncoding("UTF-8");
+        messageFactory.setConfigPath("config.xml");
+        messageFactory.setUseBinaryMessages(true);
+
+        IsoMessage iso1 = messageFactory.newMessage(0x283);
+        iso1.setField(3, new IsoValue<>(IsoType.LLLLBCDBIN, "123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD"));
+        byte[] buf = iso1.writeData();
+
+        IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
+        String value = iso2.getField(3).toString();
+        Assert.assertEquals("123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
+    }
+
+    @Test
+    public void testLLLLBCDBINWithZero() throws IOException, ParseException {
+        MessageFactory messageFactory = new MessageFactory();
+        messageFactory.setCharacterEncoding("UTF-8");
+        messageFactory.setConfigPath("config.xml");
+        messageFactory.setUseBinaryMessages(true);
+
+        IsoMessage iso1 = messageFactory.newMessage(0x283);
+        iso1.setField(3, new IsoValue<>(IsoType.LLLLBCDBIN, "0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD"));
+        byte[] buf = iso1.writeData();
+
+        IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
+        String value = iso2.getField(3).toString();
+        Assert.assertEquals("0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
+    }
 }

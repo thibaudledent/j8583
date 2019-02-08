@@ -522,9 +522,11 @@ public class MessageFactory<T extends IsoMessage> {
 									|| val.getType() == IsoType.AMOUNT
 									|| val.getType() == IsoType.TIME) {
 								pos += (val.getLength() / 2) + (val.getLength() % 2);
-							} else {
-								pos += val.getLength();
-							}
+                            } else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN) {
+								pos += val.getLength() / 2 + ((val.getLength() % 2 == 0) ? 0 : 1);
+                            } else {
+							    pos += val.getLength();
+                            }
 							if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN ) {
 								pos++;
 							} else if (val.getType() == IsoType.LLLVAR
