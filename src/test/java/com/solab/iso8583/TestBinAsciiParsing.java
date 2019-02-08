@@ -39,7 +39,10 @@ public class TestBinAsciiParsing {
 
         long expected = c.getTime().getTime();
         long actual = ((Date)(msg.getField(7).getValue())).getTime();
-
+        if (expected > actual) {
+            c.add(Calendar.YEAR, -1);
+            expected = c.getTime().getTime();
+        }
 
         Assert.assertEquals("DateTime",expected,actual);
         Assert.assertEquals("810 msg type","001",msg.getField(70).getValue());
