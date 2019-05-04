@@ -155,4 +155,16 @@ public final class Bcd {
         return new BigInteger(new String(digits, 0, start).trim());
     }
 
+    /** Convert two bytes of BCD length to an int,
+     * e.g. 0x4521 into 4521, starting at the specified offset. */
+    public static int parseBcdLength(byte b) {
+        return (((b & 0xf0) >> 4) * 10) + (b & 0xf);
+    }
+
+    /** Convert two bytes of BCD length to an int,
+     * e.g. 0x4521 into 4521, starting at the specified offset. */
+    public static int parseBcdLength2bytes(byte[] b, int offset) {
+        return (((b[offset] & 0xf0) >> 4) * 1000) | ((b[offset] & 0xf) * 100) +
+               (((b[offset + 1] & 0xf0) >> 4) * 10) | (b[offset + 1] & 0xf);
+    }
 }
