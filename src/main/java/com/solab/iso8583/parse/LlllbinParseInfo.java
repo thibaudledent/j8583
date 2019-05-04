@@ -22,6 +22,7 @@ import com.solab.iso8583.CustomBinaryField;
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
+import com.solab.iso8583.util.Bcd;
 import com.solab.iso8583.util.HexCodec;
 
 import java.io.UnsupportedEncodingException;
@@ -111,7 +112,7 @@ public class LlllbinParseInfo  extends FieldParseInfo {
 		byte[] _v = new byte[l];
 		System.arraycopy(buf, pos+2, _v, 0, l);
 		if (custom == null) {
-            int len = getFieldLength(buf, pos);
+            int len = Bcd.parseBcdLength2bytes(buf, pos);
             return new IsoValue<>(type, _v, len);
         } else if (custom instanceof CustomBinaryField) {
             try {
@@ -131,11 +132,6 @@ public class LlllbinParseInfo  extends FieldParseInfo {
 	}
 
 	protected int getLengthForBinaryParsing(final byte[] buf, final int pos) {
-        return getFieldLength(buf, pos);
+        return Bcd.parseBcdLength2bytes(buf, pos);
 	}
-
-	private int getFieldLength(final byte[] buf, final int pos) {
-        return (((buf[pos] & 0xf0) >> 4) * 1000) + ((buf[pos] & 0x0f) * 100)
-            + (((buf[pos + 1] & 0xf0) >> 4) * 10) + (buf[pos + 1] & 0x0f);
-    }
 }

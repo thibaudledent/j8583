@@ -25,6 +25,7 @@ import com.solab.iso8583.CustomBinaryField;
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
+import com.solab.iso8583.util.Bcd;
 import com.solab.iso8583.util.HexCodec;
 
 /** This class is used to parse fields of type LLBIN.
@@ -112,7 +113,7 @@ public class LlbinParseInfo extends FieldParseInfo {
 		byte[] _v = new byte[l];
 		System.arraycopy(buf, pos+1, _v, 0, l);
 		if (custom == null) {
-            int len = getFieldLength(buf[pos]);
+            int len = Bcd.parseBcdLength(buf[pos]);
             return new IsoValue<>(type, _v, len);
         } else if (custom instanceof CustomBinaryField) {
             try {
@@ -132,10 +133,6 @@ public class LlbinParseInfo extends FieldParseInfo {
 	}
 
 	protected int getLengthForBinaryParsing(final byte b) {
-		return getFieldLength(b);
+		return Bcd.parseBcdLength(b);
 	}
-
-	private int getFieldLength(final byte b) {
-        return (((b & 0xf0) >> 4) * 10) + (b & 0x0f);
-    }
 }
