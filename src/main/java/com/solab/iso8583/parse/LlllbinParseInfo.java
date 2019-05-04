@@ -135,7 +135,7 @@ public class LlllbinParseInfo  extends FieldParseInfo {
 	}
 
 	private int getFieldLength(final byte[] buf, final int pos) {
-        return ((buf[pos] & 0xf0) * 1000) + ((buf[pos] & 0x0f) * 100)
+        return (((buf[pos] & 0xf0) >> 4) * 1000) + ((buf[pos] & 0x0f) * 100)
             + (((buf[pos + 1] & 0xf0) >> 4) * 10) + (buf[pos + 1] & 0x0f);
     }
 }
