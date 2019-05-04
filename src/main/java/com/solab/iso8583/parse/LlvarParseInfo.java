@@ -24,6 +24,7 @@ import java.text.ParseException;
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
+import com.solab.iso8583.util.Bcd;
 
 /** This class is used to parse fields of type LLVAR.
  * 
@@ -92,7 +93,7 @@ public class LlvarParseInfo extends FieldParseInfo {
                     "Insufficient data for bin LLVAR header, field %d pos %d",
 					field, pos), pos);
 		}
-		final int len = (((buf[pos] & 0xf0) >> 4) * 10) + (buf[pos] & 0x0f);
+		final int len = Bcd.parseBcdLength(buf[pos]);
 		if (len < 0) {
 			throw new ParseException(String.format(
                     "Invalid bin LLVAR length %d, field %d pos %d", len, field, pos), pos);

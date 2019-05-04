@@ -21,6 +21,7 @@ package com.solab.iso8583.parse;
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
+import com.solab.iso8583.util.Bcd;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
@@ -89,7 +90,7 @@ public class Date14ParseInfo extends DateTimeParseInfo {
    		int[] tens = new int[7];
    		int start = 0;
    		for (int i = pos; i < pos + tens.length; i++) {
-   			tens[start++] = (((buf[i] & 0xf0) >> 4) * 10) + (buf[i] & 0x0f);
+   			tens[start++] = Bcd.parseBcdLength(buf[i]);
    		}
    		Calendar cal = Calendar.getInstance();
    		//A SimpleDateFormat in the case of dates won't help because of the missing data
