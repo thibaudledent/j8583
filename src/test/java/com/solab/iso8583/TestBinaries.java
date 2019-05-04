@@ -63,8 +63,8 @@ public class TestBinaries {
 		//Create a message with both factories
 		IsoMessage ascii = mfactAscii.newMessage(0x600);
 		IsoMessage bin = mfactBin.newMessage(0x600);
-        Assert.assertFalse(ascii.isBinary() || ascii.isBinaryBitmap());
-        Assert.assertTrue(bin.isBinary());
+        Assert.assertFalse(ascii.isBinaryHeader() || ascii.isBinaryFields() || ascii.isBinaryBitmap());
+        Assert.assertTrue(bin.isBinaryHeader() && bin.isBinaryFields());
 		//HEXencode the binary message, headers should be similar to the ASCII version
         final byte[] _v = bin.writeData();
 		String hexBin = HexCodec.hexEncode(_v, 0, _v.length);

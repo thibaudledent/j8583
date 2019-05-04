@@ -54,7 +54,7 @@ public class TestIssue4 {
         bm = mfp.parseMessage(buf2, 0);
         Assert.assertTrue("Parsed message should have binary bitmap flag set",
                 bm.isBinaryBitmap());
-        Assert.assertFalse(bm.isBinary());
+        Assert.assertFalse(bm.isBinaryHeader() || bm.isBinaryFields());
         final ByteBuffer bbp = bm.writeToBuffer(2);
         Assert.assertArrayEquals("Parsed-reencoded BIN differs from original",
                 bb.array(), bbp.array());
