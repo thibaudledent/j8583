@@ -1,10 +1,10 @@
 package com.solab.iso8583;
 
 import com.solab.iso8583.parse.ConfigParser;
+import com.solab.iso8583.util.HexCodec;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -31,7 +31,7 @@ public class TestBcdLengthLlbin {
         final byte[] message1 = isoMessage1.writeData();
 
         // Then
-        Assert.assertEquals(expectedHexMessage, DatatypeConverter.printHexBinary(message1));
+        Assert.assertEquals(expectedHexMessage, HexCodec.hexEncode(message1, 0, message1.length));
 
         // When - Deserialize
         mf.setConfigPath("llbcdbin.xml");
@@ -52,7 +52,7 @@ public class TestBcdLengthLlbin {
         final byte[] message2 = isoMessage2.writeData();
 
         // Then
-        Assert.assertEquals(expectedHexMessage, DatatypeConverter.printHexBinary(message2));
+        Assert.assertEquals(expectedHexMessage, HexCodec.hexEncode(message2, 0, message2.length));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class TestBcdLengthLlbin {
         final byte[] message1 = isoMessage1.writeData();
 
         // Then
-        Assert.assertEquals(expectedHexMessage, DatatypeConverter.printHexBinary(message1));
+        Assert.assertEquals(expectedHexMessage, HexCodec.hexEncode(message1, 0, message1.length));
 
         // When - Deserialize
         mf.setConfigPath("llbcdbin.xml");
@@ -98,7 +98,7 @@ public class TestBcdLengthLlbin {
         final byte[] message2 = isoMessage2.writeData();
 
         // Then
-        Assert.assertEquals(expectedHexMessage, DatatypeConverter.printHexBinary(message2));
+        Assert.assertEquals(expectedHexMessage, HexCodec.hexEncode(message2, 0, message2.length));
     }
 
     @Test
