@@ -122,12 +122,9 @@ public class CompositeField implements CustomBinaryField<CompositeField> {
             final CompositeField f = new CompositeField();
             f.setValues(vals);
             return f;
-        } catch (ParseException ex) {
+        } catch (ParseException | UnsupportedEncodingException ex) {
             log.error("Decoding binary CompositeField", ex);
-            return null;
-        } catch (UnsupportedEncodingException ex) {
-            log.error("Decoding binary CompositeField", ex);
-            return null;
+            throw new IllegalArgumentException(ex.getMessage(), ex);
         }
     }
 
@@ -157,7 +154,7 @@ public class CompositeField implements CustomBinaryField<CompositeField> {
             return f;
         } catch (ParseException | UnsupportedEncodingException ex) {
             log.error("Decoding CompositeField", ex);
-            return null;
+            throw new IllegalArgumentException(ex.getMessage(), ex);
         }
     }
 
