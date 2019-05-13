@@ -1,7 +1,8 @@
 apply plugin:'java'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 defaultTasks 'build'
-version='1.14.0'
+version='1.14.11'
 description='Java implementation of the ISO 8583 protocol, focused on making the creation, edition and reading of ISO8583 messages as simple and flexible as possible.'
 sourceCompatibility=7
 targetCompatibility=7
@@ -26,6 +27,14 @@ jar {
 	manifest {
 		attributes "Automatic-Module-Name": "com.solab.j8583"
 		attributes "Main-Class": "com.solab.iso8583.util.SimpleParser"
+	}
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
 	}
 }
 
@@ -60,12 +69,12 @@ signing {
 uploadArchives {
 	repositories {
 		project.ext.deployer=repositories.mavenDeployer {
-			beforeDeployment { MavenDeployment deployment ->
-				signing.signPom(deployment)
-			}
-			repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-				authentication(userName:nexusUsername, password:nexusPassword)
-			}
+//			beforeDeployment { MavenDeployment deployment ->
+//				signing.signPom(deployment)
+//			}
+//			repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+//				authentication(userName:nexusUsername, password:nexusPassword)
+//			}
 			pom.project {
 				name 'j8583'
 				packaging 'jar'
