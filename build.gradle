@@ -69,12 +69,12 @@ signing {
 uploadArchives {
 	repositories {
 		project.ext.deployer=repositories.mavenDeployer {
-//			beforeDeployment { MavenDeployment deployment ->
-//				signing.signPom(deployment)
-//			}
-//			repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-//				authentication(userName:nexusUsername, password:nexusPassword)
-//			}
+			beforeDeployment { MavenDeployment deployment ->
+				signing.signPom(deployment)
+			}
+			repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+				authentication(userName:nexusUsername, password:nexusPassword)
+			}
 			pom.project {
 				name 'j8583'
 				packaging 'jar'
