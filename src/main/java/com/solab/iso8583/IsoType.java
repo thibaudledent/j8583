@@ -27,11 +27,11 @@ import java.util.Set;
 import java.util.TimeZone;
 
 /** Defines the possible values types that can be used in the fields.
- * Some types required the length of the value to be specified (NUMERIC
- * and ALPHA). Other types have a fixed length, like dates and times.
- * Other types do not require a length to be specified, like LLVAR
- * and LLLVAR.
- * 
+ * Some types required the length of the value to be specified ({@link IsoType#NUMERIC}
+ * and {@link IsoType#ALPHA}). Other types have a fixed length, like dates and times.
+ * Other types do not require a length to be specified, like {@link IsoType#LLVAR}
+ * or {@link IsoType#LLBIN}.
+ *
  * @author Enrique Zamudio
  */
 public enum IsoType {
@@ -40,10 +40,6 @@ public enum IsoType {
 	NUMERIC(true, 0),
 	/** A fixed-length alphanumeric value. It is filled with spaces to the right. */
 	ALPHA(true, 0),
-	/** A variable length alphanumeric value with a 2-digit header length. */
-	LLVAR(false, 0),
-	/** A variable length alphanumeric value with a 3-digit header length. */
-	LLLVAR(false, 0),
 	/** A date in format yyyyMMddHHmmss */
 	DATE14(false, 14),
 	/** A date in format MMddHHmmss */
@@ -56,27 +52,35 @@ public enum IsoType {
 	TIME(false, 6),
 	/** An amount, expressed in cents with a fixed length of 12. */
 	AMOUNT(false, 12),
-	/** Similar to ALPHA but holds byte arrays instead of strings. */
+	/** Similar to {@link IsoType#ALPHA} but holds byte arrays instead of strings. */
 	BINARY(true, 0),
-	/** Similar to LLVAR but holds byte arrays instead of strings. */
-	LLBIN(false, 0),
-	/** Similar to LLLVAR but holds byte arrays instead of strings. */
-	LLLBIN(false, 0),
-	/** variable length with 4-digit header length. */
+	/** A variable length alphanumeric value with a 2-digit header length (both with specific encoding
+	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true). */
+	LLVAR(false, 0),
+	/** A variable length alphanumeric value with a 3-digit header length (both with specific encoding
+	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true). */
+	LLLVAR(false, 0),
+	/** A variable length alphanumeric value with 4-digit header length (both with specific encoding
+	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true). */
 	LLLLVAR(false, 0),
-	/** variable length byte array with 4-digit header length. */
+	/** Similar to {@link IsoType#LLVAR} with a binary value and a binary length. */
+	LLBIN(false, 0),
+	/** Similar to {@link IsoType#LLLVAR} with a binary value and a binary length. */
+	LLLBIN(false, 0),
+	/** Similar to {@link IsoType#LLLLVAR} with a binary value and a binary length. */
 	LLLLBIN(false, 0),
-	/** Similar to LLBIN but with a BCD encoded length. */
+	/** Similar to {@link IsoType#LLVAR} with a binary value and a BCD length. */
 	LLBCDBIN(false, 0),
-	/** Similar to LLLBIN but with a BCD encoded length. */
+	/** Similar to {@link IsoType#LLLVAR} with a binary value and a BCD length. */
 	LLLBCDBIN(false, 0),
-	/** Similar to LLLLBIN but with a BCD encoded length. */
+	/** Similar to {@link IsoType#LLLLVAR} with a binary value and a BCD length. */
 	LLLLBCDBIN(false, 0),
 	/** Date in format yyMMddHHmmss. */
 	DATE12(false,12),
 	/** Date in format yyMMdd */
 	DATE6(false,6);
 
+    public static final Set<IsoType> VARIABLE_LENGTH_VAR_TYPES = Collections.unmodifiableSet(EnumSet.of(LLVAR, LLLVAR, LLLLVAR));
     public static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(EnumSet.of(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN));
 
 	private boolean needsLen;
@@ -137,7 +141,7 @@ public enum IsoType {
 	        } else {
 	        	return String.format(String.format("%%-%ds", length), value);
 	        }
-		} else if (this == LLVAR || this == LLLVAR || this == LLLLVAR) {
+		} else if (VARIABLE_LENGTH_VAR_TYPES.contains(this)) {
 			return value;
 		} else if (this == NUMERIC) {
 	        char[] c = new char[length];
@@ -189,7 +193,7 @@ public enum IsoType {
 	        	throw new IllegalArgumentException("Numeric value is larger than intended length: " + value + " LEN " + length);
 	        }
 	        return x;
-		} else if (this == ALPHA || this == LLVAR || this == LLLVAR || this == LLLLVAR) {
+		} else if (this == ALPHA || VARIABLE_LENGTH_VAR_TYPES.contains(this)) {
 			return format(Long.toString(value), length);
 		} else if (this == AMOUNT) {
 			return String.format("%010d00", value);
@@ -205,7 +209,7 @@ public enum IsoType {
 			return String.format("%012d", value.movePointRight(2).longValue());
 		} else if (this == NUMERIC) {
 			return format(value.longValue(), length);
-		} else if (this == ALPHA || this == LLVAR || this == LLLVAR || this == LLLLVAR) {
+		} else if (this == ALPHA || VARIABLE_LENGTH_VAR_TYPES.contains(this)) {
 			return format(value.toString(), length);
 		} else if (this == BINARY || VARIABLE_LENGTH_BIN_TYPES.contains(this)) {
 			//TODO

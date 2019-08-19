@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import static com.solab.iso8583.IsoType.VARIABLE_LENGTH_VAR_TYPES;
+
 /** This class is used to create messages, either from scratch or from an existing String or byte
  * buffer. It can be configured to put default values on newly created messages, and also to know
  * what to expect when reading messages from an InputStream.
@@ -516,8 +518,11 @@ public class MessageFactory<T extends IsoMessage> {
                         CustomField<?> decoder = fpi.getDecoder();
                         if (decoder == null) {
                             decoder = getCustomField(i);
-                        }
-						IsoValue<?> val = fpi.parseBinary(i, buf, pos, decoder);
+						}
+						IsoValue<?> val = (VARIABLE_LENGTH_VAR_TYPES.contains(fpi.getType()) && forceStringEncoding) ?
+							fpi.parse(i, buf, pos, decoder)
+							: fpi.parseBinary(i, buf, pos, decoder);
+
 						m.setField(i, val);
 						if (val != null) {
 							if (val.getType() == IsoType.NUMERIC || val.getType() == IsoType.DATE10
@@ -530,10 +535,19 @@ public class MessageFactory<T extends IsoMessage> {
 								pos += (val.getLength() / 2) + (val.getLength() % 2);
                             } else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN) {
 								pos += val.getLength() / 2 + ((val.getLength() % 2 == 0) ? 0 : 1);
-                            } else {
-							    pos += val.getLength();
-                            }
-							if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN ) {
+							} else {
+								pos += val.getLength();
+							}
+
+							if (VARIABLE_LENGTH_VAR_TYPES.contains(fpi.getType()) && forceStringEncoding) {
+								if (val.getType() == IsoType.LLVAR) {
+									pos += 2;
+								} else if (val.getType() == IsoType.LLLVAR) {
+									pos += 3;
+								} else if (val.getType() == IsoType.LLLLVAR) {
+									pos += 4;
+								}
+							} else if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN) {
 								pos++;
 							} else if (val.getType() == IsoType.LLLVAR
 									|| val.getType() == IsoType.LLLBIN
