@@ -163,7 +163,7 @@ public class CompositeField implements CustomBinaryField<CompositeField> {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try {
             for (IsoValue<?> v : value.getValues()) {
-                v.write(bout, true, true);
+                v.write(bout, true, false);
             }
         } catch (IOException ex) {
             log.error("Encoding binary CompositeField", ex);
@@ -178,7 +178,7 @@ public class CompositeField implements CustomBinaryField<CompositeField> {
             String encoding = null;
             final ByteArrayOutputStream bout = new ByteArrayOutputStream();
             for (IsoValue<?> v : value.getValues()) {
-                v.write(bout, false, true);
+                v.write(bout, false, false);
                 if (encoding == null)encoding = v.getCharacterEncoding();
             }
             final byte[] buf = bout.toByteArray();

@@ -28,6 +28,8 @@ import java.util.TimeZone;
 import com.solab.iso8583.util.Bcd;
 import com.solab.iso8583.util.HexCodec;
 
+import static com.solab.iso8583.IsoType.VARIABLE_LENGTH_VAR_TYPES;
+
 /** Represents a value that is stored in a field inside an ISO8583 message.
  * It can format the value when the message is generated.
  * Some values have a fixed length, other values require a length to be specified
@@ -64,7 +66,7 @@ public class IsoValue<T> implements Cloneable {
 		encoder = custom;
 		type = t;
 		this.value = value;
-		if (type == IsoType.LLVAR || type == IsoType.LLLVAR || type == IsoType.LLLLVAR) {
+		if (VARIABLE_LENGTH_VAR_TYPES.contains(type)) {
 			if (custom == null) {
 				length = value.toString().length();
 			} else {
@@ -122,7 +124,7 @@ public class IsoValue<T> implements Cloneable {
 		encoder = custom;
 		if (length == 0 && t.needsLength()) {
 			throw new IllegalArgumentException(String.format("Length must be greater than zero for type %s (value '%s')", t, val));
-		} else if (t == IsoType.LLVAR || t == IsoType.LLLVAR || t == IsoType.LLLLVAR) {
+		} else if (VARIABLE_LENGTH_VAR_TYPES.contains(t)) {
 			if (len == 0) {
 				length = custom == null ? val.toString().length() : custom.encodeField(value).length();
 			}
@@ -205,7 +207,7 @@ public class IsoValue<T> implements Cloneable {
 			}
 		} else if (type == IsoType.ALPHA) {
 			return type.format(encoder == null ? value.toString() : encoder.encodeField(value), length);
-		} else if (type == IsoType.LLVAR || type == IsoType.LLLVAR || type == IsoType.LLLLVAR) {
+		} else if (VARIABLE_LENGTH_VAR_TYPES.contains(type)) {
 			return getStringEncoded();
 		} else if (value instanceof Date) {
 			return type.format((Date)value, tz);
@@ -282,7 +284,7 @@ public class IsoValue<T> implements Cloneable {
         } else {
             digits = 2;
         }
-        if (binary) {
+        if (binary && !(VARIABLE_LENGTH_VAR_TYPES.contains(type) && forceStringEncoding)) {
             if (digits == 4) {
                 outs.write((((l % 10000) / 1000) << 4) | ((l % 1000)/100));
             } else if (digits == 3) {
