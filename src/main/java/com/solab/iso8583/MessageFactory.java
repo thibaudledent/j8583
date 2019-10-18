@@ -78,6 +78,8 @@ public class MessageFactory<T extends IsoMessage> {
 	private boolean forceb2;
     private boolean binBitmap;
     private boolean forceStringEncoding;
+    /* Flag specifying that variable length fields have the length header encoded in hexadecimal format */
+    private boolean variableLengthFieldsInHex;
 	private String encoding = System.getProperty("file.encoding");
 
     /** This flag gets passed on to newly created messages and also sets this value for all
@@ -93,6 +95,21 @@ public class MessageFactory<T extends IsoMessage> {
     public boolean isForceStringEncoding() {
         return forceStringEncoding;
     }
+
+	/** This flag gets passed on to newly created messages and also sets this value for all
+	 * field parsers in parsing guides. */
+	public void setVariableLengthFieldsInHex(boolean flag) {
+		this.variableLengthFieldsInHex = flag;
+		for (Map<Integer,FieldParseInfo> pm : parseMap.values()) {
+			for (FieldParseInfo parser : pm.values()) {
+				parser.setForceHexadecimalLength(flag);
+			}
+		}
+	}
+
+	public boolean isVariableLengthFieldsInHex() {
+		return variableLengthFieldsInHex;
+	}
 
     /** Tells the factory to create messages that encode their bitmaps in binary format
      * even when they're encoded as text. Has no effect on binary messages. */
@@ -261,6 +278,7 @@ public class MessageFactory<T extends IsoMessage> {
         m.setBinaryBitmap(binBitmap);
 		m.setCharacterEncoding(encoding);
         m.setForceStringEncoding(forceStringEncoding);
+        m.setEncodeVariableLengthFieldsInHex(variableLengthFieldsInHex);
 
 		//Copy the values from the template
 		IsoMessage templ = typeTemplates.get(type);
@@ -304,6 +322,7 @@ public class MessageFactory<T extends IsoMessage> {
 		resp.setType(request.getType() + 16);
 		resp.setEtx(etx);
 		resp.setForceSecondaryBitmap(forceb2);
+		resp.setEncodeVariableLengthFieldsInHex(request.isEncodeVariableLengthFieldsInHex());
 		//Copy the values from the template or the request (request has preference)
 		IsoMessage templ = typeTemplates.get(resp.getType());
 		if (templ == null) {
@@ -571,6 +590,7 @@ public class MessageFactory<T extends IsoMessage> {
 		m.setBinaryHeader(binaryHeader);
 		m.setBinaryFields(binaryFields);
         m.setBinaryBitmap(binBitmap);
+        m.setEncodeVariableLengthFieldsInHex(variableLengthFieldsInHex);
 		return m;
 	}
 

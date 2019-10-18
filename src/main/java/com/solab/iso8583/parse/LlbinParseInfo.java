@@ -113,8 +113,8 @@ public class LlbinParseInfo extends FieldParseInfo {
 		byte[] _v = new byte[l];
 		System.arraycopy(buf, pos+1, _v, 0, l);
 		if (custom == null) {
-            int len = Bcd.parseBcdLength(buf[pos]);
-            return new IsoValue<>(type, _v, len);
+            int len = getFieldLength(buf[pos]);
+            return new IsoValue<>(type, _v, len, forceHexadecimalLength);
         } else if (custom instanceof CustomBinaryField) {
             try {
                 T dec = ((CustomBinaryField<T>)custom).decodeBinaryField(buf, pos + 1, l);
@@ -133,6 +133,13 @@ public class LlbinParseInfo extends FieldParseInfo {
 	}
 
 	protected int getLengthForBinaryParsing(final byte b) {
-		return Bcd.parseBcdLength(b);
+    	return getFieldLength(b);
+	}
+
+	private int getFieldLength(final byte b) {
+		return forceHexadecimalLength ?
+				b
+				:
+				Bcd.parseBcdLength(b);
 	}
 }

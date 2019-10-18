@@ -29,7 +29,7 @@ import com.solab.iso8583.util.Bcd;
 import com.solab.iso8583.util.HexCodec;
 
 /** This class is used to parse fields of type LLLBIN.
- * 
+ *
  * @author Enrique Zamudio
  */
 public class LllbinParseInfo extends FieldParseInfo {
@@ -115,7 +115,7 @@ public class LllbinParseInfo extends FieldParseInfo {
 		System.arraycopy(buf, pos+2, _v, 0, l);
 		if (custom == null) {
             int len = getFieldLength(buf, pos);
-            return new IsoValue<>(type, _v, len);
+            return new IsoValue<>(type, _v, len, forceHexadecimalLength);
         } else if (custom instanceof CustomBinaryField) {
             try {
                 T dec = ((CustomBinaryField<T>)custom).decodeBinaryField(
@@ -138,7 +138,10 @@ public class LllbinParseInfo extends FieldParseInfo {
 	}
 
 	private int getFieldLength(final byte[] buf, final int pos) {
-        return ((buf[pos] & 0x0f) * 100) + Bcd.parseBcdLength(buf[pos + 1]);
+        return forceHexadecimalLength ?
+                ((buf[pos] & 0xff) << 8) | (buf[pos + 1] & 0xff)
+                :
+                ((buf[pos] & 0x0f) * 100) + Bcd.parseBcdLength(buf[pos + 1]);
     }
 
 }
