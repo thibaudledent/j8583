@@ -130,7 +130,7 @@ public class TestHexadecimalLengthDecoding {
         }
     }
 
-    private String getResultAsString(IsoValue isoValue, boolean hexa) throws IOException {
+    private String getResultAsString(IsoValue<?> isoValue, boolean hexa) throws IOException {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
         isoValue.write(bout, true, false, hexa);
         byte[] writtenBytes = bout.toByteArray();
