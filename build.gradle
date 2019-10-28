@@ -1,7 +1,7 @@
 apply plugin:'java'
 apply plugin: 'maven'
 defaultTasks 'build'
-version='1.14.0'
+version='1.15.0'
 description='Java implementation of the ISO 8583 protocol, focused on making the creation, edition and reading of ISO8583 messages as simple and flexible as possible.'
 sourceCompatibility=7
 targetCompatibility=7
@@ -17,9 +17,9 @@ configurations {
 }
 
 dependencies {
-	compile 'org.slf4j:slf4j-api:1.7.25'
+	compile 'org.slf4j:slf4j-api:1.7.26'
 	testCompile 'junit:junit:4.12'
-	testRuntime 'org.slf4j:slf4j-simple:1.7.25'
+	testRuntime 'org.slf4j:slf4j-simple:1.7.26'
 }
 
 jar {
@@ -73,9 +73,9 @@ uploadArchives {
 				url 'http://j8583.sourceforge.net/'
 				inceptionYear '2007'
 				scm {
-					url 'https://github.com/chochos/j8583'
-					connection 'scm:git://github.com/chochos/j8583.git'
-					developerConnection 'scm:git@github.com:chochos/j8583.git'
+					url 'https://bitbucket.org/chochos/j8583'
+					connection 'scm:git://bitbucket.org/chochos/j8583.git'
+					developerConnection 'scm:git@bitbucket.org:chochos/j8583.git'
 				}
 				licenses {
 					license {
