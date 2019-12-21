@@ -139,6 +139,13 @@ public class TestBinaries {
         IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
         String value = iso2.getField(3).toString();
         Assert.assertEquals("12345", value);
+
+        iso1.setBinary(false);
+        buf = iso1.writeData();
+        messageFactory.setUseBinaryMessages(false);
+        iso2 = messageFactory.parseMessage(buf, 0);
+        value = iso2.getField(3).toString();
+        Assert.assertEquals("012345", value);
     }
 
     @Test
@@ -154,6 +161,13 @@ public class TestBinaries {
         
         IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
         String value = iso2.getField(3).toString();
+        Assert.assertEquals("012345", value);
+
+        iso1.setBinary(false);
+        buf = iso1.writeData();
+        messageFactory.setUseBinaryMessages(false);
+        iso2 = messageFactory.parseMessage(buf, 0);
+        value = iso2.getField(3).toString();
         Assert.assertEquals("012345", value);
     }
 
@@ -171,6 +185,14 @@ public class TestBinaries {
         IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
         String value = iso2.getField(3).toString();
         Assert.assertEquals("123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
+
+        iso1.setBinary(false);
+        buf = iso1.writeData();
+        messageFactory.setUseBinaryMessages(false);
+        iso2 = messageFactory.parseMessage(buf, 0);
+        value = iso2.getField(3).toString();
+        //In ASCII mode the leading 0 can't be truncated
+        Assert.assertEquals("0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
     }
 
     @Test
@@ -186,6 +208,13 @@ public class TestBinaries {
 
         IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
         String value = iso2.getField(3).toString();
+        Assert.assertEquals("0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
+
+        iso1.setBinary(false);
+        buf = iso1.writeData();
+        messageFactory.setUseBinaryMessages(false);
+        iso2 = messageFactory.parseMessage(buf, 0);
+        value = iso2.getField(3).toString();
         Assert.assertEquals("0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
     }
 
@@ -203,6 +232,14 @@ public class TestBinaries {
         IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
         String value = iso2.getField(3).toString();
         Assert.assertEquals("123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
+
+        iso1.setBinary(false);
+        buf = iso1.writeData();
+        messageFactory.setUseBinaryMessages(false);
+        iso2 = messageFactory.parseMessage(buf, 0);
+        value = iso2.getField(3).toString();
+        //ASCII mode cannot truncate the leading 0
+        Assert.assertEquals("0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
     }
 
     @Test
@@ -218,6 +255,13 @@ public class TestBinaries {
 
         IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
         String value = iso2.getField(3).toString();
+        Assert.assertEquals("0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
+
+        iso1.setBinary(false);
+        buf = iso1.writeData();
+        messageFactory.setUseBinaryMessages(false);
+        iso2 = messageFactory.parseMessage(buf, 0);
+        value = iso2.getField(3).toString();
         Assert.assertEquals("0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
     }
 }

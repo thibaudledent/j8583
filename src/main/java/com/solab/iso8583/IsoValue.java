@@ -239,7 +239,10 @@ public class IsoValue<T> implements Cloneable {
 			if (value instanceof byte[]) {
 				final byte[] _v = (byte[])value;
 				final String val = encoder == null ? HexCodec.hexEncode(_v, 0, _v.length) : encoder.encodeField(value);
-				return val.substring(val.length() - length);
+				if (length == val.length() - 1) {
+					return val.substring(1);
+				}
+				return val;
 			} else {
 				return getStringEncoded();
 			}
