@@ -309,11 +309,25 @@ public class MessageFactory<T extends IsoMessage> {
 		return m;
 	}
 
-	/** Creates a message to respond to a request. Increments the message type by 16,
-	 * sets all fields from the template if there is one, and copies all values from the request,
-	 * overwriting fields from the template if they overlap.
-	 * @param request An ISO8583 message with a request type (ending in 00). */
+	/** Creates a response message by calling {@link #createResponse(IsoMessage, boolean)}
+	 * with true as the second parameter.
+	 */
 	public T createResponse(T request) {
+		return createResponse(request, true);
+	}
+
+	/** Creates a message to respond to a request. Increments the message type by 16,
+	 * sets all fields from the template if there is one,
+	 * and either copies all values from the request or only the ones already in the template,
+	 * depending on the value of copyAllFields flag.
+	 * @param request An ISO8583 message with a request type (ending in 00).
+	 * @param copyAllFields If true, copies all fields from the request to the response,
+	 *                      overwriting any values already set from the template; otherwise
+	 *                      it only overwrites values for existing fields from the template.
+	 *                      If the template for a response does not exist, then all fields from
+	 *                      the request are copied even in this flag is false.
+	 */
+	public T createResponse(T request, boolean copyAllFields) {
 		T resp = createIsoMessage(isoHeaders.get(request.getType() + 16));
 		resp.setCharacterEncoding(request.getCharacterEncoding());
 		resp.setBinaryHeader(request.isBinaryHeader());
@@ -331,12 +345,19 @@ public class MessageFactory<T extends IsoMessage> {
 					resp.setField(i, request.getField(i).clone());
 				}
 			}
-		} else {
+		} else if (copyAllFields) {
 			for (int i = 2; i < 128; i++) {
 				if (request.hasField(i)) {
 					resp.setField(i, request.getField(i).clone());
 				} else if (templ.hasField(i)) {
 					resp.setField(i, templ.getField(i).clone());
+				}
+			}
+		} else {
+			for (int i = 2; i < 128; i++) {
+				if (templ.hasField(i)) {
+					IsoMessage srcmsg = request.hasField(i) ? request : templ;
+					resp.setField(i, srcmsg.getField(i).clone());
 				}
 			}
 		}
