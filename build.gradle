@@ -1,5 +1,9 @@
-apply plugin:'java'
-apply plugin: 'maven'
+plugins {
+  id 'java'
+  id 'maven'
+  id 'idea'
+}
+
 defaultTasks 'build'
 version='1.16.0'
 description='Java implementation of the ISO 8583 protocol, focused on making the creation, edition and reading of ISO8583 messages as simple and flexible as possible.'
