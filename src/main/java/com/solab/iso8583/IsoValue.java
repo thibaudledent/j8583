@@ -299,7 +299,11 @@ public class IsoValue<T> implements Cloneable {
         }
         if (binary) {
         	if (forceHexadecimalLength) {
-				outs.write(BigInteger.valueOf(l).toByteArray());
+        		if (digits > 2) {
+        			outs.write(new byte[] {(byte)(l >>> 8),	(byte) l});
+				} else {
+					outs.write(new byte[]{(byte) l});
+				}
 			} else {
 				if (digits == 4) {
 					outs.write((((l % 10000) / 1000) << 4) | ((l % 1000)/100));
@@ -411,24 +415,18 @@ public class IsoValue<T> implements Cloneable {
 		switch (type) {
 			case LLVAR:
 			case LLBIN:
+			case LLBCDBIN:
 				validateMaxLength(255);
 				break;
 			case LLLVAR:
 			case LLLBIN:
+			case LLLBCDBIN:
 				validateMaxLength(4095);
 				break;
 			case LLLLVAR:
 			case LLLLBIN:
-				validateMaxLength(65535);
-				break;
-			case LLBCDBIN:
-				validateMaxLength(128);
-				break;
-			case LLLBCDBIN:
-				validateMaxLength(2048);
-				break;
 			case LLLLBCDBIN:
-				validateMaxLength(32768);
+				validateMaxLength(65535);
 				break;
 		}
 	}
@@ -461,7 +459,7 @@ public class IsoValue<T> implements Cloneable {
 
 	private void validateMaxLength(int maxLength) {
 		if (length > maxLength) {
-			throw new IllegalArgumentException(type.name() + " can only hold values up to " + maxLength + " chars");
+			throw new IllegalArgumentException(type.name() + " can only hold values up to " + maxLength + " chars, but length was " + length);
 		}
 	}
 

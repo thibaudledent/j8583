@@ -57,11 +57,11 @@ public class TestHexadecimalLengthDecoding {
                 "7F80000000000000" +                            // bitmap (with fields 2,3,4,5,9)
                 "09" + "0666666666" +                           // F2(LLBCDBIN) length (09 = 9) + BCD value
                 "1A" + "01234567890123456789012345" +           // F3(LLBCDBIN) length (1A = 26) + BCD value
-                "12" + "C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0" + // F4(LLBIN) length (12 = 18) + EBCDIC value
-                "0112" + repeat("5", 274) +         // F5(LLLBCDBIN) length (0112 = 274) + BCD value
-                "0112" + repeat("C1", 274) +        // F6(LLLBIN) length (0112 = 274) + EBCDIC value
-                "1112" + repeat("6", 4370) +        // F7(LLLLBCDBIN) length (1112 = 4370) + BCD value
-                "1112" + repeat("C2", 4370) +       // F8(LLLLBIN) length (1112 = 4370) + EBCDIC value
+                "FF" + repeat("C0", 255) +           // F4(LLBIN) length (FF = 255) + EBCDIC value
+                "0FFE" + repeat("5", 4094) +         // F5(LLLBCDBIN) length (0FFE = 4094) + BCD value
+                "0FFF" + repeat("C1", 4095) +        // F6(LLLBIN) length (0FFF = 4095) + EBCDIC value
+                "FABC" + repeat("6", 64188) +        // F7(LLLLBCDBIN) length (FABC = 64188) + BCD value
+                "FFFF" + repeat("C2", 65535) +       // F8(LLLLBIN) length (FFFF = 65535) + EBCDIC value
                 "88888888";                                     // F9(BINARY)
 
         // When
@@ -71,11 +71,11 @@ public class TestHexadecimalLengthDecoding {
         Assert.assertNotNull(m);
         Assert.assertEquals("666666666", m.getField(2).toString());
         Assert.assertEquals("01234567890123456789012345", m.getField(3).toString());
-        Assert.assertEquals("C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0", m.getField(4).toString());
-        Assert.assertEquals(repeat("5", 274), m.getField(5).toString());
-        Assert.assertEquals(repeat("C1", 274), m.getField(6).toString());
-        Assert.assertEquals(repeat("6", 4370), m.getField(7).toString());
-        Assert.assertEquals(repeat("C2", 4370), m.getField(8).toString());
+        Assert.assertEquals(repeat("C0", 255), m.getField(4).toString());
+        Assert.assertEquals(repeat("5", 4094), m.getField(5).toString());
+        Assert.assertEquals(repeat("C1", 4095), m.getField(6).toString());
+        Assert.assertEquals(repeat("6", 64188), m.getField(7).toString());
+        Assert.assertEquals(repeat("C2", 65535), m.getField(8).toString());
         Assert.assertEquals("88888888", m.getField(9).toString());
     }
 
@@ -109,21 +109,20 @@ public class TestHexadecimalLengthDecoding {
         boolean hexa = true;
 
         Object[][] inputs = {
-                {IsoType.LLBCDBIN, "26", "1A", "01234567890123456789012345"},
-                {IsoType.LLBIN, "26", "1A", "C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0"},
-                {IsoType.LLLBCDBIN, "298", "012A", repeat("7", 298)},
-                {IsoType.LLLBIN, "298", "012A", repeat("C1", 298)},
-                {IsoType.LLLLBCDBIN, "4394", "112A", repeat("7", 4394)},
-                {IsoType.LLLLBIN, "4394", "112A", repeat("C1", 4394)},
+                {IsoType.LLBCDBIN,"1A", "01234567890123456789012345"},
+                {IsoType.LLBIN, "FF", repeat("C0", 255)},
+                {IsoType.LLLBCDBIN, "0FFE", repeat("7", 4094)},
+                {IsoType.LLLBIN, "0FFF", repeat("C1", 4095)},
+                {IsoType.LLLLBCDBIN, "FFFE", repeat("7", 65534)},
+                {IsoType.LLLLBIN, "FABC", repeat("C1", 64188)},
         };
 
         for (Object[] input : inputs) {
             IsoType isoType = (IsoType) input[0];
-            String len = (String) input[1];
-            String hexaLen = (String) input[2];
-            String value = (String) input[3];
+            String hexaLen = (String) input[1];
+            String value = (String) input[2];
 
-            IsoValue<byte[]> isoValue = new IsoValue<>(isoType, HexCodec.hexDecode(value), Integer.parseInt(len), hexa);
+            IsoValue<byte[]> isoValue = new IsoValue<>(isoType, HexCodec.hexDecode(value), 0, hexa);
 
             String result = getResultAsString(isoValue, hexa);
             Assert.assertEquals(hexaLen + value, result);
