@@ -57,6 +57,7 @@ public class IsoMessage {
     private boolean forceb2;
     private boolean binBitmap;
     private boolean forceStringEncoding;
+    private boolean encodeVariableLengthFieldsInHex;
     private String encoding = System.getProperty("file.encoding");
 
     /** Creates a new empty message with no values set. */
@@ -113,6 +114,16 @@ public class IsoMessage {
      * for text format. */
     public void setForceStringEncoding(boolean flag) {
         forceStringEncoding = flag;
+    }
+
+    /** Specified whether the variable-length fields should encode their length
+     * headers using hexadecimal values. This is only useful for binary format. */
+    public void setEncodeVariableLengthFieldsInHex(boolean flag) {
+        this.encodeVariableLengthFieldsInHex = flag;
+    }
+
+    public boolean isEncodeVariableLengthFieldsInHex() {
+        return encodeVariableLengthFieldsInHex;
     }
 
     /** Sets the string to be sent as ISO header, that is, after the length header but before the message type.
@@ -468,7 +479,7 @@ public class IsoMessage {
     		IsoValue<?> v = fields[i];
     		if (v != null) {
         		try {
-        			v.write(bout, binaryFields, forceStringEncoding);
+        			v.write(bout, binaryFields, forceStringEncoding, encodeVariableLengthFieldsInHex);
         		} catch (IOException ex) {
         			//should never happen, writing to a ByteArrayOutputStream
         		}

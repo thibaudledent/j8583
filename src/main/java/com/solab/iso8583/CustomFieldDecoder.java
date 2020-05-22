@@ -1,7 +1,8 @@
 package com.solab.iso8583;
 
 /**
- * Blabla.
+ * A functional interface to decode a value from a field (string or binary data) into some
+ * other data type.
  *
  * @author Enrique Zamudio
  * Date: 2019-02-08 11:21

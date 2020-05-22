@@ -3,4 +3,6 @@ target
 build
 out
 *.iws
+*.iml
+*.ipr
 .idea/
