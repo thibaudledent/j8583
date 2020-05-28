@@ -8,5 +8,10 @@
         <field num="7" type="LLLLBCDBIN"/>
         <field num="8" type="LLLLBIN"/>
         <field num="9" type="BINARY" length="4"/>
+        <field num="10" type="LLBIN"/>
+        <field num="11" type="LLLBCDBIN"/>
+        <field num="12" type="LLLBIN"/>
+        <field num="13" type="LLLLBCDBIN"/>
+        <field num="14" type="LLLLBIN"/>
     </parse>
 </j8583-config>
