@@ -459,7 +459,7 @@ public class IsoValue<T> implements Cloneable {
 
 	private void validateMaxLength(int maxLength) {
 		if (length > maxLength) {
-			throw new IllegalArgumentException(type.name() + " can only hold values up to " + maxLength + " chars, but length was " + length);
+			throw new IllegalArgumentException(type.name() + " can only hold values up to " + maxLength + " chars");
 		}
 	}
 
