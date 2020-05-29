@@ -138,7 +138,7 @@ public class LlbinParseInfo extends FieldParseInfo {
 
 	private int getFieldLength(final byte b) {
 		return forceHexadecimalLength ?
-				b
+				b & 0xff
 				:
 				Bcd.parseBcdLength(b);
 	}
