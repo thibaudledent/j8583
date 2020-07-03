@@ -5,7 +5,7 @@ plugins {
 }
 
 defaultTasks 'build'
-version='1.16.0'
+version='1.17.0'
 description='Java implementation of the ISO 8583 protocol, focused on making the creation, edition and reading of ISO8583 messages as simple and flexible as possible.'
 sourceCompatibility=7
 targetCompatibility=7
@@ -34,7 +34,8 @@ jar {
 }
 
 tasks.javadoc.options.use=true
-tasks.javadoc.options.links=['http://docs.oracle.com/javase/7/docs/api/', 'http://slf4j.org/apidocs/' ]
+tasks.javadoc.options.source='7'
+tasks.javadoc.options.links=['https://docs.oracle.com/javase/7/docs/api/', 'http://slf4j.org/apidocs/' ]
 
 task javadocJar(type:Jar, dependsOn:'javadoc') {
 	from javadoc.destinationDir
