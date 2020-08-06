@@ -13,7 +13,7 @@ public class TestBcdLengthLlbin {
     @Test
     public void shouldSerializeAndDeserializeWithBcdBin() throws IOException, ParseException {
         // Given
-        final String expectedHexMessage = "110060000580000000011612345678901112130000003132333435360020123456789000000000000128123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781111111111111111";
+        final String expectedHexMessage = "11006D0005800000000116123456789011121300000005012345000501234500050123453132333435360020123456789000000000000128123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781111111111111111";
         final MessageFactory<IsoMessage> mf = ConfigParser.createDefault();
         mf.setUseBinaryBitmap(true);
         mf.setUseBinaryMessages(true);
@@ -22,6 +22,10 @@ public class TestBcdLengthLlbin {
 
         isoMessage1.setField(2, new IsoValue<>(IsoType.LLBCDBIN, "1234567890111213"));
         isoMessage1.setField(3, new IsoValue<>(IsoType.NUMERIC, "000000", "000000".length()));
+        //Testing that odd-length values are actually left-padded
+        isoMessage1.setField(5, new IsoValue<>(IsoType.LLBCDBIN, "12345"));
+        isoMessage1.setField(6, new IsoValue<>(IsoType.LLLBCDBIN, "12345"));
+        isoMessage1.setField(8, new IsoValue<>(IsoType.LLLLBCDBIN, "12345"));
         isoMessage1.setField(22, new IsoValue<>(IsoType.ALPHA, "123456", "123456".length()));
         isoMessage1.setField(24, new IsoValue<>(IsoType.LLLLBCDBIN, "12345678900000000000"));
         isoMessage1.setField(25, new IsoValue<>(IsoType.LLLBCDBIN, "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678"));
@@ -41,6 +45,9 @@ public class TestBcdLengthLlbin {
         Assert.assertEquals("LLBCDBIN", isoMessage2.getField(2).getType().name());
         Assert.assertEquals("1234567890111213", isoMessage2.getField(2).toString());
         Assert.assertEquals("000000", isoMessage2.getField(3).toString());
+        Assert.assertEquals("12345", isoMessage2.getField(5).toString());
+        Assert.assertEquals("12345", isoMessage2.getField(6).toString());
+        Assert.assertEquals("12345", isoMessage2.getField(8).toString());
         Assert.assertEquals("123456", isoMessage2.getField(22).toString());
         Assert.assertEquals("LLLLBCDBIN", isoMessage2.getField(24).getType().name());
         Assert.assertEquals("12345678900000000000", isoMessage2.getField(24).toString());
