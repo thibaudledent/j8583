@@ -3,6 +3,9 @@
     <parse type="1100">
         <field num="2" type="LLBCDBIN"/>
         <field num="3" type="NUMERIC" length="6"/>
+        <field num="5" type="LLBCDBIN"/>
+        <field num="6" type="LLLBCDBIN"/>
+        <field num="8" type="LLLLBCDBIN"/>
         <field num="22" type="ALPHA" length="6"/>
         <field num="24" type="LLLLBCDBIN"/>
         <field num="25" type="LLLBCDBIN"/>
