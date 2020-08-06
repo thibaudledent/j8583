@@ -66,11 +66,17 @@ public enum IsoType {
 	LLLLVAR(false, 0),
 	/** variable length byte array with 4-digit header length. */
 	LLLLBIN(false, 0),
-	/** Similar to LLBIN but with a BCD encoded length. */
+	/** Similar to LLBIN but with a BCD encoded length. If the data has an odd length,
+	 * it will be padded with a 0 in the first nibble.
+	 */
 	LLBCDBIN(false, 0),
-	/** Similar to LLLBIN but with a BCD encoded length. */
+	/** Similar to LLLBIN but with a BCD encoded length. If the data has an odd length,
+	 * it will be padded with a 0 in the first nibble.
+	 */
 	LLLBCDBIN(false, 0),
-	/** Similar to LLLLBIN but with a BCD encoded length. */
+	/** Similar to LLLLBIN but with a BCD encoded length. If the data has an odd length,
+	 * it will be padded with a 0 in the first nibble.
+	 */
 	LLLLBCDBIN(false, 0),
 	/** Date in format yyMMddHHmmss. */
 	DATE12(false,12),
