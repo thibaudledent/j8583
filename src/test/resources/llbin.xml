@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<j8583-config>
+    <parse type="1100">
+        <field num="2" type="LLBIN"/>
+        <field num="3" type="NUMERIC" length="6"/>
+        <field num="5" type="LLBIN"/>
+        <field num="6" type="LLLBIN"/>
+        <field num="8" type="LLLLBIN"/>
+        <field num="22" type="ALPHA" length="6"/>
+        <field num="24" type="LLLLBIN"/>
+        <field num="25" type="LLLBIN"/>
+        <field num="64" type="BINARY" length="8"/>
+    </parse>
+</j8583-config>
