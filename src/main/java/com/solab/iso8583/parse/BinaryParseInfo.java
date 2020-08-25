@@ -54,7 +54,7 @@ public class BinaryParseInfo extends FieldParseInfo {
 		if (custom == null) {
 			return new IsoValue<>(type, binval, binval.length, null);
 		} else {
-            T dec = custom.decodeField(new String(buf, pos, length*2, getCharacterEncoding()));
+            T dec = custom.decodeField(HexCodec.hexEncode(buf, pos, length*2));
             return dec == null ? new IsoValue<>(type, binval, binval.length, null) :
                     new IsoValue<>(type, dec, length, custom);
 		}
