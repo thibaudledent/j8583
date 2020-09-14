@@ -486,16 +486,10 @@ public class MessageFactory<T extends IsoMessage> {
 							fpi.parse(i, buf, pos, decoder)
 							: fpi.parseBinary(i, buf, pos, decoder);
 
-						if(i - 1 == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
+						if(i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
 						//todo - verify which types would be used when (and is the return type byte[]?)
-							if(val.getType() == IsoType.BINARY || val.getType() == IsoType.ALPHA) {
-								final byte[] tertiaryBitmap = (byte[]) val.getValue();
-								updateBitSetFromBinaryBitmap(bs, tertiaryBitmap, 128);
-							} else {
-								final byte[] tertiaryBitmap = ((String) val.getValue()).getBytes();
-								final int offset = pos;
-								updateBitSetFromAsciiBitMap(bs, tertiaryBitmap, 128, offset);
-							}
+							final byte[] tertiaryBitmap = (byte[]) val.getValue();
+							updateBitSetFromBinaryBitmap(bs, tertiaryBitmap, 128);
 						}
 
 						m.setField(i, val);
@@ -549,6 +543,11 @@ public class MessageFactory<T extends IsoMessage> {
                             decoder = getCustomField(i);
                         }
 						IsoValue<?> val = fpi.parse(i, buf, pos, decoder);
+						if(i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
+								final String tertiaryBitmap = ((String) val.getValue());
+								final int offset = pos;
+								updateBitSetFromAsciiBitMap(bs, tertiaryBitmap.getBytes(), 128, offset);
+						}
 						m.setField(i, val);
 						//To get the correct next position, we need to get the number of bytes, not chars
 						pos += val.toString().getBytes(fpi.getCharacterEncoding()).length;
