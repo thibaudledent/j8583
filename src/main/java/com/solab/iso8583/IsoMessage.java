@@ -20,6 +20,7 @@ package com.solab.iso8583;
 
 import com.solab.iso8583.util.HexCodec;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,6 +40,7 @@ import java.util.Map;
 public class IsoMessage {
 
 	static final byte[] HEX = new byte[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+    private static final int MAX_AMOUNT_OF_FIELDS = 196;
 
 	/** The message type. */
     private int type;
@@ -48,7 +50,7 @@ public class IsoMessage {
 
     /** This is where the values are stored. */
     @SuppressWarnings("rawtypes")
-	private IsoValue[] fields = new IsoValue[129];
+	private IsoValue[] fields = new IsoValue[MAX_AMOUNT_OF_FIELDS + 1];
     /** Stores the optional ISO header. */
     private String isoHeader;
     private byte[] binIsoHeader;
@@ -56,6 +58,8 @@ public class IsoMessage {
     /** Flag to enforce secondary bitmap even if empty. */
     private boolean forceb2;
     private boolean binBitmap;
+    /* Flag to indicate that fields with an index above 128 are in use and a tertiary bitmap is needed */
+    private boolean tertiaryBitmapNeeded;
     private boolean forceStringEncoding;
     private String encoding = System.getProperty("file.encoding");
 
@@ -206,9 +210,12 @@ public class IsoMessage {
      * so the first valid value for index must be 2.
      * @return The receiver (useful for setting several fields in sequence). */
     public IsoMessage setField(int index, IsoValue<?> field) {
-    	if (index < 2 || index > 128) {
-    		throw new IndexOutOfBoundsException("Field index must be between 2 and 128");
+    	if (index < 2 || index > MAX_AMOUNT_OF_FIELDS) {
+    		throw new IndexOutOfBoundsException("Field index must be between 2 and " + MAX_AMOUNT_OF_FIELDS);
     	}
+    	if (index > 128) {
+            tertiaryBitmapNeeded = true;
+        }
     	if (field != null) {
         	field.setCharacterEncoding(encoding);
     	}
@@ -244,12 +251,16 @@ public class IsoMessage {
      * with any other type.
      * @return The receiver (useful for setting several values in sequence). */
     public <T> IsoMessage setValue(int index, T value, CustomField<T> encoder, IsoType t, int length) {
-    	if (index < 2 || index > 128) {
-    		throw new IndexOutOfBoundsException("Field index must be between 2 and 128");
+    	if (index < 2 || index > MAX_AMOUNT_OF_FIELDS) {
+    		throw new IndexOutOfBoundsException("Field index must be between 2 and " + MAX_AMOUNT_OF_FIELDS);
     	}
     	if (value == null) {
     		fields[index] = null;
     	} else {
+            if (index > 128) {
+                System.out.println("index > 128: " + index);
+                tertiaryBitmapNeeded = true;
+            }
     		IsoValue<T> v = null;
     		if (t.needsLength()) {
     			v = new IsoValue<>(t, value, length, encoder);
@@ -387,6 +398,25 @@ public class IsoMessage {
         return bs;
     }
 
+    /* Creates a BitSet for fields 129-196 */
+    protected BitSet createTertiaryBitmap() {
+        BitSet tertiaryBitmap = new BitSet(64);
+        for (int i = 129 ; i <= 196; i++) {
+            if (fields[i] != null) {
+                tertiaryBitmap.set(i - 128);
+            }
+        }
+        return tertiaryBitmap;
+    }
+
+    private void fillTertiaryBitmapField(){
+        int indexOfTertiaryBitmap = 65;
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        writeBitmapToStream(bout, createTertiaryBitmap());
+        IsoValue<byte[]> bitmapValue = new IsoValue<>(IsoType.BINARY, bout.toByteArray(), 16);
+        setField(indexOfTertiaryBitmap, bitmapValue);
+    }
+
     /** Writes the message to a memory stream and returns a byte array with the result. */
     public byte[] writeData() {
     	ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -416,23 +446,44 @@ public class IsoMessage {
     	}
 
     	//Bitmap
+        if (tertiaryBitmapNeeded){
+            fillTertiaryBitmapField();
+        }
+
         BitSet bs = createBitmapBitSet();
-    	//Write bitmap to stream
-    	if (binaryHeader || binBitmap) {
-    		int pos = 128;
-    		int b = 0;
-    		for (int i = 0; i < bs.size(); i++) {
-    			if (bs.get(i)) {
-    				b |= pos;
-    			}
-    			pos >>= 1;
-    			if (pos == 0) {
-    				bout.write(b);
-    				pos = 128;
-    				b = 0;
-    			}
+        writeBitmapToStream(bout, bs);
+
+        //Fields
+    	for (int i = 2; i < fields.length; i++) {
+    		IsoValue<?> v = fields[i];
+    		if (v != null) {
+        		try {
+        			v.write(bout, binaryFields, forceStringEncoding);
+        		} catch (IOException ex) {
+        			//should never happen, writing to a ByteArrayOutputStream
+        		}
     		}
-    	} else {
+    	}
+    	return bout.toByteArray();
+    }
+
+    private void writeBitmapToStream(ByteArrayOutputStream bout, BitSet bs) {
+        //Write bitmap to stream
+        if (binaryHeader || binBitmap) {
+            int pos = 128;
+            int b = 0;
+            for (int i = 0; i < bs.size(); i++) {
+                if (bs.get(i)) {
+                    b |= pos;
+                }
+                pos >>= 1;
+                if (pos == 0) {
+                    bout.write(b);
+                    pos = 128;
+                    b = 0;
+                }
+            }
+        } else {
             ByteArrayOutputStream bout2 = null;
             if (forceStringEncoding) {
                 bout2 = bout;
@@ -461,20 +512,7 @@ public class IsoMessage {
                     //never happen
                 }
             }
-    	}
-
-    	//Fields
-    	for (int i = 2; i < 129; i++) {
-    		IsoValue<?> v = fields[i];
-    		if (v != null) {
-        		try {
-        			v.write(bout, binaryFields, forceStringEncoding);
-        		} catch (IOException ex) {
-        			//should never happen, writing to a ByteArrayOutputStream
-        		}
-    		}
-    	}
-    	return bout.toByteArray();
+        }
     }
 
     /** Returns a string representation of the message, as if it were encoded

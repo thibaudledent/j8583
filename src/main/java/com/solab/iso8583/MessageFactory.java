@@ -414,6 +414,10 @@ public class MessageFactory<T extends IsoMessage> {
 					}
 				}
 				pos = minlength + 8;
+				int indexOfTertiaryBitmap = 65;
+				if(bs.get(indexOfTertiaryBitmap - 1)){ // for some reasons all fields are  at 1 index lower than expected
+					System.out.println("tertiary bitmap present");
+				}
 			} else {
 				pos = minlength;
 			}
