@@ -83,6 +83,7 @@ public class MessageFactory<T extends IsoMessage> {
 	/** Flag to specify if missing fields should be ignored as long as they're at
 	 * the end of the message. */
 	private boolean ignoreLast;
+	private boolean useTertiaryBitmap = false;
 	private boolean forceb2;
     private boolean binBitmap;
     private boolean forceStringEncoding;
@@ -152,6 +153,14 @@ public class MessageFactory<T extends IsoMessage> {
 	}
 	public boolean isForceSecondaryBitmap() {
 		return forceb2;
+	}
+
+	/** Sets or clears the flag to specify if field P-65 should be interpreted as a tertiary bitmap */
+	public void setUseTertiaryBitmap(boolean flag){
+		useTertiaryBitmap = flag;
+	}
+	public boolean tertiaryBitmapIsUsed(){
+		return useTertiaryBitmap;
 	}
 
 	/** Setting this property to true avoids getting a ParseException when parsing messages that don't have
@@ -273,7 +282,7 @@ public class MessageFactory<T extends IsoMessage> {
 		//Copy the values from the template
 		IsoMessage templ = typeTemplates.get(type);
 		if (templ != null) {
-			for (int i = 2; i <= 128; i++) {
+			for (int i = 2; i <= 192; i++) {
 				if (templ.hasField(i)) {
 					//We could detect here if there's a custom object with a CustomField,
 					//but we can't copy the value so there's no point.
@@ -315,13 +324,13 @@ public class MessageFactory<T extends IsoMessage> {
 		//Copy the values from the template or the request (request has preference)
 		IsoMessage templ = typeTemplates.get(resp.getType());
 		if (templ == null) {
-			for (int i = 2; i < 128; i++) {
+			for (int i = 2; i < 192; i++) {
 				if (request.hasField(i)) {
 					resp.setField(i, request.getField(i).clone());
 				}
 			}
 		} else {
-			for (int i = 2; i < 128; i++) {
+			for (int i = 2; i < 192; i++) {
 				if (request.hasField(i)) {
 					resp.setField(i, request.getField(i).clone());
 				} else if (templ.hasField(i)) {
@@ -486,10 +495,9 @@ public class MessageFactory<T extends IsoMessage> {
 							fpi.parse(i, buf, pos, decoder)
 							: fpi.parseBinary(i, buf, pos, decoder);
 
-						if(i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
-						//todo - verify which types would be used when (and is the return type byte[]?)
-							final byte[] tertiaryBitmap = (byte[]) val.getValue();
-							updateBitSetFromBinaryBitmap(bs, tertiaryBitmap, 128);
+						if(useTertiaryBitmap && i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
+							final String tertiaryBitmap = ((String) val.getValue());
+							updateBitSetFromBinaryBitmap(bs, tertiaryBitmap.getBytes(), 128);
 						}
 
 						m.setField(i, val);
@@ -543,7 +551,7 @@ public class MessageFactory<T extends IsoMessage> {
                             decoder = getCustomField(i);
                         }
 						IsoValue<?> val = fpi.parse(i, buf, pos, decoder);
-						if(i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
+						if(useTertiaryBitmap && i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
 								final String tertiaryBitmap = ((String) val.getValue());
 								final int offset = pos;
 								updateBitSetFromAsciiBitMap(bs, tertiaryBitmap.getBytes(), 128, offset);
