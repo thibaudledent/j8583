@@ -40,7 +40,8 @@ import java.util.Map;
 public class IsoMessage {
 
 	static final byte[] HEX = new byte[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-    private static final int MAX_AMOUNT_OF_FIELDS = 196;
+    static final int INDEX_OF_TERTIARY_BITMAP = 65;
+    private static final int MAX_AMOUNT_OF_FIELDS = 192;
 
 	/** The message type. */
     private int type;
@@ -401,7 +402,7 @@ public class IsoMessage {
     /* Creates a BitSet for fields 129-196 */
     protected BitSet createTertiaryBitmap() {
         BitSet tertiaryBitmap = new BitSet(64);
-        for (int i = 129 ; i <= 196; i++) {
+        for (int i = 129 ; i <= 192; i++) {
             if (fields[i] != null) {
                 tertiaryBitmap.set(i - 128);
             }
@@ -410,11 +411,10 @@ public class IsoMessage {
     }
 
     private void fillTertiaryBitmapField(){
-        int indexOfTertiaryBitmap = 65;
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         writeBitmapToStream(bout, createTertiaryBitmap());
         IsoValue<byte[]> bitmapValue = new IsoValue<>(IsoType.BINARY, bout.toByteArray(), 16);
-        setField(indexOfTertiaryBitmap, bitmapValue);
+        setField(INDEX_OF_TERTIARY_BITMAP, bitmapValue);
     }
 
     /** Writes the message to a memory stream and returns a byte array with the result. */

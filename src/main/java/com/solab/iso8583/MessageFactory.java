@@ -368,6 +368,7 @@ public class MessageFactory<T extends IsoMessage> {
 			throw new ParseException("Insufficient buffer length, needs to be at least " + minlength, 0);
 		}
 		final T m;
+		// parse the header
         if (binaryIsoHeader && isoHeaderLength > 0) {
             byte[] _bih = new byte[isoHeaderLength];
             System.arraycopy(buf, 0, _bih, 0, isoHeaderLength);
@@ -393,93 +394,51 @@ public class MessageFactory<T extends IsoMessage> {
 		final BitSet bs = new BitSet(64);
 		int pos = 0;
 		if (binaryHeader || binBitmap) {
-            final int bitmapStart = isoHeaderLength + (binaryHeader ? 2 : 4);
-			for (int i = bitmapStart; i < 8+bitmapStart; i++) {
-				int bit = 128;
-				for (int b = 0; b < 8; b++) {
-					bs.set(pos++, (buf[i] & bit) != 0);
-					bit >>= 1;
-				}
-			}
+            pos = isoHeaderLength + (binaryHeader ? 2 : 4);
+			final byte[] primaryBitmap = new byte[8];
+			System.arraycopy(buf, pos, primaryBitmap, 0, primaryBitmap.length);
+			updateBitSetFromBinaryBitmap(bs, primaryBitmap, 0);
+			pos += primaryBitmap.length;
 			//Check for secondary bitmap and parse if necessary
 			if (bs.get(0)) {
 				if (buf.length < minlength + 8) {
 					throw new ParseException("Insufficient length for secondary bitmap", minlength);
 				}
-				for (int i = 8+bitmapStart; i < 16+bitmapStart; i++) {
-					int bit = 128;
-					for (int b = 0; b < 8; b++) {
-						bs.set(pos++, (buf[i] & bit) != 0);
-						bit >>= 1;
-					}
-				}
-				pos = minlength + 8;
-				int indexOfTertiaryBitmap = 65;
-				if(bs.get(indexOfTertiaryBitmap - 1)){ // for some reasons all fields are  at 1 index lower than expected
-					System.out.println("tertiary bitmap present");
-				}
-			} else {
-				pos = minlength;
+				final byte[] secondaryBitmap = new byte[8];
+				System.arraycopy(buf, pos, secondaryBitmap, 0, primaryBitmap.length);
+				updateBitSetFromBinaryBitmap(bs, secondaryBitmap, 64);
+				pos += secondaryBitmap.length;
 			}
 		} else {
 			//ASCII parsing
 			try {
-                final byte[] bitmapBuffer;
+                final byte[] primaryBitmap = new byte[16];
+                int primaryBitmapStart = isoHeaderLength+4;
                 if (forceStringEncoding) {
-                    byte[] _bb = new String(buf, isoHeaderLength+4, 16, encoding).getBytes();
-                    bitmapBuffer = new byte[36+isoHeaderLength];
-                    System.arraycopy(_bb, 0, bitmapBuffer, 4+isoHeaderLength, 16);
+                    byte[] _bb = new String(buf, primaryBitmapStart, 16, encoding).getBytes();
+                    System.arraycopy(_bb, 0, primaryBitmap, 0, primaryBitmap.length);
+                    int x = 1;
                 } else {
-                    bitmapBuffer = buf;
-                }
-                for (int i = isoHeaderLength + 4; i < isoHeaderLength + 20; i++) {
-                    if (bitmapBuffer[i] >= '0' && bitmapBuffer[i] <= '9') {
-                        bs.set(pos++, ((bitmapBuffer[i] - 48) & 8) > 0);
-                        bs.set(pos++, ((bitmapBuffer[i] - 48) & 4) > 0);
-                        bs.set(pos++, ((bitmapBuffer[i] - 48) & 2) > 0);
-                        bs.set(pos++, ((bitmapBuffer[i] - 48) & 1) > 0);
-                    } else if (bitmapBuffer[i] >= 'A' && bitmapBuffer[i] <= 'F') {
-                        bs.set(pos++, ((bitmapBuffer[i] - 55) & 8) > 0);
-                        bs.set(pos++, ((bitmapBuffer[i] - 55) & 4) > 0);
-                        bs.set(pos++, ((bitmapBuffer[i] - 55) & 2) > 0);
-                        bs.set(pos++, ((bitmapBuffer[i] - 55) & 1) > 0);
-                    } else if (bitmapBuffer[i] >= 'a' && bitmapBuffer[i] <= 'f') {
-                        bs.set(pos++, ((bitmapBuffer[i] - 87) & 8) > 0);
-                        bs.set(pos++, ((bitmapBuffer[i] - 87) & 4) > 0);
-                        bs.set(pos++, ((bitmapBuffer[i] - 87) & 2) > 0);
-                        bs.set(pos++, ((bitmapBuffer[i] - 87) & 1) > 0);
-                    }
-                }
+					System.arraycopy(buf, primaryBitmapStart, primaryBitmap, 0, 16);
+				}
+				updateBitSetFromAsciiBitMap(bs, primaryBitmap, 0, primaryBitmapStart);
 				//Check for secondary bitmap and parse it if necessary
 				if (bs.get(0)) {
-					if (buf.length < minlength + 16) {
+					int secondaryBitmapStart = primaryBitmapStart + primaryBitmap.length;
+					final byte[] secondaryBitmap = new byte[16];
+					if (buf.length < minlength + secondaryBitmap.length) {
 						throw new ParseException("Insufficient length for secondary bitmap", minlength);
 					}
                     if (forceStringEncoding) {
-                        byte[] _bb = new String(buf, isoHeaderLength+20, 16, encoding).getBytes();
-                        System.arraycopy(_bb, 0, bitmapBuffer, 20+isoHeaderLength, 16);
-                    }
-					for (int i = isoHeaderLength + 20; i < isoHeaderLength + 36; i++) {
-						if (bitmapBuffer[i] >= '0' && bitmapBuffer[i] <= '9') {
-							bs.set(pos++, ((bitmapBuffer[i] - 48) & 8) > 0);
-							bs.set(pos++, ((bitmapBuffer[i] - 48) & 4) > 0);
-							bs.set(pos++, ((bitmapBuffer[i] - 48) & 2) > 0);
-							bs.set(pos++, ((bitmapBuffer[i] - 48) & 1) > 0);
-						} else if (bitmapBuffer[i] >= 'A' && bitmapBuffer[i] <= 'F') {
-							bs.set(pos++, ((bitmapBuffer[i] - 55) & 8) > 0);
-							bs.set(pos++, ((bitmapBuffer[i] - 55) & 4) > 0);
-							bs.set(pos++, ((bitmapBuffer[i] - 55) & 2) > 0);
-							bs.set(pos++, ((bitmapBuffer[i] - 55) & 1) > 0);
-						} else if (bitmapBuffer[i] >= 'a' && bitmapBuffer[i] <= 'f') {
-							bs.set(pos++, ((bitmapBuffer[i] - 87) & 8) > 0);
-							bs.set(pos++, ((bitmapBuffer[i] - 87) & 4) > 0);
-							bs.set(pos++, ((bitmapBuffer[i] - 87) & 2) > 0);
-							bs.set(pos++, ((bitmapBuffer[i] - 87) & 1) > 0);
-						}
+                        byte[] _bb = new String(buf, secondaryBitmapStart, secondaryBitmap.length, encoding).getBytes();
+                        System.arraycopy(_bb, 0, secondaryBitmap, 0, secondaryBitmap.length);
+                    } else {
+						System.arraycopy(buf, secondaryBitmapStart, secondaryBitmap, 0, 16);
 					}
-					pos = 16 + minlength;
+					updateBitSetFromAsciiBitMap(bs, secondaryBitmap, 64, secondaryBitmapStart);
+					pos = minlength + secondaryBitmap.length; // end of bitmap
 				} else {
-					pos = minlength;
+					pos = minlength; // end of bitmap
 				}
 			} catch (NumberFormatException ex) {
 				ParseException _e = new ParseException("Invalid ISO8583 bitmap", pos);
@@ -526,6 +485,18 @@ public class MessageFactory<T extends IsoMessage> {
 						IsoValue<?> val = (VARIABLE_LENGTH_VAR_TYPES.contains(fpi.getType()) && forceStringEncoding) ?
 							fpi.parse(i, buf, pos, decoder)
 							: fpi.parseBinary(i, buf, pos, decoder);
+
+						if(i - 1 == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
+						//todo - verify which types would be used when (and is the return type byte[]?)
+							if(val.getType() == IsoType.BINARY || val.getType() == IsoType.ALPHA) {
+								final byte[] tertiaryBitmap = (byte[]) val.getValue();
+								updateBitSetFromBinaryBitmap(bs, tertiaryBitmap, 128);
+							} else {
+								final byte[] tertiaryBitmap = ((String) val.getValue()).getBytes();
+								final int offset = pos;
+								updateBitSetFromAsciiBitMap(bs, tertiaryBitmap, 128, offset);
+							}
+						}
 
 						m.setField(i, val);
 						if (val != null) {
@@ -597,6 +568,57 @@ public class MessageFactory<T extends IsoMessage> {
         m.setBinaryBitmap(binBitmap);
         m.setForceStringEncoding(forceStringEncoding);
 		return m;
+	}
+
+	/**
+	 fills the bitset representing the iso fields that are present based on the byteArray.
+	 @param bitSet - the bitset that is to be updated based on the bitmap
+	 @param bitmap - the binary map representing the iso fields
+	 @param fieldIndex - which field is the bitmap representing (primary: 1(-64),secondary: 65(-128), tertiary: 129(-192))
+	 **/
+	private void updateBitSetFromBinaryBitmap(BitSet bitSet, byte[] bitmap, int fieldIndex){
+		for (byte value : bitmap) {
+			int bit = 128;
+			for (int b = 0; b < 8; b++) { // manual conversion of byte at position pos - pos+4 to int
+				bitSet.set(fieldIndex++, (value & bit) != 0);
+				bit >>= 1;
+			}
+		}
+	}
+
+	/**
+	 fills the bitset representing the iso fields that are present based on the byteArray.
+	 @param bitSet - the bitset that is to be updated based on the bitmap
+	 @param bitmap - the binary map representing the iso fields
+	 @param fieldIndex - which field is the bitmap representing (primary: 1(-64),secondary: 65(-128), tertiary: 129(-192))
+	 @param originalMessageOffset - used to give the exact location in the message in case of error.
+	 **/
+	private void updateBitSetFromAsciiBitMap(BitSet bitSet, byte[] bitmap, int fieldIndex, int originalMessageOffset) throws ParseException {
+		int i = 0;
+		try {
+			for (; i < bitmap.length; i++) {
+				if (bitmap[i] >= '0' && bitmap[i] <= '9') {
+					bitSet.set(fieldIndex++, ((bitmap[i] - 48) & 8) > 0);
+					bitSet.set(fieldIndex++, ((bitmap[i] - 48) & 4) > 0);
+					bitSet.set(fieldIndex++, ((bitmap[i] - 48) & 2) > 0);
+					bitSet.set(fieldIndex++, ((bitmap[i] - 48) & 1) > 0);
+				} else if (bitmap[i] >= 'A' && bitmap[i] <= 'F') {
+					bitSet.set(fieldIndex++, ((bitmap[i] - 55) & 8) > 0);
+					bitSet.set(fieldIndex++, ((bitmap[i] - 55) & 4) > 0);
+					bitSet.set(fieldIndex++, ((bitmap[i] - 55) & 2) > 0);
+					bitSet.set(fieldIndex++, ((bitmap[i] - 55) & 1) > 0);
+				} else if (bitmap[i] >= 'a' && bitmap[i] <= 'f') {
+					bitSet.set(fieldIndex++, ((bitmap[i] - 87) & 8) > 0);
+					bitSet.set(fieldIndex++, ((bitmap[i] - 87) & 4) > 0);
+					bitSet.set(fieldIndex++, ((bitmap[i] - 87) & 2) > 0);
+					bitSet.set(fieldIndex++, ((bitmap[i] - 87) & 1) > 0);
+				}
+			}
+		} catch (NumberFormatException ex) {
+			ParseException _e = new ParseException("Invalid ISO8583 bitmap", originalMessageOffset + i);
+			_e.initCause(ex);
+			throw _e;
+		}
 	}
 
 	/** Creates a Iso message, override this method in the subclass to provide your 
