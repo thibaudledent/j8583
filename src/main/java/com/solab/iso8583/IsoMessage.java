@@ -39,11 +39,22 @@ import java.util.Map;
 public class IsoMessage {
 
 	static final byte[] HEX = new byte[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-    static final int INDEX_OF_TERTIARY_BITMAP = 65;
-    public static final int MAX_AMOUNT_OF_FIELDS = 192;
-    static final int MAX_AMOUNT_OF_FIELDS_USING_SECONDARY_BITMAP = 128;
 
-	/** The message type. */
+
+    static final int END_OF_PRIMARY_BITMAP_FIELDS = 64;
+    static final int END_OF_SECONDARY_BITMAP_FIELDS = 128;
+    static final int END_OF_TERTIARY_BITMAP_FIELDS = 192;
+    static final int INDEX_OF_TERTIARY_BITMAP = 65;
+
+    public static final int MAX_AMOUNT_OF_FIELDS = END_OF_TERTIARY_BITMAP_FIELDS;
+    static final int PRIMARY_BITMAP_SIZE = END_OF_PRIMARY_BITMAP_FIELDS;
+    static final int EXTENDED_BITMAP_SIZE = END_OF_SECONDARY_BITMAP_FIELDS;
+
+    static final int START_OF_PRIMARY_BITMAP_FIELDS = 1;
+    static final int START_OF_SECONDARY_BITMAP_FIELDS = END_OF_PRIMARY_BITMAP_FIELDS + 1;
+    static final int START_OF_TERTIARY_BITMAP_FIELDS = END_OF_SECONDARY_BITMAP_FIELDS + 1;
+
+    /** The message type. */
     private int type;
 
     private boolean binaryHeader;
@@ -215,7 +226,7 @@ public class IsoMessage {
     	if (index < 2 || index > MAX_AMOUNT_OF_FIELDS) {
     		throw new IndexOutOfBoundsException("Field index must be between 2 and " + MAX_AMOUNT_OF_FIELDS);
     	}
-    	if (index > MAX_AMOUNT_OF_FIELDS_USING_SECONDARY_BITMAP) {
+    	if (index > END_OF_SECONDARY_BITMAP_FIELDS) {
             tertiaryBitmapNeeded = true;
         }
     	if (field != null) {
@@ -259,7 +270,7 @@ public class IsoMessage {
     	if (value == null) {
     		fields[index] = null;
     	} else {
-            if (index > MAX_AMOUNT_OF_FIELDS_USING_SECONDARY_BITMAP) {
+            if (index > END_OF_SECONDARY_BITMAP_FIELDS) {
                 tertiaryBitmapNeeded = true;
             }
     		IsoValue<T> v = null;
@@ -382,16 +393,16 @@ public class IsoMessage {
     /** Creates a BitSet for the bitmap. */
     protected BitSet createBitmapBitSet() {
         BitSet bs = new BitSet(forceb2 ? 128 : 64);
-        for (int i = 2 ; i < 129; i++) {
+        for (int i = 2 ; i <= END_OF_SECONDARY_BITMAP_FIELDS; i++) {
             if (fields[i] != null) {
                 bs.set(i - 1);
             }
         }
         if (forceb2) {
             bs.set(0);
-        } else if (bs.length() > 64) {
+        } else if (bs.length() > PRIMARY_BITMAP_SIZE) {
             //Extend to 128 if needed
-            BitSet b2 = new BitSet(128);
+            BitSet b2 = new BitSet(EXTENDED_BITMAP_SIZE);
             b2.or(bs);
             bs = b2;
             bs.set(0);
@@ -402,9 +413,9 @@ public class IsoMessage {
     /* Creates a BitSet for fields 129-196 */
     protected BitSet createTertiaryBitSet() {
         BitSet tertiaryBitmap = new BitSet(64);
-        for (int i = 129 ; i <= MAX_AMOUNT_OF_FIELDS; i++) {
+        for (int i = START_OF_TERTIARY_BITMAP_FIELDS ; i <= END_OF_TERTIARY_BITMAP_FIELDS; i++) {
             if (fields[i] != null) {
-                tertiaryBitmap.set(i - 129);
+                tertiaryBitmap.set(i - START_OF_TERTIARY_BITMAP_FIELDS);
             }
         }
         return tertiaryBitmap;
@@ -480,17 +491,17 @@ public class IsoMessage {
     }
 
     private void writeBitmapToStreamAsBinary(ByteArrayOutputStream bout, BitSet bs) {
-        int pos = 128;
-        int b = 0;
+        int bitPosition = 0x80; // byte: 1000 0000
+        int resultByte = 0x00;
         for (int i = 0; i < bs.size(); i++) {
             if (bs.get(i)) {
-                b |= pos;
+                resultByte |= bitPosition; // set the bit selected by bitPosition to 1
             }
-            pos >>= 1;
-            if (pos == 0) {
-                bout.write(b);
-                pos = 128;
-                b = 0;
+            bitPosition >>= 1; // move the selected bit 1 to the right
+            if (bitPosition == 0) { // if all bits have been used
+                bout.write(resultByte); // write the resulting bite
+                bitPosition = 128; // start over
+                resultByte = 0;
             }
         }
     }

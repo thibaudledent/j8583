@@ -36,6 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import static com.solab.iso8583.IsoMessage.MAX_AMOUNT_OF_FIELDS;
+import static com.solab.iso8583.IsoMessage.PRIMARY_BITMAP_SIZE;
+import static com.solab.iso8583.IsoMessage.START_OF_PRIMARY_BITMAP_FIELDS;
+import static com.solab.iso8583.IsoMessage.START_OF_SECONDARY_BITMAP_FIELDS;
+import static com.solab.iso8583.IsoMessage.START_OF_TERTIARY_BITMAP_FIELDS;
 import static com.solab.iso8583.IsoType.VARIABLE_LENGTH_VAR_TYPES;
 
 /** This class is used to create messages, either from scratch or from an existing String or byte
@@ -130,7 +135,7 @@ public class MessageFactory<T extends IsoMessage> {
         if (!typeTemplates.isEmpty()) {
             for (T tmpl : typeTemplates.values()) {
                 tmpl.setCharacterEncoding(encoding);
-                for (int i = 2 ; i<129; i++) {
+                for (int i = 2 ; i<= MAX_AMOUNT_OF_FIELDS; i++) {
                     IsoValue<?> v = tmpl.getField(i);
                     if (v != null) {
                         v.setCharacterEncoding(encoding);
@@ -282,7 +287,7 @@ public class MessageFactory<T extends IsoMessage> {
 		//Copy the values from the template
 		IsoMessage templ = typeTemplates.get(type);
 		if (templ != null) {
-			for (int i = 2; i <= 192; i++) {
+			for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
 				if (templ.hasField(i)) {
 					//We could detect here if there's a custom object with a CustomField,
 					//but we can't copy the value so there's no point.
@@ -324,13 +329,13 @@ public class MessageFactory<T extends IsoMessage> {
 		//Copy the values from the template or the request (request has preference)
 		IsoMessage templ = typeTemplates.get(resp.getType());
 		if (templ == null) {
-			for (int i = 2; i < 192; i++) {
+			for (int i = 2; i < MAX_AMOUNT_OF_FIELDS; i++) {
 				if (request.hasField(i)) {
 					resp.setField(i, request.getField(i).clone());
 				}
 			}
 		} else {
-			for (int i = 2; i < 192; i++) {
+			for (int i = 2; i < MAX_AMOUNT_OF_FIELDS; i++) {
 				if (request.hasField(i)) {
 					resp.setField(i, request.getField(i).clone());
 				} else if (templ.hasField(i)) {
@@ -400,13 +405,13 @@ public class MessageFactory<T extends IsoMessage> {
 		}
 		m.setType(type);
 		//Parse the bitmap (primary first)
-		final BitSet bs = new BitSet(64);
+		final BitSet bs = new BitSet(PRIMARY_BITMAP_SIZE);
 		int pos = 0;
 		if (binaryHeader || binBitmap) {
             pos = isoHeaderLength + (binaryHeader ? 2 : 4);
 			final byte[] primaryBitmap = new byte[8];
 			System.arraycopy(buf, pos, primaryBitmap, 0, primaryBitmap.length);
-			updateBitSetFromBinaryBitmap(bs, primaryBitmap, 0);
+			updateBitSetFromBinaryBitmap(bs, primaryBitmap, START_OF_PRIMARY_BITMAP_FIELDS - 1); // field x can be found at bitmap position x-1
 			pos += primaryBitmap.length;
 			//Check for secondary bitmap and parse if necessary
 			if (bs.get(0)) {
@@ -430,7 +435,7 @@ public class MessageFactory<T extends IsoMessage> {
                 } else {
 					System.arraycopy(buf, primaryBitmapStart, primaryBitmap, 0, 16);
 				}
-				updateBitSetFromAsciiBitMap(bs, primaryBitmap, 0, primaryBitmapStart);
+				updateBitSetFromAsciiBitMap(bs, primaryBitmap, START_OF_PRIMARY_BITMAP_FIELDS - 1, primaryBitmapStart); // field x can be found at position x-1
 				//Check for secondary bitmap and parse it if necessary
 				if (bs.get(0)) {
 					int secondaryBitmapStart = primaryBitmapStart + primaryBitmap.length;
@@ -444,7 +449,7 @@ public class MessageFactory<T extends IsoMessage> {
                     } else {
 						System.arraycopy(buf, secondaryBitmapStart, secondaryBitmap, 0, 16);
 					}
-					updateBitSetFromAsciiBitMap(bs, secondaryBitmap, 64, secondaryBitmapStart);
+					updateBitSetFromAsciiBitMap(bs, secondaryBitmap, START_OF_SECONDARY_BITMAP_FIELDS - 1, secondaryBitmapStart); // field x can be found at position x-1
 					pos = minlength + secondaryBitmap.length; // end of bitmap
 				} else {
 					pos = minlength; // end of bitmap
@@ -497,7 +502,7 @@ public class MessageFactory<T extends IsoMessage> {
 
 						if(useTertiaryBitmap && i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
 							final String tertiaryBitmap = ((String) val.getValue());
-							updateBitSetFromBinaryBitmap(bs, tertiaryBitmap.getBytes(), 128);
+							updateBitSetFromBinaryBitmap(bs, tertiaryBitmap.getBytes(), START_OF_TERTIARY_BITMAP_FIELDS - 1); // field x can be found at bitmap position x-1
 						}
 
 						m.setField(i, val);
@@ -554,7 +559,7 @@ public class MessageFactory<T extends IsoMessage> {
 						if(useTertiaryBitmap && i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
 								final String tertiaryBitmap = ((String) val.getValue());
 								final int offset = pos;
-								updateBitSetFromAsciiBitMap(bs, tertiaryBitmap.getBytes(), 128, offset);
+								updateBitSetFromAsciiBitMap(bs, tertiaryBitmap.getBytes(), START_OF_TERTIARY_BITMAP_FIELDS - 1, offset); // field x can be found at position x-1
 						}
 						m.setField(i, val);
 						//To get the correct next position, we need to get the number of bytes, not chars
@@ -585,7 +590,7 @@ public class MessageFactory<T extends IsoMessage> {
 	 **/
 	private void updateBitSetFromBinaryBitmap(BitSet bitSet, byte[] bitmap, int fieldIndex){
 		for (byte value : bitmap) {
-			int bit = 128;
+			int bit = 0x80;
 			for (int b = 0; b < 8; b++) { // manual conversion of byte at position pos - pos+4 to int
 				bitSet.set(fieldIndex++, (value & bit) != 0);
 				bit >>= 1;
@@ -597,7 +602,7 @@ public class MessageFactory<T extends IsoMessage> {
 	 fills the bitset representing the iso fields that are present based on the byteArray.
 	 @param bitSet - the bitset that is to be updated based on the bitmap
 	 @param bitmap - the binary map representing the iso fields
-	 @param fieldIndex - which field is the bitmap representing (primary: 1(-64),secondary: 65(-128), tertiary: 129(-192))
+	 @param fieldIndex - the position on the combined bitmap (primary: 0(-63) representing fields 1-64,secondary: 64(-128), tertiary: 128(-191))
 	 @param originalMessageOffset - used to give the exact location in the message in case of error.
 	 **/
 	private void updateBitSetFromAsciiBitMap(BitSet bitSet, byte[] bitmap, int fieldIndex, int originalMessageOffset) throws ParseException {
