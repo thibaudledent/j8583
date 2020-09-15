@@ -40,7 +40,7 @@ public class IsoMessage {
 
 	static final byte[] HEX = new byte[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
     static final int INDEX_OF_TERTIARY_BITMAP = 65;
-    static final int MAX_AMOUNT_OF_FIELDS = 192;
+    public static final int MAX_AMOUNT_OF_FIELDS = 192;
     static final int MAX_AMOUNT_OF_FIELDS_USING_SECONDARY_BITMAP = 128;
 
 	/** The message type. */
