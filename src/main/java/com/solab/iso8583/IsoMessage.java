@@ -40,7 +40,8 @@ public class IsoMessage {
 
 	static final byte[] HEX = new byte[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
     static final int INDEX_OF_TERTIARY_BITMAP = 65;
-    private static final int MAX_AMOUNT_OF_FIELDS = 192;
+    static final int MAX_AMOUNT_OF_FIELDS = 192;
+    static final int MAX_AMOUNT_OF_FIELDS_USING_SECONDARY_BITMAP = 128;
 
 	/** The message type. */
     private int type;
@@ -214,7 +215,7 @@ public class IsoMessage {
     	if (index < 2 || index > MAX_AMOUNT_OF_FIELDS) {
     		throw new IndexOutOfBoundsException("Field index must be between 2 and " + MAX_AMOUNT_OF_FIELDS);
     	}
-    	if (index > 128) {
+    	if (index > MAX_AMOUNT_OF_FIELDS_USING_SECONDARY_BITMAP) {
             tertiaryBitmapNeeded = true;
         }
     	if (field != null) {
@@ -258,7 +259,7 @@ public class IsoMessage {
     	if (value == null) {
     		fields[index] = null;
     	} else {
-            if (index > 128) {
+            if (index > MAX_AMOUNT_OF_FIELDS_USING_SECONDARY_BITMAP) {
                 tertiaryBitmapNeeded = true;
             }
     		IsoValue<T> v = null;
@@ -401,7 +402,7 @@ public class IsoMessage {
     /* Creates a BitSet for fields 129-196 */
     protected BitSet createTertiaryBitSet() {
         BitSet tertiaryBitmap = new BitSet(64);
-        for (int i = 129 ; i <= 192; i++) {
+        for (int i = 129 ; i <= MAX_AMOUNT_OF_FIELDS; i++) {
             if (fields[i] != null) {
                 tertiaryBitmap.set(i - 129);
             }
