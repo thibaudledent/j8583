@@ -329,13 +329,13 @@ public class MessageFactory<T extends IsoMessage> {
 		//Copy the values from the template or the request (request has preference)
 		IsoMessage templ = typeTemplates.get(resp.getType());
 		if (templ == null) {
-			for (int i = 2; i < MAX_AMOUNT_OF_FIELDS; i++) {
+			for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
 				if (request.hasField(i)) {
 					resp.setField(i, request.getField(i).clone());
 				}
 			}
 		} else {
-			for (int i = 2; i < MAX_AMOUNT_OF_FIELDS; i++) {
+			for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
 				if (request.hasField(i)) {
 					resp.setField(i, request.getField(i).clone());
 				} else if (templ.hasField(i)) {
@@ -472,17 +472,7 @@ public class MessageFactory<T extends IsoMessage> {
 					new String(buf)), 0);
 		}
 		//First we check if the message contains fields not specified in the parsing template
-		boolean abandon = false;
-		for (int i = 1; i < bs.length(); i++) {
-			if (bs.get(i) && !index.contains(i+1)) {
-                log.warn("ISO8583 MessageFactory cannot parse field {}: unspecified in parsing guide for type {}",
-                        i+1, Integer.toString(type, 16));
-				abandon = true;
-			}
-		}
-		if (abandon) {
-			throw new ParseException("ISO8583 MessageFactory cannot parse fields", 0);
-		}
+		assertAllFieldsPresentHaveParsingGuides(type, bs, index);
 		//Now we parse each field
 		if (binaryFields) {
 			for (Integer i : index) {
@@ -501,8 +491,9 @@ public class MessageFactory<T extends IsoMessage> {
 							: fpi.parseBinary(i, buf, pos, decoder);
 
 						if(useTertiaryBitmap && i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
-							final String tertiaryBitmap = ((String) val.getValue());
-							updateBitSetFromBinaryBitmap(bs, tertiaryBitmap.getBytes(), START_OF_TERTIARY_BITMAP_FIELDS - 1); // field x can be found at bitmap position x-1
+							final byte[] tertiaryBitmap = (byte[]) val.getValue();
+							updateBitSetFromBinaryBitmap(bs, tertiaryBitmap, START_OF_TERTIARY_BITMAP_FIELDS - 1); // field x can be found at bitmap position x-1
+							assertAllFieldsPresentHaveParsingGuides(type, bs, index); // check again for the new fields added to the bitmap
 						}
 
 						m.setField(i, val);
@@ -557,9 +548,10 @@ public class MessageFactory<T extends IsoMessage> {
                         }
 						IsoValue<?> val = fpi.parse(i, buf, pos, decoder);
 						if(useTertiaryBitmap && i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
-								final String tertiaryBitmap = ((String) val.getValue());
-								final int offset = pos;
-								updateBitSetFromAsciiBitMap(bs, tertiaryBitmap.getBytes(), START_OF_TERTIARY_BITMAP_FIELDS - 1, offset); // field x can be found at position x-1
+							final byte[] tertiaryBitmap = ((byte[]) val.getValue());
+							final int offset = pos;
+							updateBitSetFromAsciiBitMap(bs, tertiaryBitmap, START_OF_TERTIARY_BITMAP_FIELDS - 1, offset); // field x can be found at position x-1
+							assertAllFieldsPresentHaveParsingGuides(type, bs, index); // check again for the new fields added to the bitmap
 						}
 						m.setField(i, val);
 						//To get the correct next position, we need to get the number of bytes, not chars
@@ -580,6 +572,20 @@ public class MessageFactory<T extends IsoMessage> {
         m.setBinaryBitmap(binBitmap);
         m.setForceStringEncoding(forceStringEncoding);
 		return m;
+	}
+
+	private void assertAllFieldsPresentHaveParsingGuides(int messageType, BitSet bs, List<Integer> fieldsWithParseGuide) throws ParseException {
+		boolean abandon = false;
+		for (int i = 1; i < bs.length(); i++) {
+			if (bs.get(i) && !fieldsWithParseGuide.contains(i+1)) {
+                log.warn("ISO8583 MessageFactory cannot parse field {}: unspecified in parsing guide for type {}",
+                        i+1, Integer.toString(messageType, 16));
+				abandon = true;
+			}
+		}
+		if (abandon) {
+			throw new ParseException("ISO8583 MessageFactory cannot parse fields", 0);
+		}
 	}
 
 	/**

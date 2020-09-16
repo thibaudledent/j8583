@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE j8583-config PUBLIC "-//J8583//DTD CONFIG 1.0//EN"
+        "http://j8583.sourceforge.net/j8583.dtd">
+<j8583-config>
+
+    <!-- A message with field 65 not used as tertiary bitmap -->
+    <template type="0100">
+        <field num="65" type="LLLVAR">Custom Field 65</field>
+    </template>
+
+    <!-- A message with tertiary bitmap, but no additional field guidance -->
+    <template type="0101">
+        <field num="65" type="ALPHA" length="16">8000000000000001</field>
+    </template>
+
+    <!-- A message focussing on off-by-1 errors by filling the first and last element referred to in the tertiary bitmap -->
+    <template type="0200">
+        <field num="2" type="NUMERIC" length="4">2222</field>
+        <field num="64" type="LLVAR">0123456789ABC</field>
+        <field num="65" type="BINARY" length="16">8000000000000001</field>
+        <field num="128" type="LLLVAR">Field of type LLLVAR</field>
+        <field num="129" type="LLVAR">129</field>
+        <field num="192" type="LLVAR">192</field>
+    </template>
+
+    <!-- A message focussing on off-by-1 errors by filling the first and last element referred to in the tertiary bitmap -->
+    <template type="0201">
+        <field num="2" type="NUMERIC" length="4">2222</field>
+        <field num="64" type="LLVAR">0123456789ABC</field>
+        <field num="128" type="LLLVAR">Field of type LLLVAR</field>
+        <field num="129" type="LLVAR">129</field>
+        <field num="192" type="LLVAR">192</field>
+    </template>
+
+
+    <parse type="0100">
+        <field num="65" type="LLLVAR"/>
+    </parse>
+
+    <parse type="0101">
+        <field num="65" type="ALPHA" length="16"/>
+    </parse>
+
+    <parse type="0200">
+        <field num="2" type="NUMERIC" length="4" />
+        <field num="64" type="LLVAR"/>
+        <field num="65" type="BINARY" length="16"/>
+        <field num="128" type="LLLVAR"/>
+        <field num="129" type="LLVAR"/>
+        <field num="192" type="LLVAR"/>
+    </parse>
+
+    <parse type="0201">
+        <field num="2" type="NUMERIC" length="4" />
+        <field num="64" type="LLVAR"/>
+        <field num="65" type="BINARY" length="8"/>
+        <field num="128" type="LLLVAR"/>
+        <field num="129" type="LLVAR"/>
+        <field num="192" type="LLVAR"/>
+    </parse>
+</j8583-config>
