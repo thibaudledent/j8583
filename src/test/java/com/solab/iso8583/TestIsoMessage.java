@@ -109,7 +109,6 @@ public class TestIsoMessage {
         //Again, but now with forced encoding
         mf.setForceStringEncoding(true);
         iso = mf.parseMessage(buf, mf.getIsoHeader(0x210).length());
-        System.out.println(iso.debugString());
         Assert.assertEquals(0x210, iso.getType());
         testFields(iso, fields);
 	}
@@ -161,28 +160,21 @@ public class TestIsoMessage {
         toWrite.setField(37, new IsoValue<>(IsoType.ALPHA, "900312771930", 12));
         toWrite.setField(93, new IsoValue<>(IsoType.LLVAR, "50191150446"));
         toWrite.setField(94, new IsoValue<>(IsoType.LLVAR, "50191150020"));
-        toWrite.setField(129, new IsoValue<>(IsoType.LLVAR, "129", 3));
-        toWrite.setField(192, new IsoValue<>(IsoType.LLVAR, "192", 3));
 
         // When - writing
         final byte[] bytes = toWrite.writeData();
 
         // Then
         final String hexBinary = DatatypeConverter.printHexBinary(bytes);
-        System.out.println("Serialized message: ");
         System.out.println(hexBinary);
         final String expected = "F1F8F0F482300100080000000000000C00000000F0F2F0F4F1F1F1F4F2F2F7F7F1F9F3F0F1F9F0F2F0F4F1F2F1F4F2F2F8F6F0F9F0F0F3F1F2F7F7F1F9F3F0F1F1F5F0F1F9F1F1F5F0F4F4F6F1F1F5F0F1F9F1F1F5F0F0F2F0";
-        //Assert.assertEquals(formatWithSpace(expected), formatWithSpace(hexBinary));
+        Assert.assertEquals(formatWithSpace(expected), formatWithSpace(hexBinary));
         // When - parsing
         final IsoMessage parseMessage = mf.parseMessage(bytes, 0);
         final byte[] parseBytes = parseMessage.writeData();
-        System.out.println("Debug parsed message:");
-        System.out.println(parseMessage.debugString());
 
         // Then
         final String hexParseBinary = DatatypeConverter.printHexBinary(parseBytes);
-        System.out.println("Again serialized message:");
-        System.out.println(hexParseBinary);
         Assert.assertEquals(formatWithSpace(expected), formatWithSpace(hexParseBinary));
     }
 

@@ -38,7 +38,7 @@
     </parse>
 
     <parse type="0101">
-        <field num="65" type="ALPHA" length="16"/>
+        <field num="65" type="BINARY" length="16"/>
     </parse>
 
     <parse type="0200">

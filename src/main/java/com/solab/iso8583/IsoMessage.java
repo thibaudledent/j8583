@@ -62,7 +62,7 @@ public class IsoMessage {
 
     /** This is where the values are stored. */
     @SuppressWarnings("rawtypes")
-	private IsoValue[] fields = new IsoValue[MAX_AMOUNT_OF_FIELDS + 1];
+	private final IsoValue[] fields = new IsoValue[MAX_AMOUNT_OF_FIELDS + 1];
     /** Stores the optional ISO header. */
     private String isoHeader;
     private byte[] binIsoHeader;

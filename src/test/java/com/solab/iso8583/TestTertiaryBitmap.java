@@ -46,6 +46,7 @@ public class TestTertiaryBitmap {
     public void shouldThrowExceptionWhenExtendedFieldsNotPresent() throws UnsupportedEncodingException {
         // Given
         messageFactory.setUseTertiaryBitmap(true);
+        messageFactory.setUseBinaryMessages(true);
         byte[] serializedMessageWithField65 = messageFactory.newMessage(MESSAGE_WITH_MISSING_FIELD_GUIDES_FOR_EXTENDED_FIELDS).writeData();
 
         // When
