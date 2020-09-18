@@ -169,14 +169,12 @@ public class TestIsoMessage {
         System.out.println(hexBinary);
         final String expected = "F1F8F0F482300100080000000000000C00000000F0F2F0F4F1F1F1F4F2F2F7F7F1F9F3F0F1F9F0F2F0F4F1F2F1F4F2F2F8F6F0F9F0F0F3F1F2F7F7F1F9F3F0F1F1F5F0F1F9F1F1F5F0F4F4F6F1F1F5F0F1F9F1F1F5F0F0F2F0";
         Assert.assertEquals(formatWithSpace(expected), formatWithSpace(hexBinary));
-
         // When - parsing
         final IsoMessage parseMessage = mf.parseMessage(bytes, 0);
         final byte[] parseBytes = parseMessage.writeData();
 
         // Then
         final String hexParseBinary = DatatypeConverter.printHexBinary(parseBytes);
-        System.out.println(hexParseBinary);
         Assert.assertEquals(formatWithSpace(expected), formatWithSpace(hexParseBinary));
     }
 

@@ -40,7 +40,21 @@ public class IsoMessage {
 
 	static final byte[] HEX = new byte[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-	/** The message type. */
+
+    static final int END_OF_PRIMARY_BITMAP_FIELDS = 64;
+    static final int END_OF_SECONDARY_BITMAP_FIELDS = 128;
+    static final int END_OF_TERTIARY_BITMAP_FIELDS = 192;
+    static final int INDEX_OF_TERTIARY_BITMAP = 65;
+
+    public static final int MAX_AMOUNT_OF_FIELDS = END_OF_TERTIARY_BITMAP_FIELDS;
+    static final int PRIMARY_BITMAP_SIZE = END_OF_PRIMARY_BITMAP_FIELDS;
+    static final int EXTENDED_BITMAP_SIZE = END_OF_SECONDARY_BITMAP_FIELDS;
+
+    static final int START_OF_PRIMARY_BITMAP_FIELDS = 1;
+    static final int START_OF_SECONDARY_BITMAP_FIELDS = END_OF_PRIMARY_BITMAP_FIELDS + 1;
+    static final int START_OF_TERTIARY_BITMAP_FIELDS = END_OF_SECONDARY_BITMAP_FIELDS + 1;
+
+    /** The message type. */
     private int type;
 
     private boolean binaryHeader;
@@ -48,7 +62,7 @@ public class IsoMessage {
 
     /** This is where the values are stored. */
     @SuppressWarnings("rawtypes")
-	private IsoValue[] fields = new IsoValue[129];
+	private final IsoValue[] fields = new IsoValue[MAX_AMOUNT_OF_FIELDS + 1];
     /** Stores the optional ISO header. */
     private String isoHeader;
     private byte[] binIsoHeader;
@@ -56,6 +70,9 @@ public class IsoMessage {
     /** Flag to enforce secondary bitmap even if empty. */
     private boolean forceb2;
     private boolean binBitmap;
+
+    /* Flag to indicate that fields with an index above 128 are in use and a tertiary bitmap is needed */
+    private boolean tertiaryBitmapNeeded = false;
     private boolean forceStringEncoding;
     private String encoding = System.getProperty("file.encoding");
 
@@ -206,9 +223,12 @@ public class IsoMessage {
      * so the first valid value for index must be 2.
      * @return The receiver (useful for setting several fields in sequence). */
     public IsoMessage setField(int index, IsoValue<?> field) {
-    	if (index < 2 || index > 128) {
-    		throw new IndexOutOfBoundsException("Field index must be between 2 and 128");
+    	if (index < 2 || index > MAX_AMOUNT_OF_FIELDS) {
+    		throw new IndexOutOfBoundsException("Field index must be between 2 and " + MAX_AMOUNT_OF_FIELDS);
     	}
+    	if (index > END_OF_SECONDARY_BITMAP_FIELDS) {
+            tertiaryBitmapNeeded = true;
+        }
     	if (field != null) {
         	field.setCharacterEncoding(encoding);
     	}
@@ -244,12 +264,15 @@ public class IsoMessage {
      * with any other type.
      * @return The receiver (useful for setting several values in sequence). */
     public <T> IsoMessage setValue(int index, T value, CustomField<T> encoder, IsoType t, int length) {
-    	if (index < 2 || index > 128) {
-    		throw new IndexOutOfBoundsException("Field index must be between 2 and 128");
+    	if (index < 2 || index > MAX_AMOUNT_OF_FIELDS) {
+    		throw new IndexOutOfBoundsException("Field index must be between 2 and " + MAX_AMOUNT_OF_FIELDS);
     	}
     	if (value == null) {
     		fields[index] = null;
     	} else {
+            if (index > END_OF_SECONDARY_BITMAP_FIELDS) {
+                tertiaryBitmapNeeded = true;
+            }
     		IsoValue<T> v = null;
     		if (t.needsLength()) {
     			v = new IsoValue<>(t, value, length, encoder);
@@ -370,21 +393,44 @@ public class IsoMessage {
     /** Creates a BitSet for the bitmap. */
     protected BitSet createBitmapBitSet() {
         BitSet bs = new BitSet(forceb2 ? 128 : 64);
-        for (int i = 2 ; i < 129; i++) {
+        for (int i = 2 ; i <= END_OF_SECONDARY_BITMAP_FIELDS; i++) {
             if (fields[i] != null) {
                 bs.set(i - 1);
             }
         }
         if (forceb2) {
             bs.set(0);
-        } else if (bs.length() > 64) {
+        } else if (bs.length() > PRIMARY_BITMAP_SIZE) {
             //Extend to 128 if needed
-            BitSet b2 = new BitSet(128);
+            BitSet b2 = new BitSet(EXTENDED_BITMAP_SIZE);
             b2.or(bs);
             bs = b2;
             bs.set(0);
         }
         return bs;
+    }
+
+    /* Creates a BitSet for fields 129-196 */
+    protected BitSet createTertiaryBitSet() {
+        BitSet tertiaryBitmap = new BitSet(64);
+        for (int i = START_OF_TERTIARY_BITMAP_FIELDS ; i <= END_OF_TERTIARY_BITMAP_FIELDS; i++) {
+            if (fields[i] != null) {
+                tertiaryBitmap.set(i - START_OF_TERTIARY_BITMAP_FIELDS);
+            }
+        }
+        return tertiaryBitmap;
+    }
+
+    private void fillTertiaryBitmapField(){
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        BitSet bitset = createTertiaryBitSet();
+        if(binaryFields) {
+            writeBitmapToStreamAsBinary(bout, bitset);
+        } else {
+            writeBitmapToStreamAsAscii(bout, bitset);
+        }
+        IsoValue<byte[]> bitmapValue = new IsoValue<>(IsoType.BINARY, bout.toByteArray(), bout.size());
+        setField(INDEX_OF_TERTIARY_BITMAP, bitmapValue);
     }
 
     /** Writes the message to a memory stream and returns a byte array with the result. */
@@ -416,55 +462,20 @@ public class IsoMessage {
     	}
 
     	//Bitmap
-        BitSet bs = createBitmapBitSet();
-    	//Write bitmap to stream
-    	if (binaryHeader || binBitmap) {
-    		int pos = 128;
-    		int b = 0;
-    		for (int i = 0; i < bs.size(); i++) {
-    			if (bs.get(i)) {
-    				b |= pos;
-    			}
-    			pos >>= 1;
-    			if (pos == 0) {
-    				bout.write(b);
-    				pos = 128;
-    				b = 0;
-    			}
-    		}
-    	} else {
-            ByteArrayOutputStream bout2 = null;
-            if (forceStringEncoding) {
-                bout2 = bout;
-                bout = new ByteArrayOutputStream();
-            }
-            int pos = 0;
-            int lim = bs.size() / 4;
-            for (int i = 0; i < lim; i++) {
-                int nibble = 0;
-                if (bs.get(pos++))
-                    nibble |= 8;
-                if (bs.get(pos++))
-                    nibble |= 4;
-                if (bs.get(pos++))
-                    nibble |= 2;
-                if (bs.get(pos++))
-                    nibble |= 1;
-                bout.write(HEX[nibble]);
-            }
-            if (forceStringEncoding) {
-                final String _hb = new String(bout.toByteArray());
-                bout = bout2;
-                try {
-                    bout.write(_hb.getBytes(encoding));
-                } catch (IOException ignore) {
-                    //never happen
-                }
-            }
-    	}
+        if (tertiaryBitmapNeeded){
+            fillTertiaryBitmapField();
+        }
 
-    	//Fields
-    	for (int i = 2; i < 129; i++) {
+        BitSet bs = createBitmapBitSet();
+        //Write bitmap to stream
+        if (binaryHeader || binBitmap) {
+            writeBitmapToStreamAsBinary(bout, bs);
+        } else {
+            writeBitmapToStreamAsAscii(bout, bs);
+        }
+
+        //Fields
+    	for (int i = 2; i < fields.length; i++) {
     		IsoValue<?> v = fields[i];
     		if (v != null) {
         		try {
@@ -476,6 +487,54 @@ public class IsoMessage {
     	}
     	return bout.toByteArray();
     }
+
+    private void writeBitmapToStreamAsBinary(ByteArrayOutputStream bout, BitSet bs) {
+        int bitPosition = 0x80; // byte: 1000 0000
+        int resultByte = 0x00;
+        for (int i = 0; i < bs.size(); i++) {
+            if (bs.get(i)) {
+                resultByte |= bitPosition; // set the bit selected by bitPosition to 1
+            }
+            bitPosition >>= 1; // move the selected bit 1 to the right
+            if (bitPosition == 0) { // if all bits have been used
+                bout.write(resultByte); // write the resulting bite
+                bitPosition = 128; // start over
+                resultByte = 0;
+            }
+        }
+    }
+
+    private void writeBitmapToStreamAsAscii(ByteArrayOutputStream bout, BitSet bs) {
+        ByteArrayOutputStream bout2 = null;
+        if (forceStringEncoding) {
+            bout2 = bout;
+            bout = new ByteArrayOutputStream();
+        }
+        int pos = 0;
+        int lim = bs.size() / 4;
+        for (int i = 0; i < lim; i++) {
+            int nibble = 0;
+            if (bs.get(pos++))
+                nibble |= 8;
+            if (bs.get(pos++))
+                nibble |= 4;
+            if (bs.get(pos++))
+                nibble |= 2;
+            if (bs.get(pos++))
+                nibble |= 1;
+            bout.write(HEX[nibble]);
+        }
+        if (forceStringEncoding) {
+            final String _hb = new String(bout.toByteArray());
+            bout = bout2;
+            try {
+                bout.write(_hb.getBytes(encoding));
+            } catch (IOException ignore) {
+                //never happen
+            }
+        }
+    }
+
 
     /** Returns a string representation of the message, as if it were encoded
      * in ASCII with no binary bitmap. */
@@ -506,7 +565,7 @@ public class IsoMessage {
         }
 
         //Fields
-        for (int i = 2; i < 129; i++) {
+        for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
             IsoValue<?> v = fields[i];
             if (v != null) {
                 String desc = v.toString();

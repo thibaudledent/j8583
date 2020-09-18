@@ -45,6 +45,8 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import static com.solab.iso8583.IsoMessage.MAX_AMOUNT_OF_FIELDS;
+
 /** This class is used to parse a XML configuration file and configure
  * a MessageFactory with the values from it.
  * 
@@ -223,7 +225,7 @@ public class ConfigParser {
                 T m = (T)new IsoMessage();
                 m.setType(type);
                 m.setCharacterEncoding(mfact.getCharacterEncoding());
-                for (int i = 2; i < 128; i++) {
+                for (int i = 2; i < MAX_AMOUNT_OF_FIELDS; i++) {
                     if (tref.hasField(i)) {
                         m.setField(i, tref.getField(i).clone());
                     }
