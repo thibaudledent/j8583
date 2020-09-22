@@ -424,11 +424,7 @@ public class IsoMessage {
     private void fillTertiaryBitmapField(){
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         BitSet bitset = createTertiaryBitSet();
-        if(binaryFields) {
-            writeBitmapToStreamAsBinary(bout, bitset);
-        } else {
-            writeBitmapToStreamAsAscii(bout, bitset);
-        }
+        writeBitmapToStreamAsBinary(bout, bitset);
         IsoValue<byte[]> bitmapValue = new IsoValue<>(IsoType.BINARY, bout.toByteArray(), bout.size());
         setField(INDEX_OF_TERTIARY_BITMAP, bitmapValue);
     }

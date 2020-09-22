@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
@@ -62,7 +63,6 @@ public class TestTertiaryBitmap {
     @Test
     public void shouldProperlyDeserializeExtendedFieldsAscii() throws UnsupportedEncodingException, ParseException {
         // Given
-        //messageFactory.setCharacterEncoding("UTF-8");
         messageFactory.setUseBinaryMessages(false);
         messageFactory.setUseTertiaryBitmap(true);
 
@@ -83,6 +83,7 @@ public class TestTertiaryBitmap {
         // Then
         Assert.assertEquals("2222", reParsedMessage.getField(2).getValue());
         Assert.assertEquals("0123456789ABC", reParsedMessage.getObjectValue(64));
+        Assert.assertEquals("8000000000000001", DatatypeConverter.printHexBinary(reParsedMessage.getObjectValue(65)));
         Assert.assertEquals("129", reParsedMessage.getField(129).getValue());
         Assert.assertEquals("192", reParsedMessage.getField(192).getValue());
     }
@@ -111,6 +112,7 @@ public class TestTertiaryBitmap {
         // Then
         Assert.assertEquals((long) 2222, reParsedMessage.getField(2).getValue());
         Assert.assertEquals("0123456789ABC", reParsedMessage.getObjectValue(64));
+        Assert.assertEquals("8000000000000001", DatatypeConverter.printHexBinary(reParsedMessage.getObjectValue(65)));
         Assert.assertEquals("129", reParsedMessage.getField(129).getValue());
         Assert.assertEquals("192", reParsedMessage.getField(192).getValue());
     }

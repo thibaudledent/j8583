@@ -549,8 +549,7 @@ public class MessageFactory<T extends IsoMessage> {
 						IsoValue<?> val = fpi.parse(i, buf, pos, decoder);
 						if(useTertiaryBitmap && i == IsoMessage.INDEX_OF_TERTIARY_BITMAP){
 							final byte[] tertiaryBitmap = ((byte[]) val.getValue());
-							final int offset = pos;
-							updateBitSetFromAsciiBitMap(bs, tertiaryBitmap, START_OF_TERTIARY_BITMAP_FIELDS - 1, offset); // field x can be found at position x-1
+							updateBitSetFromBinaryBitmap(bs, tertiaryBitmap, START_OF_TERTIARY_BITMAP_FIELDS - 1); // field x can be found at position x-1
 							assertAllFieldsPresentHaveParsingGuides(type, bs, index); // check again for the new fields added to the bitmap
 						}
 						m.setField(i, val);
