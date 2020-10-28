@@ -2,7 +2,6 @@ package com.solab.iso8583;
 
 import com.solab.iso8583.util.HexCodec;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -11,18 +10,10 @@ import java.text.ParseException;
 
 public class TestHexadecimalLengthDecoding {
 
-    private final MessageFactory<IsoMessage> mf = new MessageFactory<>();
-
-    @Before
-    public void init() throws IOException {
-        mf.setConfigPath("hexadecimal.xml");
-        mf.setBinaryHeader(true);
-        mf.setBinaryFields(true);
-    }
-
     @Test
     public void shouldParseLengthWithBcdDecoding() throws IOException, ParseException {
         // Given
+        MessageFactory<IsoMessage> mf = createMessageFactory();
         String input = "0100" +                                 //MTI
                 "7F80000000000000" +                            // bitmap (with fields 2,3,4,5,6,7,8,9)
                 "09" + "0666666666" +                           // F2(LLBCDBIN) length (09 = 9) + BCD value
@@ -52,6 +43,7 @@ public class TestHexadecimalLengthDecoding {
     @Test
     public void shouldParseLengthWithHexadecimalDecoding() throws IOException, ParseException {
         // Given
+        MessageFactory<IsoMessage> mf = createMessageFactory();
         mf.setVariableLengthFieldsInHex(true);
         String input = "0100" +                                 //MTI
                 "7FFC000000000000" +                            // bitmap (with fields 2,3,4,5,6,7,8,9,10,11,12,13,14)
@@ -144,6 +136,26 @@ public class TestHexadecimalLengthDecoding {
         }
     }
 
+    @Test
+    public void shouldWriteCustomBinFieldLengthWithHexadecimalDecoding() throws IOException, ParseException  {
+        // Given
+        String input = "0100" +                  // MTI
+                "1500000000000000" +             // bitmap (with fields 4,6,8)
+                "FF" + repeat("00", 255) +       // F2(LLBIN) max length (255 bytes) + value
+                "0FFF" + repeat("11", 4095) +    // F2(LLLBIN) max length (4095 bytes) + value
+                "FFFF" + repeat("22", 65535);    // F2(LLLLBIN) max length (65535 bytes) + value
+        // And
+        MessageFactory<IsoMessage> mf = createMessageFactoryWithCustomFields();
+        mf.setVariableLengthFieldsInHex(true);
+        IsoMessage m = mf.parseMessage(HexCodec.hexDecode(input), 0);
+
+        // When
+        final byte[] serializedMessage = m.writeData();
+
+        // Then
+        Assert.assertEquals(input, HexCodec.hexEncode(serializedMessage, 0, serializedMessage.length));
+    }
+
     private String getResultAsString(IsoValue<?> isoValue, boolean hexa) throws IOException {
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
         isoValue.write(bout, true, false, hexa);
@@ -158,4 +170,58 @@ public class TestHexadecimalLengthDecoding {
         }
         return sb.toString();
     }
+
+    private MessageFactory<IsoMessage> createMessageFactory() throws IOException {
+        MessageFactory<IsoMessage> mf = new MessageFactory<>();
+        mf.setConfigPath("hexadecimal.xml");
+        mf.setBinaryHeader(true);
+        mf.setBinaryFields(true);
+        return mf;
+    }
+
+    private MessageFactory<IsoMessage> createMessageFactoryWithCustomFields() throws IOException {
+        MessageFactory<IsoMessage> mf = createMessageFactory();
+        mf.setCustomField(4, new TestCustomField());
+        mf.setCustomField(6, new TestCustomField());
+        mf.setCustomField(8, new TestCustomField());
+        return mf;
+    }
+
+    private static class TestCustomFieldDto {
+        private String value;
+
+        public String getValue() {
+            return value;
+        }
+
+        public TestCustomFieldDto setValue(String value) {
+            this.value = value;
+            return this;
+        }
+    }
+
+    private static class TestCustomField implements CustomBinaryField<TestCustomFieldDto> {
+
+        @Override
+        public TestCustomFieldDto decodeBinaryField(byte[] value, int offset, int length) {
+            return new TestCustomFieldDto().setValue(HexCodec.hexEncode(value, offset, length));
+        }
+
+        @Override
+        public byte[] encodeBinaryField(TestCustomFieldDto value) {
+            return HexCodec.hexDecode(value.getValue());
+        }
+
+        @Override
+        public TestCustomFieldDto decodeField(String value) {
+            return decodeBinaryField(value.getBytes(), 0, value.length());
+        }
+
+        @Override
+        public String encodeField(TestCustomFieldDto value) {
+            byte[] byteValue = encodeBinaryField(value);
+            return HexCodec.hexEncode(byteValue, 0, byteValue.length);
+        }
+    }
+
 }

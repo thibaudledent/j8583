@@ -118,8 +118,8 @@ public class LlllbinParseInfo  extends FieldParseInfo {
             try {
                 T dec = ((CustomBinaryField<T>)custom).decodeBinaryField(
                     buf, pos + 2, l);
-                return dec == null ? new IsoValue<>(type, _v, _v.length, null) :
-                        new IsoValue<T>(type, dec, l, custom);
+                return dec == null ? new IsoValue<>(type, _v, _v.length, forceHexadecimalLength, null) :
+                        new IsoValue<>(type, dec, l, forceHexadecimalLength, custom);
             } catch (IndexOutOfBoundsException ex) {
                 throw new ParseException(String.format(
                         "Insufficient data for LLLLBIN field %d, pos %d", field, pos), pos);
