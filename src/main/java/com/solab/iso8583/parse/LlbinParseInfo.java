@@ -135,7 +135,7 @@ public class LlbinParseInfo extends FieldParseInfo {
 		return getFieldLength(b);
 	}
 
-	private int getFieldLength(final byte b) {
+	protected int getFieldLength(final byte b) {
         return (((b & 0xf0) >> 4) * 10) + (b & 0x0f);
     }
 }

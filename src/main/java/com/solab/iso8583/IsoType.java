@@ -75,13 +75,19 @@ public enum IsoType {
 	LLLBCDBIN(false, 0),
 	/** Similar to {@link IsoType#LLLLVAR} with a binary value and a BCD length. */
 	LLLLBCDBIN(false, 0),
+	/** A variable length numerical value, length is a literal unsigned single byte value and expressed in number of digits, each digit being encoded on 4 bits */
+	LLBINLENGTHNUM(false, 0),
+	/** A variable length alphanumerical value, length is a literal unsigned single byte value and expressed in number of characters, each character being encoded on 1 byte */
+	LLBINLENGTHALPHANUM(false, 0),
+	/** A variable length binary value, length is a literal unsigned single byte value and expressed in number of bytes */
+	LLBINLENGTHBIN(false, 0),
 	/** Date in format yyMMddHHmmss. */
 	DATE12(false,12),
 	/** Date in format yyMMdd */
 	DATE6(false,6);
 
-    public static final Set<IsoType> VARIABLE_LENGTH_VAR_TYPES = Collections.unmodifiableSet(EnumSet.of(LLVAR, LLLVAR, LLLLVAR));
-    public static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(EnumSet.of(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN));
+    public static final Set<IsoType> VARIABLE_LENGTH_VAR_TYPES = Collections.unmodifiableSet(EnumSet.of(LLVAR, LLLVAR, LLLLVAR, LLBINLENGTHALPHANUM));
+    public static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(EnumSet.of(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN, LLBINLENGTHNUM, LLBINLENGTHBIN));
 
 	private boolean needsLen;
 	private int length;

@@ -36,7 +36,7 @@ import static com.solab.iso8583.IsoType.VARIABLE_LENGTH_VAR_TYPES;
  * so that the value can be padded to the specified length. LLVAR and LLLVAR
  * values do not need a length specification because the length is calculated
  * from the stored value.
- * 
+ *
  * @author Enrique Zamudio
  */
 public class IsoValue<T> implements Cloneable {
@@ -77,7 +77,7 @@ public class IsoValue<T> implements Cloneable {
 				length = enc.length();
 			}
 			validateTypeWithVariableLength();
-		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN) {
+		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHBIN) {
 			if (custom == null) {
 				if (value instanceof byte[]) {
 					length = ((byte[])value).length;
@@ -94,7 +94,7 @@ public class IsoValue<T> implements Cloneable {
 				length = enc.length();
 			}
 			validateTypeWithVariableLength();
-		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
+		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM) {
 			if (value instanceof byte[]) {
                 length = ((byte[])value).length * 2;
 			} else {
@@ -129,7 +129,7 @@ public class IsoValue<T> implements Cloneable {
 				length = custom == null ? val.toString().length() : custom.encodeField(value).length();
 			}
 			validateTypeWithVariableLength();
-		} else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN) {
+		} else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN) {
 			if (len == 0) {
                 if (custom == null) {
                     length = ((byte[])val).length;
@@ -211,7 +211,7 @@ public class IsoValue<T> implements Cloneable {
 			return getStringEncoded();
 		} else if (value instanceof Date) {
 			return type.format((Date)value, tz);
-		} else if (type == IsoType.BINARY) {
+		} else if (type == IsoType.BINARY || type == IsoType.LLBINLENGTHBIN) {
 			if (value instanceof byte[]) {
                 final byte[] _v = (byte[])value;
 				return type.format(encoder == null ? HexCodec.hexEncode(_v, 0, _v.length) : encoder.encodeField(value), length * 2);
@@ -226,7 +226,7 @@ public class IsoValue<T> implements Cloneable {
 				final String _s = getStringEncoded();
 				return (_s.length() % 2 == 1) ? String.format("0%s", _s) : _s;
 			}
-		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
+		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM) {
 			if (value instanceof byte[]) {
 				final byte[] _v = (byte[])value;
 				final String val = encoder == null ? HexCodec.hexEncode(_v, 0, _v.length) : encoder.encodeField(value);
@@ -276,15 +276,18 @@ public class IsoValue<T> implements Cloneable {
     protected void writeLengthHeader(final int l, final OutputStream outs, final IsoType type,
                                      final boolean binary, final boolean forceStringEncoding)
             throws IOException {
-        final int digits;
-        if (type == IsoType.LLLLBIN || type == IsoType.LLLLVAR || type == IsoType.LLLLBCDBIN) {
-            digits = 4;
-        } else if (type == IsoType.LLLBIN || type == IsoType.LLLVAR || type == IsoType.LLLBCDBIN) {
-            digits = 3;
-        } else {
-            digits = 2;
-        }
-        if (binary && !(VARIABLE_LENGTH_VAR_TYPES.contains(type) && forceStringEncoding)) {
+		final int digits;
+		if (type == IsoType.LLLLBIN || type == IsoType.LLLLVAR || type == IsoType.LLLLBCDBIN) {
+			digits = 4;
+		} else if (type == IsoType.LLLBIN || type == IsoType.LLLVAR || type == IsoType.LLLBCDBIN) {
+			digits = 3;
+		} else {
+			digits = 2;
+		}
+
+		if (type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLBINLENGTHALPHANUM) {
+			outs.write((byte) l);
+		} else if (binary && !(VARIABLE_LENGTH_VAR_TYPES.contains(type) && forceStringEncoding)) {
             if (digits == 4) {
                 outs.write((((l % 10000) / 1000) << 4) | ((l % 1000)/100));
             } else if (digits == 3) {
@@ -328,9 +331,9 @@ public class IsoValue<T> implements Cloneable {
      * for variable-length fields to be done with the proper character encoding. When false,
      * the length headers are encoded as ASCII; this used to be the only behavior. */
 	public void write(final OutputStream outs, final boolean binary, final boolean forceStringEncoding) throws IOException {
-		if (type == IsoType.LLLVAR || type == IsoType.LLVAR || type == IsoType.LLLLVAR) {
+		if (type == IsoType.LLLVAR || type == IsoType.LLVAR || type == IsoType.LLLLVAR || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN) {
             writeLengthHeader(length, outs, type, binary, forceStringEncoding);
-		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN) {
+		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM) {
 			writeLengthHeader(binary ? length : length*2, outs, type, binary, forceStringEncoding);
 		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN) {
             writeLengthHeader(length, outs, type, binary, forceStringEncoding);
@@ -396,6 +399,12 @@ public class IsoValue<T> implements Cloneable {
 			throwIllegalArgumentException(type, 500);
 		} else if (type == IsoType.LLLLBCDBIN && length > 5000) {
 			throwIllegalArgumentException(type, 5000);
+		} else if (type == IsoType.LLBINLENGTHNUM && length > 255) {
+			throwIllegalArgumentException(type, 255);
+		} else if (type == IsoType.LLBINLENGTHALPHANUM && length > 255) {
+			throwIllegalArgumentException(type, 255);
+		} else if (type == IsoType.LLBINLENGTHBIN && length > 255) {
+			throwIllegalArgumentException(type, 255);
 		}
 	}
 
