@@ -31,6 +31,10 @@ import com.solab.iso8583.IsoValue;
  */
 public class LlvarParseInfo extends FieldParseInfo {
 
+	public LlvarParseInfo(IsoType t, int len) {
+		super(t, len);
+	}
+
 	public LlvarParseInfo() {
 		super(IsoType.LLVAR, 0);
 	}
@@ -92,7 +96,7 @@ public class LlvarParseInfo extends FieldParseInfo {
                     "Insufficient data for bin LLVAR header, field %d pos %d",
 					field, pos), pos);
 		}
-		final int len = (((buf[pos] & 0xf0) >> 4) * 10) + (buf[pos] & 0x0f);
+		final int len = getFieldLength(buf[pos]);
 		if (len < 0) {
 			throw new ParseException(String.format(
                     "Invalid bin LLVAR length %d, field %d pos %d", len, field, pos), pos);
@@ -110,6 +114,10 @@ public class LlvarParseInfo extends FieldParseInfo {
 					new String(buf, pos + 1, len, getCharacterEncoding()), null) :
                     new IsoValue<>(type, dec, custom);
 		}
+	}
+
+	protected int getFieldLength(final byte b) {
+		return (((b & 0xf0) >> 4) * 10) + (b & 0x0f);
 	}
 
 }

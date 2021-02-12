@@ -21,6 +21,6 @@ pipelines:
         caches:
           - maven
         script:
-          - mvn -V -B org.jacoco:jacoco-maven-plugin:prepare-agent verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          - mvn -V -B clean install
           # -V triggers an output of the Maven and Java versions at the beginning of the build
           # -B batch mode makes Maven less verbose

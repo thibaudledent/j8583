@@ -141,6 +141,12 @@ public abstract class FieldParseInfo {
 			fpi = new BcdLengthLllbinParseInfo();
 		} else if (t == IsoType.LLLLBCDBIN) {
 			fpi = new BcdLengthLlllbinParseInfo();
+		} else if (t == IsoType.LLBINLENGTHNUM) {
+			fpi = new BinLengthLlNumParseInfo();
+		} else if (t == IsoType.LLBINLENGTHALPHANUM) {
+			fpi = new BinLengthLlAlphaNumParseInfo();
+		} else if (t == IsoType.LLBINLENGTHBIN) {
+			fpi = new BinLengthLlBinParseInfo();
 		}
 		if (fpi == null) {
 	 		throw new IllegalArgumentException(String.format("Cannot parse type %s", t));
