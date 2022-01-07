@@ -225,7 +225,7 @@ public class ConfigParser {
                 T m = (T)new IsoMessage();
                 m.setType(type);
                 m.setCharacterEncoding(mfact.getCharacterEncoding());
-                for (int i = 2; i < MAX_AMOUNT_OF_FIELDS; i++) {
+                for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
                     if (tref.hasField(i)) {
                         m.setField(i, tref.getField(i).clone());
                     }

@@ -1,0 +1,115 @@
+plugins {
+  id 'java'
+  id 'maven'
+  id 'idea'
+}
+
+defaultTasks 'build'
+version='1.17.0'
+description='Java implementation of the ISO 8583 protocol, focused on making the creation, edition and reading of ISO8583 messages as simple and flexible as possible.'
+sourceCompatibility=7
+targetCompatibility=7
+group='net.sf.j8583'
+
+repositories {
+	mavenCentral()
+}
+
+configurations {
+	deployerJars
+	published.extendsFrom archives, signatures
+}
+
+dependencies {
+	compile 'org.slf4j:slf4j-api:1.7.30'
+	testCompile 'junit:junit:4.13'
+	testRuntime 'org.slf4j:slf4j-simple:1.7.30'
+}
+
+jar {
+	manifest {
+		attributes "Automatic-Module-Name": "com.solab.j8583"
+		attributes "Main-Class": "com.solab.iso8583.util.SimpleParser"
+	}
+}
+
+tasks.javadoc.options.use=true
+tasks.javadoc.options.source='7'
+tasks.javadoc.options.links=['https://docs.oracle.com/javase/7/docs/api/', 'http://slf4j.org/apidocs/' ]
+
+task javadocJar(type:Jar, dependsOn:'javadoc') {
+	from javadoc.destinationDir
+	classifier='javadoc'
+}
+task sourcesJar(type:Jar) {
+	from sourceSets.main.allSource
+	classifier='sources'
+}
+
+tasks.withType(AbstractCompile) { AbstractCompile compile ->
+	compile.options.debug = true
+	compile.options.compilerArgs = ['-Xlint:all']
+}
+
+artifacts {
+	archives javadocJar
+	archives sourcesJar
+}
+
+apply plugin:'signing'
+signing {
+	sign configurations.archives
+	required { gradle.taskGraph.hasTask('generateRelease') }
+}
+
+uploadArchives {
+	repositories {
+		project.ext.deployer=repositories.mavenDeployer {
+			beforeDeployment { MavenDeployment deployment ->
+				signing.signPom(deployment)
+			}
+			repository(url:'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+				authentication(userName:nexusUsername, password:nexusPassword)
+			}
+			pom.project {
+				name 'j8583'
+				packaging 'jar'
+				description project.description
+				url 'http://j8583.sourceforge.net/'
+				inceptionYear '2007'
+				scm {
+					url 'https://bitbucket.org/chochos/j8583'
+					connection 'scm:git://bitbucket.org/chochos/j8583.git'
+					developerConnection 'scm:git@bitbucket.org:chochos/j8583.git'
+				}
+				licenses {
+					license {
+						name 'GNU Lesser General Public License, version 3'
+						url 'http://www.gnu.org/licenses/lgpl-3.0.html'
+						distribution 'repo'
+					}
+				}
+				developers {
+					developer {
+						id 'chochos'
+						name 'Enrique Zamudio Lopez'
+						email 'chochos@users.sourceforge.net'
+						url 'http://javamexico.org/blogs/ezamudio'
+						roles {
+							role 'Architect'
+							role 'Developer'
+						}
+						properties {
+							twitter 'chochosmx'
+						}
+						timezone 'America/Mexico_City'
+					}
+				}
+			}
+		}
+	}
+}
+
+task generateRelease(dependsOn:uploadArchives, group: "Release artifact",
+  description: "Generates and uploads a final release to Sonatype Nexus")
+

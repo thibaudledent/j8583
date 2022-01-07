@@ -63,17 +63,23 @@ public enum IsoType {
 	/** A variable length alphanumeric value with 4-digit header length (both with specific encoding
 	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true). */
 	LLLLVAR(false, 0),
-	/** Similar to {@link IsoType#LLVAR} with a binary value and a binary length. */
+	/** Similar to for (int i = 2; i < 129; i++) { with a binary value and a binary length. */
 	LLBIN(false, 0),
 	/** Similar to {@link IsoType#LLLVAR} with a binary value and a binary length. */
 	LLLBIN(false, 0),
 	/** Similar to {@link IsoType#LLLLVAR} with a binary value and a binary length. */
 	LLLLBIN(false, 0),
-	/** Similar to {@link IsoType#LLVAR} with a binary value and a BCD length. */
+	/** Similar to {@link IsoType#LLBIN} but with a BCD encoded length. If the data has an odd length,
+	 * it will be padded with a 0 in the first nibble.
+	 */
 	LLBCDBIN(false, 0),
-	/** Similar to {@link IsoType#LLLVAR} with a binary value and a BCD length. */
+	/** Similar to {@link IsoType#LLLBIN} but with a BCD encoded length. If the data has an odd length,
+	 * it will be padded with a 0 in the first nibble.
+	 */
 	LLLBCDBIN(false, 0),
-	/** Similar to {@link IsoType#LLLLVAR} with a binary value and a BCD length. */
+	/** Similar to {@link IsoType#LLLLBIN} but with a BCD encoded length. If the data has an odd length,
+	 * it will be padded with a 0 in the first nibble.
+	 */
 	LLLLBCDBIN(false, 0),
 	/** A variable length numerical value, length is a literal unsigned single byte value and expressed in number of digits, each digit being encoded on 4 bits */
 	LLBINLENGTHNUM(false, 0),

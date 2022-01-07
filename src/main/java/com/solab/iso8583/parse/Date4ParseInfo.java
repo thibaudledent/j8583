@@ -26,6 +26,7 @@ import java.util.Date;
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
+import com.solab.iso8583.util.Bcd;
 
 /** This class is used to parse fields of type DATE4.
  * 
@@ -76,7 +77,7 @@ public class Date4ParseInfo extends DateTimeParseInfo {
                     field, pos), pos);
         }
 		for (int i = pos; i < pos + tens.length; i++) {
-			tens[start++] = (((buf[i] & 0xf0) >> 4) * 10) + (buf[i] & 0x0f);
+			tens[start++] = Bcd.parseBcdLength(buf[i]);
 		}
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR, 0);

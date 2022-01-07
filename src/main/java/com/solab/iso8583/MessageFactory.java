@@ -18,23 +18,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 package com.solab.iso8583;
 
-import com.solab.iso8583.parse.ConfigParser;
-import com.solab.iso8583.parse.DateTimeParseInfo;
-import com.solab.iso8583.parse.FieldParseInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
+
+import com.solab.iso8583.parse.DateTimeParseInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.solab.iso8583.parse.ConfigParser;
+import com.solab.iso8583.parse.FieldParseInfo;
 
 import static com.solab.iso8583.IsoMessage.MAX_AMOUNT_OF_FIELDS;
 import static com.solab.iso8583.IsoMessage.PRIMARY_BITMAP_SIZE;
@@ -92,6 +86,8 @@ public class MessageFactory<T extends IsoMessage> {
 	private boolean forceb2;
     private boolean binBitmap;
     private boolean forceStringEncoding;
+    /* Flag specifying that variable length fields have the length header encoded in hexadecimal format */
+    private boolean variableLengthFieldsInHex;
 	private String encoding = System.getProperty("file.encoding");
 
     /** This flag gets passed on to newly created messages and also sets this value for all
@@ -107,6 +103,21 @@ public class MessageFactory<T extends IsoMessage> {
     public boolean isForceStringEncoding() {
         return forceStringEncoding;
     }
+
+	/** This flag gets passed on to newly created messages and also sets this value for all
+	 * field parsers in parsing guides. */
+	public void setVariableLengthFieldsInHex(boolean flag) {
+		this.variableLengthFieldsInHex = flag;
+		for (Map<Integer,FieldParseInfo> pm : parseMap.values()) {
+			for (FieldParseInfo parser : pm.values()) {
+				parser.setForceHexadecimalLength(flag);
+			}
+		}
+	}
+
+	public boolean isVariableLengthFieldsInHex() {
+		return variableLengthFieldsInHex;
+	}
 
     /** Tells the factory to create messages that encode their bitmaps in binary format
      * even when they're encoded as text. Has no effect on binary messages. */
@@ -283,6 +294,7 @@ public class MessageFactory<T extends IsoMessage> {
         m.setBinaryBitmap(binBitmap);
 		m.setCharacterEncoding(encoding);
         m.setForceStringEncoding(forceStringEncoding);
+        m.setEncodeVariableLengthFieldsInHex(variableLengthFieldsInHex);
 
 		//Copy the values from the template
 		IsoMessage templ = typeTemplates.get(type);
@@ -313,11 +325,25 @@ public class MessageFactory<T extends IsoMessage> {
 		return m;
 	}
 
-	/** Creates a message to respond to a request. Increments the message type by 16,
-	 * sets all fields from the template if there is one, and copies all values from the request,
-	 * overwriting fields from the template if they overlap.
-	 * @param request An ISO8583 message with a request type (ending in 00). */
+	/** Creates a response message by calling {@link #createResponse(IsoMessage, boolean)}
+	 * with true as the second parameter.
+	 */
 	public T createResponse(T request) {
+		return createResponse(request, true);
+	}
+
+	/** Creates a message to respond to a request. Increments the message type by 16,
+	 * sets all fields from the template if there is one,
+	 * and either copies all values from the request or only the ones already in the template,
+	 * depending on the value of copyAllFields flag.
+	 * @param request An ISO8583 message with a request type (ending in 00).
+	 * @param copyAllFields If true, copies all fields from the request to the response,
+	 *                      overwriting any values already set from the template; otherwise
+	 *                      it only overwrites values for existing fields from the template.
+	 *                      If the template for a response does not exist, then all fields from
+	 *                      the request are copied even in this flag is false.
+	 */
+	public T createResponse(T request, boolean copyAllFields) {
 		T resp = createIsoMessage(isoHeaders.get(request.getType() + 16));
 		resp.setCharacterEncoding(request.getCharacterEncoding());
 		resp.setBinaryHeader(request.isBinaryHeader());
@@ -326,6 +352,7 @@ public class MessageFactory<T extends IsoMessage> {
 		resp.setType(request.getType() + 16);
 		resp.setEtx(etx);
 		resp.setForceSecondaryBitmap(forceb2);
+		resp.setEncodeVariableLengthFieldsInHex(request.isEncodeVariableLengthFieldsInHex());
 		//Copy the values from the template or the request (request has preference)
 		IsoMessage templ = typeTemplates.get(resp.getType());
 		if (templ == null) {
@@ -334,12 +361,19 @@ public class MessageFactory<T extends IsoMessage> {
 					resp.setField(i, request.getField(i).clone());
 				}
 			}
-		} else {
+		} else if (copyAllFields) {
 			for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
 				if (request.hasField(i)) {
 					resp.setField(i, request.getField(i).clone());
 				} else if (templ.hasField(i)) {
 					resp.setField(i, templ.getField(i).clone());
+				}
+			}
+		} else {
+			for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
+				if (templ.hasField(i)) {
+					IsoMessage srcmsg = request.hasField(i) ? request : templ;
+					resp.setField(i, srcmsg.getField(i).clone());
 				}
 			}
 		}
@@ -502,6 +536,7 @@ public class MessageFactory<T extends IsoMessage> {
 									|| val.getType() == IsoType.DATE4
 									|| val.getType() == IsoType.DATE12
 									|| val.getType() == IsoType.DATE14
+									|| val.getType() == IsoType.DATE6
 									|| val.getType() == IsoType.DATE_EXP
 									|| val.getType() == IsoType.AMOUNT
 									|| val.getType() == IsoType.TIME
@@ -639,7 +674,7 @@ public class MessageFactory<T extends IsoMessage> {
 		}
 	}
 
-	/** Creates a Iso message, override this method in the subclass to provide your 
+	/** Creates a Iso message, override this method in the subclass to provide your
 	 * own implementations of IsoMessage.
 	 * @param header The optional ISO header that goes before the message type
 	 * @return IsoMessage

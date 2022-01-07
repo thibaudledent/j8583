@@ -21,6 +21,7 @@ package com.solab.iso8583.parse;
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
+import com.solab.iso8583.util.Bcd;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
@@ -92,8 +93,7 @@ public class LlllvarParseInfo  extends FieldParseInfo {
                     "Insufficient data for bin LLLLVAR header, field %d pos %d",
 					field, pos), pos);
 		}
-        final int len = (((buf[pos] & 0xf0) >> 4) * 1000) + ((buf[pos] & 0x0f) * 100)
-                + (((buf[pos + 1] & 0xf0) >> 4) * 10) + (buf[pos + 1] & 0x0f);
+        final int len = Bcd.parseBcdLength2bytes(buf, pos);
 		if (len < 0) {
 			throw new ParseException(String.format(
                     "Invalid bin LLLLVAR length %d, field %d pos %d", len, field, pos), pos);
