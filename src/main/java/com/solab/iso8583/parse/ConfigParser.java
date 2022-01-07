@@ -55,12 +55,13 @@ import static com.solab.iso8583.IsoMessage.MAX_AMOUNT_OF_FIELDS;
  */
 public class ConfigParser {
 
-	private final static Logger log = LoggerFactory.getLogger(ConfigParser.class);
+	private static final Logger log = LoggerFactory.getLogger(ConfigParser.class);
 
     /**
      * Creates a message factory configured from the default file, which is j8583.xml
-     * located in the root of the classpath, using the specified ClassLoader.  @param loader the loader
+     * located in the root of the classpath, using the specified ClassLoader.  
      *
+     * @param loader the loader
      * @return the message factory
      * @throws IOException the io exception
      */
@@ -77,8 +78,9 @@ public class ConfigParser {
     /**
      * Creates a message factory configured from the default file, which is j8583.xml
      * located in the root of the classpath, using the MessageFactory's
-     * ClassLoader.  @return the message factory
+     * ClassLoader.  
      *
+     * @return the message factory
      * @throws IOException the io exception
      */
     public static MessageFactory<IsoMessage> createDefault() throws IOException {
@@ -87,8 +89,9 @@ public class ConfigParser {
 
     /**
      * Creates a message factory from the specified path inside the classpath,
-     * using the specified ClassLoader.  @param path the path
+     * using the specified ClassLoader.  
      *
+     * @param path the path
      * @return the message factory
      * @throws IOException the io exception
      */
@@ -99,8 +102,9 @@ public class ConfigParser {
 
     /**
      * Creates a message factory from the specified path inside the classpath,
-     * using MessageFactory's ClassLoader.  @param loader the loader
+     * using MessageFactory's ClassLoader.  
      *
+     * @param loader the loader
      * @param path the path
      * @return the message factory
      * @throws IOException the io exception
@@ -120,8 +124,9 @@ public class ConfigParser {
 	}
 
     /**
-     * Creates a message factory from the file located at the specified URL.  @param url the url
+     * Creates a message factory from the file located at the specified URL.  
      *
+     * @param url the url
      * @return the message factory
      * @throws IOException the io exception
      */
@@ -134,8 +139,9 @@ public class ConfigParser {
 	}
 
     /**
-     * Creates a messageFactory from the XML contained in the specified Reader.  @param reader the reader
+     * Creates a messageFactory from the XML contained in the specified Reader.  
      *
+     * @param reader the reader
      * @return the message factory
      * @throws IOException the io exception
      */
@@ -299,8 +305,9 @@ public class ConfigParser {
      * Creates an IsoValue from the XML definition in a message template.
      * If it's for a toplevel field and the message factory has a codec for this field,
      * that codec is assigned to that field. For nested fields, a CompositeField is
-     * created and populated.  @param <M>  the type parameter
+     * created and populated.
      *
+     * @param <M>  the type parameter
      * @param f        the f
      * @param mfact    the mfact
      * @param toplevel the toplevel
@@ -524,8 +531,9 @@ public class ConfigParser {
 
     /**
      * Configures a MessageFactory using the default configuration file j8583.xml. This is useful
-     * if you have a MessageFactory created using Spring for example.  @param <T>  the type parameter
+     * if you have a MessageFactory created using Spring for example.
      *
+     * @param <T>  the type parameter
      * @param mfact the mfact
      * @throws IOException the io exception
      */
@@ -540,8 +548,9 @@ public class ConfigParser {
 
     /**
      * This method attempts to open a stream from the XML configuration in the specified URL and
-     * configure the message factory from that config.  @param <T>  the type parameter
+     * configure the message factory from that config.
      *
+     * @param <T>  the type parameter
      * @param mfact the mfact
      * @param url   the url
      * @throws IOException the io exception
@@ -556,8 +565,9 @@ public class ConfigParser {
     /**
      * Configures a MessageFactory using the configuration file at the path specified (will be searched
      * within the classpath using the MessageFactory's ClassLoader). This is useful for configuring
-     * Spring-bound instances of MessageFactory for example.  @param <T>  the type parameter
+     * Spring-bound instances of MessageFactory for example.
      *
+     * @param <T>  the type parameter
      * @param mfact the mfact
      * @param path  the path
      * @throws IOException the io exception
@@ -575,8 +585,9 @@ public class ConfigParser {
 	}
 
     /**
-     * Configures a MessageFactory using the XML data obtained from the specified Reader.  @param <T>  the type parameter
+     * Configures a MessageFactory using the XML data obtained from the specified Reader.
      *
+     * @param <T>  the type parameter
      * @param mfact  the mfact
      * @param reader the reader
      * @throws IOException the io exception

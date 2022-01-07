@@ -118,14 +118,18 @@ public class IsoMessage {
     }
 
     /**
-     * Creates a new message with the specified ISO header. This will be prepended to the message.  @param header the header
+     * Creates a new message with the specified ISO header. This will be prepended to the message.  
+     *
+     * @param header the header
      */
     protected IsoMessage(String header) {
     	isoHeader = header;
     }
 
     /**
-     * Creates a new message with the specified binary ISO header. This will be prepended to the message.  @param binaryHeader the binary header
+     * Creates a new message with the specified binary ISO header. This will be prepended to the message.  
+     *
+     * @param binaryHeader the binary header
      */
     protected IsoMessage(byte[] binaryHeader) {
     	binIsoHeader = binaryHeader;
@@ -134,7 +138,9 @@ public class IsoMessage {
     /**
      * Tells the message to encode its bitmap in binary format, even if the message
      * itself is encoded as text. This has no effect if the binary flag is set, which means
-     * binary messages will always encode their bitmap in binary format.  @param flag the flag
+     * binary messages will always encode their bitmap in binary format.  
+     *
+     * @param flag the flag
      */
     public void setBinaryBitmap(boolean flag) {
         binBitmap = flag;
@@ -142,14 +148,18 @@ public class IsoMessage {
 
     /**
      * Returns true if the message's bitmap is encoded in binary format, when the message
-     * is encoded as text. Default is false.  @return the boolean
+     * is encoded as text. Default is false.  
+     *
+     * @return the boolean
      */
     public boolean isBinaryBitmap() {
         return binBitmap;
     }
 
     /**
-     * If set, this flag will cause the secondary bitmap to be written even if it's not needed.  @param flag the flag
+     * If set, this flag will cause the secondary bitmap to be written even if it's not needed.  
+     *
+     * @param flag the flag
      */
     public void setForceSecondaryBitmap(boolean flag) {
     	forceb2 = flag;
@@ -157,14 +167,18 @@ public class IsoMessage {
 
     /**
      * Returns true if the secondary bitmap is always included in the message, even
-     * if it's not needed. Default is false.  @return the force secondary bitmap
+     * if it's not needed. Default is false.  
+     *
+     * @return the force secondary bitmap
      */
     public boolean getForceSecondaryBitmap() {
     	return forceb2;
     }
 
     /**
-     * Sets the encoding to use.  @param value the value
+     * Sets the encoding to use.  
+     *
+     * @param value the value
      */
     public void setCharacterEncoding(String value) {
         if (value == null) {
@@ -175,7 +189,9 @@ public class IsoMessage {
 
     /**
      * Returns the character encoding for Strings inside the message. Default
-     * is taken from the file.encoding system property.  @return the character encoding
+     * is taken from the file.encoding system property.  
+     *
+     * @return the character encoding
      */
     public String getCharacterEncoding() {
     	return encoding;
@@ -185,7 +201,9 @@ public class IsoMessage {
      * Specified whether the variable-length fields should encode their length
      * headers using string conversion with the proper character encoding. Default
      * is false, which is the old behavior (encoding as ASCII). This is only useful
-     * for text format.  @param flag the flag
+     * for text format.  
+     *
+     * @param flag the flag
      */
     public void setForceStringEncoding(boolean flag) {
         forceStringEncoding = flag;
@@ -193,7 +211,9 @@ public class IsoMessage {
 
     /**
      * Specified whether the variable-length fields should encode their length
-     * headers using hexadecimal values. This is only useful for binary format.  @param flag the flag
+     * headers using hexadecimal values. This is only useful for binary format.  
+     *
+     * @param flag the flag
      */
     public void setEncodeVariableLengthFieldsInHex(boolean flag) {
         this.encodeVariableLengthFieldsInHex = flag;
@@ -210,7 +230,9 @@ public class IsoMessage {
 
     /**
      * Sets the string to be sent as ISO header, that is, after the length header but before the message type.
-     * This is useful in case an application needs some custom data in the ISO header of each message (very rare).  @param value the value
+     * This is useful in case an application needs some custom data in the ISO header of each message (very rare).  
+     *
+     * @param value the value
      */
     public void setIsoHeader(String value) {
         isoHeader = value;
@@ -218,7 +240,9 @@ public class IsoMessage {
     }
 
     /**
-     * Returns the ISO header that this message was created with.  @return the iso header
+     * Returns the ISO header that this message was created with.  
+     *
+     * @return the iso header
      */
     public String getIsoHeader() {
     	return isoHeader;
@@ -226,7 +250,9 @@ public class IsoMessage {
 
     /**
      * Sets the string to be sent as ISO header, that is, after the length header but before the message type.
-     * This is useful in case an application needs some custom data in the ISO header of each message (very rare).  @param binaryHeader the binary header
+     * This is useful in case an application needs some custom data in the ISO header of each message (very rare).  
+     *
+     * @param binaryHeader the binary header
      */
     public void setBinaryIsoHeader(byte[] binaryHeader) {
         isoHeader = null;
@@ -234,21 +260,27 @@ public class IsoMessage {
     }
 
     /**
-     * Returns the binary ISO header that this message was created with.  @return the byte [ ]
+     * Returns the binary ISO header that this message was created with.  
+     *
+     * @return the byte [ ]
      */
     public byte[] getBinaryIsoHeader() {
         return binIsoHeader;
     }
 
     /**
-     * Sets the ISO message type. Common values are 0x200, 0x210, 0x400, 0x410, 0x800, 0x810.  @param value the value
+     * Sets the ISO message type. Common values are 0x200, 0x210, 0x400, 0x410, 0x800, 0x810.  
+     *
+     * @param value the value
      */
     public void setType(int value) {
     	type = value;
     }
 
     /**
-     * Returns the ISO message type.  @return the type
+     * Returns the ISO message type.  
+     *
+     * @return the type
      */
     public int getType() {
     	return type;
@@ -257,7 +289,9 @@ public class IsoMessage {
     /**
      * Indicates whether the message should be binary. Default is false.
      * To encode the message as text but the bitmap in binary format, you can set the
-     * binaryBitmap flag.  @param flag the flag
+     * binaryBitmap flag.  
+     *
+     * @param flag the flag
      */
     public void setBinary(boolean flag) {
     	binaryHeader = binaryFields = flag;
@@ -275,28 +309,32 @@ public class IsoMessage {
     }
 
     /**
-     * header information is binary encoded  @param flag the flag
+     * header information is binary encoded  
+     * @param flag the flag
      */
     public void setBinaryHeader(boolean flag) {
         binaryHeader = flag;
     }
 
     /**
-     * header information is binary encoded  @return the boolean
+     * header information is binary encoded  
+     * @return the boolean
      */
     public boolean isBinaryHeader(){
         return binaryHeader;
     }
 
     /**
-     * field data is binary encoded  @param flag the flag
+     * field data is binary encoded  
+     * @param flag the flag
      */
     public void setBinaryFields(boolean flag){
         binaryFields = flag;
     }
 
     /**
-     * field data is binary encoded  @return the boolean
+     * field data is binary encoded  
+     * @return the boolean
      */
     public boolean isBinaryFields(){
        return binaryFields;
@@ -304,7 +342,8 @@ public class IsoMessage {
 
     /**
      * Sets the ETX character, which is sent at the end of the message as a terminator.
-     * Default is -1, which means no terminator is sent.  @param value the value
+     * Default is -1, which means no terminator is sent.  
+     * @param value the value
      */
     public void setEtx(int value) {
     	etx = value;
@@ -324,7 +363,8 @@ public class IsoMessage {
     }
 
     /**
-     * Returns the IsoValue for the specified field. First real field is 2.  @param <T>  the type parameter
+     * Returns the IsoValue for the specified field. First real field is 2.  
+     * @param <T>  the type parameter
      *
      * @param field the field
      * @return the field
@@ -357,7 +397,8 @@ public class IsoMessage {
     }
 
     /**
-     * Convenience method for setting several fields in one call.  @param values the values
+     * Convenience method for setting several fields in one call.  
+  * @param values the values
      *
      * @return the fields
      */
@@ -497,8 +538,9 @@ public class IsoMessage {
 
     /**
      * Creates and returns a ByteBuffer with the data of the message, including the length header.
-     * The returned buffer is already flipped, so it is ready to be written to a Channel.  @param lengthBytes the length bytes
+     * The returned buffer is already flipped, so it is ready to be written to a Channel.  
      *
+     * @param lengthBytes the length bytes
      * @return the byte buffer
      */
     public ByteBuffer writeToBuffer(int lengthBytes) {
@@ -534,7 +576,8 @@ public class IsoMessage {
     }
 
     /**
-     * Creates a BitSet for the bitmap.  @return the bit set
+     * Creates a BitSet for the bitmap.  
+     * @return the bit set
      */
     protected BitSet createBitmapBitSet() {
         BitSet bs = new BitSet(forceb2 ? 128 : 64);
@@ -580,7 +623,8 @@ public class IsoMessage {
     }
 
     /**
-     * Writes the message to a memory stream and returns a byte array with the result.  @return the byte [ ]
+     * Writes the message to a memory stream and returns a byte array with the result.  
+     * @return the byte array
      */
     public byte[] writeData() {
     	ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -685,7 +729,8 @@ public class IsoMessage {
 
     /**
      * Returns a string representation of the message, as if it were encoded
-     * in ASCII with no binary bitmap.  @return the string
+     * in ASCII with no binary bitmap.  
+     * @return the string
      */
     public String debugString() {
         StringBuilder sb = new StringBuilder();
@@ -734,7 +779,8 @@ public class IsoMessage {
     //These are for Groovy compat
 
     /**
-     * Sets the specified value in the specified field, just like {@link #setField(int, IsoValue)}.  @param <T>  the type parameter
+     * Sets the specified value in the specified field, just like {@link #setField(int, IsoValue)}.  
+     * @param <T>  the type parameter
      *
      * @param i the
      * @param v the v
@@ -744,8 +790,9 @@ public class IsoMessage {
     }
 
     /**
-     * Returns the IsoValue in the specified field, just like {@link #getField(int)}.  @param <T>  the type parameter
+     * Returns the IsoValue in the specified field, just like {@link #getField(int)}.  
      *
+     * @param <T>  the type parameter
      * @param i the
      * @return the at
      */
@@ -756,8 +803,9 @@ public class IsoMessage {
 	//These are for Scala compat
 
     /**
-     * Sets the specified value in the specified field, just like {@link #setField(int, IsoValue)}.  @param <T>  the type parameter
+     * Sets the specified value in the specified field, just like {@link #setField(int, IsoValue)}.  
      *
+     * @param <T>  the type parameter
      * @param i the
      * @param v the v
      */
@@ -766,8 +814,9 @@ public class IsoMessage {
 	}
 
     /**
-     * Returns the IsoValue in the specified field, just like {@link #getField(int)}.  @param <T>  the type parameter
+     * Returns the IsoValue in the specified field, just like {@link #getField(int)}.  
      *
+     * @param <T>  the type parameter
      * @param i the
      * @return the iso value
      */
@@ -777,8 +826,9 @@ public class IsoMessage {
 
     /**
      * Copies the specified fields from the other message into the recipient. If a specified field is
-     * not present in the source message it is simply ignored.  @param src the src
+     * not present in the source message it is simply ignored.  
      *
+     * @param src the src
      * @param idx the idx
      */
     public void copyFieldsFrom(IsoMessage src, int...idx) {
@@ -791,7 +841,8 @@ public class IsoMessage {
     }
 
     /**
-     * Remove the specified fields from the message.  @param idx the idx
+     * Remove the specified fields from the message.  
+     * @param idx the idx
      */
     public void removeFields(int... idx) {
         for (int i : idx) {
@@ -801,8 +852,9 @@ public class IsoMessage {
 
     /**
      * Returns true is the message contains all the specified fields.
-     * A convenience for m.hasField(x) &amp;&amp; m.hasField(y) &amp;&amp; m.hasField(z) &amp;&amp; ...  @param idx the idx
+     * A convenience for m.hasField(x) &amp;&amp; m.hasField(y) &amp;&amp; m.hasField(z) &amp;&amp; ...  
      *
+     * @param idx the idx
      * @return the boolean
      */
     public boolean hasEveryField(int... idx) {
@@ -816,8 +868,9 @@ public class IsoMessage {
 
     /**
      * Returns true is the message contains at least one of the specified fields.
-     * A convenience for m.hasField(x) || m.hasField(y) || m.hasField(z) || ...  @param idx the idx
+     * A convenience for m.hasField(x) || m.hasField(y) || m.hasField(z) || ...  
      *
+     * @param idx the idx
      * @return the boolean
      */
     public boolean hasAnyField(int... idx) {
