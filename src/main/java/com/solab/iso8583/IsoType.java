@@ -63,7 +63,7 @@ public enum IsoType {
 	/** A variable length alphanumeric value with 4-digit header length (both with specific encoding
 	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true). */
 	LLLLVAR(false, 0),
-	/** Similar to for (int i = 2; i < 129; i++) { with a binary value and a binary length. */
+	/** Similar to {@link IsoType#LLVAR} with a binary value and a binary length. */
 	LLBIN(false, 0),
 	/** Similar to {@link IsoType#LLLVAR} with a binary value and a binary length. */
 	LLLBIN(false, 0),

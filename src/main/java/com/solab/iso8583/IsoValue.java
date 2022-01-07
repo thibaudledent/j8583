@@ -337,13 +337,16 @@ public class IsoValue<T> implements Cloneable {
         }
     }
 
-	/** Writes the formatted value to a stream, with the length header
+	/**
+	 * Writes the formatted value to a stream, with the length header
 	 * if it's a variable length type.
-     * @param outs The stream to which the value will be written.
-     * @param binary Specifies whether the value should be written in binary or text format.
+	 *
+	 * @param outs                The stream to which the value will be written.
+	 * @param binary              Specifies whether the value should be written in binary or text format.
 	 * @param forceStringEncoding When using text format, force the encoding of length headers
-	 * for variable-length fields to be done with the proper character encoding. When false,
-	 * the length headers are encoded as ASCII; this used to be the only behavior. */
+	 *                            for variable-length fields to be done with the proper character encoding. When false,
+	 *                            the length headers are encoded as ASCII; this used to be the only behavior.
+	 */
 	public void write(final OutputStream outs, final boolean binary, final boolean forceStringEncoding) throws IOException {
 		if (type == IsoType.LLLVAR || type == IsoType.LLVAR || type == IsoType.LLLLVAR || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN) {
             writeLengthHeader(length, outs, type, binary, forceStringEncoding);
