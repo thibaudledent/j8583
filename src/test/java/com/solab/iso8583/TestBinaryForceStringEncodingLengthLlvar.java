@@ -4,7 +4,7 @@ import com.solab.iso8583.parse.ConfigParser;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.text.ParseException;
 
