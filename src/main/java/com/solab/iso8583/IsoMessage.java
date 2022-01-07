@@ -274,7 +274,7 @@ public class IsoMessage {
      * @param length The length of the field, used for ALPHA and NUMERIC values only, ignored
      * with any other type.
      * @return The receiver (useful for setting several values in sequence). */
-    public <T> IsoMessage setValue(int index, T value, CustomField<T> encoder, IsoType t, int length) {
+    public <T> IsoMessage setValue(int index, T value, CustomFieldEncoder<T> encoder, IsoType t, int length) {
     	if (index < 2 || index > MAX_AMOUNT_OF_FIELDS) {
     		throw new IndexOutOfBoundsException("Field index must be between 2 and " + MAX_AMOUNT_OF_FIELDS);
     	}
@@ -540,20 +540,6 @@ public class IsoMessage {
                 //never happen
             }
         }
-    }
-
-    	//Fields
-    	for (int i = 2; i < 129; i++) {
-    		IsoValue<?> v = fields[i];
-    		if (v != null) {
-        		try {
-        			v.write(bout, binaryFields, forceStringEncoding, encodeVariableLengthFieldsInHex);
-        		} catch (IOException ex) {
-        			//should never happen, writing to a ByteArrayOutputStream
-        		}
-    		}
-    	}
-    	return bout.toByteArray();
     }
 
     /** Returns a string representation of the message, as if it were encoded
