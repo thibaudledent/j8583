@@ -88,8 +88,9 @@ public final class Bcd {
 
     /**
      * Encode the value as BCD and put it in the buffer. The buffer must be big enough
-     * to store the digits in the original value (half the length of the string).  @param value the value
+     * to store the digits in the original value (half the length of the string).
      *
+     * @param value the value
      * @param buf the buf
      */
     public static void encode(String value, byte[] buf) {
@@ -114,8 +115,9 @@ public final class Bcd {
      * Encode the value as BCD and put it in the buffer. The buffer must be big enough
      * to store the digits in the original value (half the length of the string).
      * If the value contains an odd number of digits, the last one is stored in
-     * its own byte at the end, padded with an F nibble.  @param value the value
+     * its own byte at the end, padded with an F nibble.
      *
+     * @param value the value
      * @param buf the buf
      */
     public static void encodeRightPadded(String value, byte[] buf) {
@@ -188,8 +190,9 @@ public final class Bcd {
 
     /**
      * Convert two bytes of BCD length to an int,
-     * e.g. 0x4521 into 4521, starting at the specified offset.  @param b the b
+     * e.g. 0x4521 into 4521, starting at the specified offset.  
      *
+     * @param b the b
      * @return the int
      */
     public static int parseBcdLength(byte b) {
@@ -198,8 +201,9 @@ public final class Bcd {
 
     /**
      * Convert two bytes of BCD length to an int,
-     * e.g. 0x4521 into 4521, starting at the specified offset.  @param b the b
+     * e.g. 0x4521 into 4521, starting at the specified offset.  
      *
+     * @param b the b
      * @param offset the offset
      * @return the int
      */

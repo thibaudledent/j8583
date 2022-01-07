@@ -69,7 +69,9 @@ public abstract class FieldParseInfo {
 	/**
 	 * Specified whether length headers for variable-length fields in text mode should
 	 * be decoded using proper string conversion with the character encoding. Default is false,
-	 * which means use the old behavior of decoding as ASCII.  @param flag the flag
+	 * which means use the old behavior of decoding as ASCII.  
+     *
+	 * @param flag the flag
 	 */
 	public void setForceStringDecoding(boolean flag) {
         forceStringDecoding = flag;
@@ -77,7 +79,9 @@ public abstract class FieldParseInfo {
 
 	/**
 	 * Specifies whether length headers for variable-length fields in binary mode should
-	 * be decoded as a hexadecimal values. Default is false, which means decoding the length as BCD.  @param flag the flag
+	 * be decoded as a hexadecimal values. Default is false, which means decoding the length as BCD.  
+     *
+	 * @param flag the flag
 	 */
 	public void setForceHexadecimalLength(boolean flag) {
 		this.forceHexadecimalLength = flag;
@@ -102,14 +106,18 @@ public abstract class FieldParseInfo {
 	}
 
 	/**
-	 * Returns the specified length for the data to be parsed.  @return the length
+	 * Returns the specified length for the data to be parsed.  
+     *
+	 * @return the length
 	 */
 	public int getLength() {
 		return length;
 	}
 
 	/**
-	 * Returns the data type for the data to be parsed.  @return the type
+	 * Returns the data type for the data to be parsed.  
+     *
+	 * @return the type
 	 */
 	public IsoType getType() {
 		return type;
@@ -168,8 +176,9 @@ public abstract class FieldParseInfo {
             throws ParseException, UnsupportedEncodingException;
 
 	/**
-	 * Returns a new FieldParseInfo instance that can parse the specified type.  @param t the t
+	 * Returns a new FieldParseInfo instance that can parse the specified type.  
 	 *
+	 * @param t the t
 	 * @param len      the len
 	 * @param encoding the encoding
 	 * @return the instance

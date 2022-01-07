@@ -101,7 +101,8 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * This flag gets passed on to newly created messages and also sets this value for all
-	 * field parsers in parsing guides.  @param flag the flag
+	 * field parsers in parsing guides.  
+     * @param flag the flag
 	 */
 	public void setForceStringEncoding(boolean flag) {
         forceStringEncoding = flag;
@@ -123,7 +124,8 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * This flag gets passed on to newly created messages and also sets this value for all
-	 * field parsers in parsing guides.  @param flag the flag
+	 * field parsers in parsing guides.  
+     * @param flag the flag
 	 */
 	public void setVariableLengthFieldsInHex(boolean flag) {
 		this.variableLengthFieldsInHex = flag;
@@ -145,7 +147,8 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * Tells the factory to create messages that encode their bitmaps in binary format
-	 * even when they're encoded as text. Has no effect on binary messages.  @param flag the flag
+	 * even when they're encoded as text. Has no effect on binary messages.  
+     * @param flag the flag
 	 */
 	public void setUseBinaryBitmap(boolean flag) {
         binBitmap = flag;
@@ -153,14 +156,16 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * Returns true if the factory is set to create and parse bitmaps in binary format
-	 * when the messages are encoded as text.  @return the boolean
+	 * when the messages are encoded as text.  
+     * @return the boolean
 	 */
 	public boolean isUseBinaryBitmap() {
         return binBitmap;
     }
 
 	/**
-	 * Sets the character encoding used for parsing ALPHA, LLVAR and LLLVAR fields.  @param value the value
+	 * Sets the character encoding used for parsing ALPHA, LLVAR and LLLVAR fields.  
+     * @param value the value
 	 */
 	public void setCharacterEncoding(String value) {
         if (encoding == null) {
@@ -189,7 +194,8 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * Returns the encoding used to parse ALPHA, LLVAR and LLLVAR fields. The default is the
-	 * file.encoding system property.  @return the character encoding
+	 * file.encoding system property.  
+     * @return the character encoding
 	 */
 	public String getCharacterEncoding() {
 		return encoding;
@@ -197,7 +203,8 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * Sets or clears the flag to pass to new messages, to include a secondary bitmap
-	 * even if it's not needed.  @param flag the flag
+	 * even if it's not needed.  
+     * @param flag the flag
 	 */
 	public void setForceSecondaryBitmap(boolean flag) {
 		forceb2 = flag;
@@ -213,7 +220,8 @@ public class MessageFactory<T extends IsoMessage> {
 	}
 
 	/**
-	 * Sets or clears the flag to specify if field P-65 should be interpreted as a tertiary bitmap  @param flag the flag
+	 * Sets or clears the flag to specify if field P-65 should be interpreted as a tertiary bitmap  
+     * @param flag the flag
 	 */
 	public void setUseTertiaryBitmap(boolean flag){
 		useTertiaryBitmap = flag;
@@ -232,7 +240,8 @@ public class MessageFactory<T extends IsoMessage> {
 	 * Setting this property to true avoids getting a ParseException when parsing messages that don't have
 	 * the last field specified in the bitmap. This is common with certain providers where field 128 is
 	 * specified in the bitmap but not actually included in the messages. Default is false, which has
-	 * been the behavior in previous versions when this option didn't exist.  @param flag the flag
+	 * been the behavior in previous versions when this option didn't exist.  
+     * @param flag the flag
 	 */
 	public void setIgnoreLastMissingField(boolean flag) {
 		ignoreLast = flag;
@@ -241,14 +250,16 @@ public class MessageFactory<T extends IsoMessage> {
 	/**
 	 * This flag indicates if the MessageFactory throws an exception if the last field of a message
 	 * is not really present even though it's specified in the bitmap. Default is false which means
-	 * an exception is thrown.  @return the ignore last missing field
+	 * an exception is thrown.  
+     * @return the ignore last missing field
 	 */
 	public boolean getIgnoreLastMissingField() {
 		return ignoreLast;
 	}
 
 	/**
-	 * Specifies a map for custom field encoder/decoders. The keys are the field numbers.  @param value the value
+	 * Specifies a map for custom field encoder/decoders. The keys are the field numbers.  
+     * @param value the value
 	 */
 	@SuppressWarnings("rawtypes")
 	public void setCustomFields(Map<Integer, CustomField> value) {
@@ -256,8 +267,9 @@ public class MessageFactory<T extends IsoMessage> {
 	}
 
 	/**
-	 * Sets the CustomField encoder for the specified field number.  @param index the index
+	 * Sets the CustomField encoder for the specified field number.  
 	 *
+	 * @param index the index
 	 * @param value the value
 	 */
 	public void setCustomField(int index, CustomField<?> value) {
@@ -265,8 +277,9 @@ public class MessageFactory<T extends IsoMessage> {
 	}
 
 	/**
-	 * Returns a custom field encoder/decoder for the specified field number, if one is available.  @param <F>  the type parameter
+	 * Returns a custom field encoder/decoder for the specified field number, if one is available.  
 	 *
+	 * @param <F>  the type parameter
 	 * @param index the index
 	 * @return the custom field
 	 */
@@ -276,8 +289,9 @@ public class MessageFactory<T extends IsoMessage> {
 	}
 
 	/**
-	 * Returns a custom field encoder/decoder for the specified field number, if one is available.  @param <F>  the type parameter
+	 * Returns a custom field encoder/decoder for the specified field number, if one is available.  
 	 *
+	 * @param <F>  the type parameter
 	 * @param index the index
 	 * @return the custom field
 	 */
@@ -289,8 +303,9 @@ public class MessageFactory<T extends IsoMessage> {
 	/**
 	 * Tells the receiver to read the configuration at the specified path. This just calls
 	 * ConfigParser.configureFromClasspathConfig() with itself and the specified path at arguments,
-	 * but is really convenient in case the MessageFactory is being configured from within, say, Spring.  @param path the path
+	 * but is really convenient in case the MessageFactory is being configured from within, say, Spring.  
 	 *
+	 * @param path the path
 	 * @throws IOException the io exception
 	 */
 	public void setConfigPath(String path) throws IOException {
@@ -324,28 +339,32 @@ public class MessageFactory<T extends IsoMessage> {
 	}
 
 	/**
-	 * header portion of the message is written/parsed in binary, default is false  @param flag the flag
+	 * header portion of the message is written/parsed in binary, default is false  
+     * @param flag the flag
 	 */
 	public void setBinaryHeader(boolean flag){
 		binaryHeader = flag;
 	}
 
 	/**
-	 * header portion of the message is written/parsed in binary, default is false  @return the boolean
+	 * header portion of the message is written/parsed in binary, default is false  
+     * @return the boolean
 	 */
 	public boolean isBinaryHeader(){
 		return binaryHeader;
 	}
 
 	/**
-	 * fields portion of the message is written/parsed in binary, default is false  @param flag the flag
+	 * fields portion of the message is written/parsed in binary, default is false  
+     * @param flag the flag
 	 */
 	public void setBinaryFields(boolean flag){
 		binaryFields = flag;
 	}
 
 	/**
-	 * fields portion of the message is written/parsed in binary, default is false  @return the boolean
+	 * fields portion of the message is written/parsed in binary, default is false  
+     * @return the boolean
 	 */
 	public boolean isBinaryFields(){
 		return binaryFields;
@@ -488,8 +507,9 @@ public class MessageFactory<T extends IsoMessage> {
 	}
 
 	/**
-	 * Sets the timezone for the specified FieldParseInfo, if it's needed for parsing dates.  @param messageType the message type
+	 * Sets the timezone for the specified FieldParseInfo, if it's needed for parsing dates.  
 	 *
+	 * @param messageType the message type
 	 * @param field the field
 	 * @param tz    the tz
 	 */
@@ -510,8 +530,9 @@ public class MessageFactory<T extends IsoMessage> {
     }
 
 	/**
-	 * Convenience for parseMessage(buf, isoHeaderLength, false)  @param buf the buf
+	 * Convenience for parseMessage(buf, isoHeaderLength, false)  
 	 *
+	 * @param buf the buf
 	 * @param isoHeaderLength the iso header length
 	 * @return the t
 	 * @throws ParseException               the parse exception
@@ -826,7 +847,8 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * Sets whether the factory should set the current date on newly created messages,
-	 * in field 7. Default is false.  @param flag the flag
+	 * in field 7. Default is false.  
+     * @param flag the flag
 	 */
 	public void setAssignDate(boolean flag) {
 		setDate = flag;
@@ -834,7 +856,8 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * Returns true if the factory is assigning the current date to newly created messages
-	 * (field 7). Default is false.  @return the assign date
+	 * (field 7). Default is false.  
+     * @return the assign date
 	 */
 	public boolean getAssignDate() {
 		return setDate;
@@ -842,14 +865,16 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * Sets the generator that this factory will get new trace numbers from. There is no
-	 * default generator.  @param value the value
+	 * default generator.  
+     * @param value the value
 	 */
 	public void setTraceNumberGenerator(TraceNumberGenerator value) {
 		traceGen = value;
 	}
 
 	/**
-	 * Returns the generator used to assign trace numbers to new messages.  @return the trace number generator
+	 * Returns the generator used to assign trace numbers to new messages.  
+     * @return the trace number generator
 	 */
 	public TraceNumberGenerator getTraceNumberGenerator() {
 		return traceGen;
@@ -881,8 +906,9 @@ public class MessageFactory<T extends IsoMessage> {
 	}
 
 	/**
-	 * Returns the ISO header used for the specified type.  @param type the type
+	 * Returns the ISO header used for the specified type.  
 	 *
+	 * @param type the type
 	 * @return the iso header
 	 */
 	public String getIsoHeader(int type) {
@@ -905,7 +931,8 @@ public class MessageFactory<T extends IsoMessage> {
     }
 
 	/**
-	 * Returns the binary ISO header used for the specified type.  @param type the type
+	 * Returns the binary ISO header used for the specified type.  
+  * @param type the type
 	 *
 	 * @return the byte [ ]
 	 */
@@ -915,7 +942,8 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * Adds a message template to the factory. If there was a template for the same
-	 * message type as the new one, it is overwritten.  @param templ the templ
+	 * message type as the new one, it is overwritten.  
+     * @param templ the templ
 	 */
 	public void addMessageTemplate(T templ) {
 		if (templ != null) {
@@ -924,7 +952,8 @@ public class MessageFactory<T extends IsoMessage> {
 	}
 
 	/**
-	 * Removes the message template for the specified type.  @param type the type
+	 * Removes the message template for the specified type.  
+     * @param type the type
 	 */
 	public void removeMessageTemplate(int type) {
 		typeTemplates.remove(type);
@@ -932,7 +961,8 @@ public class MessageFactory<T extends IsoMessage> {
 
 	/**
 	 * Returns the template for the specified message type. This allows templates to be modified
-	 * programmatically.  @param type the type
+	 * programmatically.  
+     * @param type the type
 	 *
 	 * @return the message template
 	 */

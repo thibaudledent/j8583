@@ -200,7 +200,8 @@ public class IsoValue<T> implements Cloneable {
 	}
 
 	/**
-	 * Returns the ISO type to which the value must be formatted.  @return the type
+	 * Returns the ISO type to which the value must be formatted.  
+     * @return the type
 	 */
 	public IsoType getType() {
 		return type;
@@ -209,14 +210,16 @@ public class IsoValue<T> implements Cloneable {
 	/**
 	 * Returns the length of the stored value, of the length of the formatted value
 	 * in case of NUMERIC or ALPHA. It doesn't include the field length header in case
-	 * of LLVAR or LLLVAR.  @return the length
+	 * of LLVAR or LLLVAR.  
+     * @return the length
 	 */
 	public int getLength() {
 		return length;
 	}
 
 	/**
-	 * Returns the stored value without any conversion or formatting.  @return the value
+	 * Returns the stored value without any conversion or formatting.  
+     * @return the value
 	 */
 	public T getValue() {
 		return value;
@@ -241,7 +244,8 @@ public class IsoValue<T> implements Cloneable {
 	}
 
 	/**
-	 * Sets the timezone, useful for date fields.  @param value the value
+	 * Sets the timezone, useful for date fields.  
+     * @param value the value
 	 */
 	public void setTimeZone(TimeZone value) {
         tz = value;
@@ -343,7 +347,8 @@ public class IsoValue<T> implements Cloneable {
 	}
 
 	/**
-	 * Returns the CustomFieldEncoder for this value.  @return the encoder
+	 * Returns the CustomFieldEncoder for this value.  
+     * @return the encoder
 	 */
 	public CustomFieldEncoder<T> getEncoder() {
 		return encoder;

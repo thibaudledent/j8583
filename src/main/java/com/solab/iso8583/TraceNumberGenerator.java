@@ -29,12 +29,14 @@ package com.solab.iso8583;
 public interface TraceNumberGenerator {
 
     /**
-     * Returns the next trace number.  @return the int
+     * Returns the next trace number.  
+     * @return the int
      */
     public int nextTrace();
 
     /**
-     * Returns the last number that was generated.  @return the last trace
+     * Returns the last number that was generated.  
+     * @return the last trace
      */
     public int getLastTrace();
 

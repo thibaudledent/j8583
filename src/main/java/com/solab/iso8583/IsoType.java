@@ -154,23 +154,26 @@ public enum IsoType {
 	}
 
 	/**
-	 * Returns true if the type needs a specified length.  @return the boolean
+	 * Returns true if the type needs a specified length.  
+     * @return the boolean
 	 */
 	public boolean needsLength() {
 		return needsLen;
 	}
 
 	/**
-	 * Returns the length of the type if it's always fixed, or 0 if it's variable.  @return the length
-	 */
+	 * Returns the length of the type if it's always fixed, or 0 if it's variable.  
+     * @return the length
+ 	 */
 	public int getLength() {
 		return length;
 	}
 
 	/**
 	 * Formats a Date if the receiver is DATE10, DATE4, DATE_EXP, DATE12, DATE14 or TIME; throws an exception
-	 * otherwise.  @param value the value
+	 * otherwise.  
 	 *
+	 * @param value the value
 	 * @param tz the tz
 	 * @return the string
 	 */
@@ -200,8 +203,9 @@ public enum IsoType {
 	}
 
 	/**
-	 * Formats the string to the given length (length is only useful if type is ALPHA, NUMERIC or BINARY).  @param value the value
+	 * Formats the string to the given length (length is only useful if type is ALPHA, NUMERIC or BINARY).  
 	 *
+	 * @param value the value
 	 * @param length the length
 	 * @return the string
 	 */
@@ -262,8 +266,9 @@ public enum IsoType {
 	}
 
 	/**
-	 * Formats the integer value as a NUMERIC, an AMOUNT, or a String.  @param value the value
+	 * Formats the integer value as a NUMERIC, an AMOUNT, or a String.  
 	 *
+	 * @param value the value
 	 * @param length the length
 	 * @return the string
 	 */
@@ -285,8 +290,9 @@ public enum IsoType {
 	}
 
 	/**
-	 * Formats the BigDecimal as an AMOUNT, NUMERIC, or a String.  @param value the value
+	 * Formats the BigDecimal as an AMOUNT, NUMERIC, or a String.  
 	 *
+	 * @param value the value
 	 * @param length the length
 	 * @return the string
 	 */
