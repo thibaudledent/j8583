@@ -74,6 +74,7 @@ public class IsoMessage {
     /* Flag to indicate that fields with an index above 128 are in use and a tertiary bitmap is needed */
     private boolean tertiaryBitmapNeeded = false;
     private boolean forceStringEncoding;
+    private boolean encodeVariableLengthFieldsInHex;
     private String encoding = System.getProperty("file.encoding");
 
     /** Creates a new empty message with no values set. */
@@ -130,6 +131,16 @@ public class IsoMessage {
      * for text format. */
     public void setForceStringEncoding(boolean flag) {
         forceStringEncoding = flag;
+    }
+
+    /** Specified whether the variable-length fields should encode their length
+     * headers using hexadecimal values. This is only useful for binary format. */
+    public void setEncodeVariableLengthFieldsInHex(boolean flag) {
+        this.encodeVariableLengthFieldsInHex = flag;
+    }
+
+    public boolean isEncodeVariableLengthFieldsInHex() {
+        return encodeVariableLengthFieldsInHex;
     }
 
     /** Sets the string to be sent as ISO header, that is, after the length header but before the message type.
@@ -258,12 +269,12 @@ public class IsoMessage {
     /** Sets the specified value in the specified field, creating an IsoValue internally.
      * @param index The field number (2 to 128)
      * @param value The value to be stored.
-     * @param encoder An optional CustomField to encode/decode the value.
+     * @param encoder An optional CustomFieldEncoder for the value.
      * @param t The ISO type.
      * @param length The length of the field, used for ALPHA and NUMERIC values only, ignored
      * with any other type.
      * @return The receiver (useful for setting several values in sequence). */
-    public <T> IsoMessage setValue(int index, T value, CustomField<T> encoder, IsoType t, int length) {
+    public <T> IsoMessage setValue(int index, T value, CustomFieldEncoder<T> encoder, IsoType t, int length) {
     	if (index < 2 || index > MAX_AMOUNT_OF_FIELDS) {
     		throw new IndexOutOfBoundsException("Field index must be between 2 and " + MAX_AMOUNT_OF_FIELDS);
     	}
@@ -530,7 +541,6 @@ public class IsoMessage {
             }
         }
     }
-
 
     /** Returns a string representation of the message, as if it were encoded
      * in ASCII with no binary bitmap. */

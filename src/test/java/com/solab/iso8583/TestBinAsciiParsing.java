@@ -16,7 +16,7 @@ public class TestBinAsciiParsing {
 
     @Test
     public void binAscii100Message() throws Exception{
-        MessageFactory mf = ConfigParser.createFromClasspathConfig("bin_ascii.conf.xml");
+        MessageFactory<IsoMessage> mf = ConfigParser.createFromClasspathConfig("bin_ascii.conf.xml");
         mf.setBinaryHeader(true);
 
         byte[] data = loadData("bin_ascii_100.bin");
@@ -26,8 +26,8 @@ public class TestBinAsciiParsing {
     }
 
     @Test
-    public void binAscii810Message() throws Exception {
-        MessageFactory mf = ConfigParser.createFromClasspathConfig("bin_ascii.conf.xml");
+    public void binAscii810Message() throws Exception{
+        MessageFactory<IsoMessage> mf = ConfigParser.createFromClasspathConfig("bin_ascii.conf.xml");
         mf.setBinaryHeader(true);
 
         byte[] data = loadData("bin_ascii_810.bin");
@@ -38,22 +38,30 @@ public class TestBinAsciiParsing {
         c.set(year, Calendar.MARCH, 22, 22, 0, 1);
 
         long expected = c.getTime().getTime();
-        long actual = ((Date) (msg.getField(7).getValue())).getTime();
+        long actual = ((Date)(msg.getField(7).getValue())).getTime();
+        if (expected > actual) {
+            c.add(Calendar.YEAR, -1);
+            expected = c.getTime().getTime();
+        }
 
-        Assert.assertEquals("DateTime", expected, actual);
-        Assert.assertEquals("810 msg type", "001", msg.getField(70).getValue());
+        Assert.assertEquals("DateTime",expected,actual);
+        Assert.assertEquals("810 msg type","001",msg.getField(70).getValue());
     }
 
-    static byte[] loadData(String s) throws IOException {
-        InputStream ins = new BufferedInputStream(Objects.requireNonNull(TestBinAsciiParsing.class.getClassLoader().getResourceAsStream(s)));
-        byte[] data = new byte[0];
-        byte[] buffer = new byte[1024];
-        int r;
+    public static byte[] loadData(String s) throws IOException {
+        try (InputStream ins = new BufferedInputStream (TestBinAsciiParsing.class.getClassLoader().getResourceAsStream(s))) {
+            if (ins == null) {
+                throw new IllegalArgumentException(s + " not found");
+            }
+            byte[] data = new byte[0];
+            byte[] buffer = new byte[1024];
+            int r;
 
-        while ((r = ins.read(buffer, 0, buffer.length)) > -1) {
-            data = append(data, buffer, r);
+            while ((r = ins.read(buffer, 0, buffer.length)) > -1) {
+                data = append(data, buffer, r);
+            }
+            return data;
         }
-        return data;
     }
 
     private static byte[] append(byte[] b1, byte[] b2, int b2Len){

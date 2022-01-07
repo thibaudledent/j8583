@@ -35,6 +35,7 @@ public abstract class FieldParseInfo {
 	protected final int length;
 	private String encoding = System.getProperty("file.encoding");
     protected boolean forceStringDecoding;
+    protected boolean forceHexadecimalLength;
     private CustomField<?> decoder;
 
 	/** Creates a new instance that parses a value of the specified type, with the specified length.
@@ -55,6 +56,12 @@ public abstract class FieldParseInfo {
     public void setForceStringDecoding(boolean flag) {
         forceStringDecoding = flag;
     }
+
+	/** Specifies whether length headers for variable-length fields in binary mode should
+	 * be decoded as a hexadecimal values. Default is false, which means decoding the length as BCD. */
+	public void setForceHexadecimalLength(boolean flag) {
+		this.forceHexadecimalLength = flag;
+	}
 
 	public void setCharacterEncoding(String value) {
 		encoding = value;
@@ -119,6 +126,8 @@ public abstract class FieldParseInfo {
 			fpi = new Date4ParseInfo();
 		} else if (t == IsoType.DATE_EXP) {
 			fpi = new DateExpParseInfo();
+		} else if (t == IsoType.DATE6) {
+			fpi = new Date6ParseInfo();
 		} else if (t == IsoType.LLBIN) {
 			fpi = new LlbinParseInfo();
 		} else if (t == IsoType.LLLBIN) {

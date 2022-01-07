@@ -18,17 +18,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 package com.solab.iso8583.parse;
 
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+
 import com.solab.iso8583.CustomBinaryField;
 import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
+import com.solab.iso8583.util.Bcd;
 import com.solab.iso8583.util.HexCodec;
 
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-
 /** This class is used to parse fields of type LLLBIN.
- * 
+ *
  * @author Enrique Zamudio
  */
 public class LllbinParseInfo extends FieldParseInfo {
@@ -114,13 +115,13 @@ public class LllbinParseInfo extends FieldParseInfo {
 		System.arraycopy(buf, pos+2, _v, 0, l);
 		if (custom == null) {
             int len = getFieldLength(buf, pos);
-            return new IsoValue<>(type, _v, len);
+            return new IsoValue<>(type, _v, len, forceHexadecimalLength);
         } else if (custom instanceof CustomBinaryField) {
             try {
                 T dec = ((CustomBinaryField<T>)custom).decodeBinaryField(
                     buf, pos + 2, l);
-                return dec == null ? new IsoValue<>(type, _v, _v.length, null) :
-                        new IsoValue<>(type, dec, l, custom);
+                return dec == null ? new IsoValue<>(type, _v, _v.length, forceHexadecimalLength, null) :
+                        new IsoValue<>(type, dec, l, forceHexadecimalLength, custom);
             } catch (IndexOutOfBoundsException ex) {
                 throw new ParseException(String.format(
                         "Insufficient data for LLLBIN field %d, pos %d", field, pos), pos);
@@ -137,7 +138,10 @@ public class LllbinParseInfo extends FieldParseInfo {
 	}
 
 	private int getFieldLength(final byte[] buf, final int pos) {
-        return ((buf[pos] & 0x0f) * 100) + (((buf[pos + 1] & 0xf0) >> 4) * 10) + (buf[pos + 1] & 0x0f);
+        return forceHexadecimalLength ?
+                ((buf[pos] & 0xff) << 8) | (buf[pos + 1] & 0xff)
+                :
+                ((buf[pos] & 0x0f) * 100) + Bcd.parseBcdLength(buf[pos + 1]);
     }
 
 }
