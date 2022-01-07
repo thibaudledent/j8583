@@ -27,16 +27,24 @@ import java.math.BigInteger;
  * A custom field encoder/decoder to be used with LLBIN/LLLBIN fields
  * that contain BigIntegers in BCD encoding.
  *
- * @author Enrique Zamudio
- *         Date: 07/05/13 13:02
+ * @author Enrique Zamudio         Date: 07/05/13 13:02
  */
 public class BigIntBcdCodec implements CustomBinaryField<BigInteger> {
 
     private final boolean rightPadded;
 
+    /**
+     * Instantiates a new Big int bcd codec.
+     */
     public BigIntBcdCodec() {
         this(false);
     }
+
+    /**
+     * Instantiates a new Big int bcd codec.
+     *
+     * @param rightPadded the right padded
+     */
     public BigIntBcdCodec(boolean rightPadded) {
         this.rightPadded = rightPadded;
     }

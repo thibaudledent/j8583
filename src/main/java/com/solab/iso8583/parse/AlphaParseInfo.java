@@ -25,13 +25,19 @@ import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 
-/** This is the class used to parse ALPHA fields.
- * 
+/**
+ * This is the class used to parse ALPHA fields.
+ *
  * @author Enrique Zamudio
  */
 public class AlphaParseInfo extends AlphaNumericFieldParseInfo {
 
-	public AlphaParseInfo(int len) {
+    /**
+     * Instantiates a new Alpha parse info.
+     *
+     * @param len the len
+     */
+    public AlphaParseInfo(int len) {
 		super(IsoType.ALPHA, len);
 	}
 

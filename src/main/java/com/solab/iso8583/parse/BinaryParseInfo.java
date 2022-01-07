@@ -26,14 +26,20 @@ import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.HexCodec;
 
-/** This class is used to parse fields of type BINARY.
- * 
+/**
+ * This class is used to parse fields of type BINARY.
+ *
  * @author Enrique Zamudio
  */
 public class BinaryParseInfo extends FieldParseInfo {
 
-	
-	public BinaryParseInfo(int len) {
+
+    /**
+     * Instantiates a new Binary parse info.
+     *
+     * @param len the len
+     */
+    public BinaryParseInfo(int len) {
 		super(IsoType.BINARY, len);
 	}
 

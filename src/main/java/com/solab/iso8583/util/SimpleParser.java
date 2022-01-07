@@ -30,11 +30,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.ParseException;
 
-/** A simple command-line program that reads a configuration file to set up a MessageFactory
+/**
+ * A simple command-line program that reads a configuration file to set up a MessageFactory
  * and parse messages read from STDIN.
  *
- * @author Enrique Zamudio
- *         Date: 20/06/12 02:11
+ * @author Enrique Zamudio         Date: 20/06/12 02:11
  */
 public class SimpleParser {
 
@@ -48,6 +48,13 @@ public class SimpleParser {
         return reader.readLine();
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     * @throws IOException    the io exception
+     * @throws ParseException the parse exception
+     */
     public static void main(String [] args) throws IOException, ParseException {
         final MessageFactory<IsoMessage> mf = new MessageFactory<IsoMessage>();
         if (args.length == 0) {

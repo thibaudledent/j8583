@@ -25,16 +25,24 @@ import com.solab.iso8583.util.Bcd;
  * A custom field encoder/decoder to be used with LLBIN/LLLBIN fields
  * that contain Longs in BCD encoding.
  *
- * @author Enrique Zamudio
- *         Date: 07/05/13 13:02
+ * @author Enrique Zamudio         Date: 07/05/13 13:02
  */
 public class LongBcdCodec implements CustomBinaryField<Long> {
 
     private final boolean rightPadded;
 
+    /**
+     * Instantiates a new Long bcd codec.
+     */
     public LongBcdCodec() {
         this(false);
     }
+
+    /**
+     * Instantiates a new Long bcd codec.
+     *
+     * @param rightPadding the right padding
+     */
     public LongBcdCodec(boolean rightPadding) {
         rightPadded = rightPadding;
     }

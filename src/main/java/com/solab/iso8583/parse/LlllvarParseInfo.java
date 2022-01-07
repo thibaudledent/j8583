@@ -29,12 +29,14 @@ import java.text.ParseException;
 /**
  * Blabla.
  *
- * @author Enrique Zamudio
- *         Date: 19/02/15 18:30
+ * @author Enrique Zamudio         Date: 19/02/15 18:30
  */
 public class LlllvarParseInfo  extends FieldParseInfo {
 
-	public LlllvarParseInfo() {
+    /**
+     * Instantiates a new Llllvar parse info.
+     */
+    public LlllvarParseInfo() {
 		super(IsoType.LLLLVAR, 0);
 	}
 

@@ -31,11 +31,13 @@ import java.util.Date;
 /**
  * Blabla.
  *
- * @author Enrique Zamudio
- *         Date: 06/01/16 10:52 AM
+ * @author Enrique Zamudio         Date: 06/01/16 10:52 AM
  */
 public class Date12ParseInfo extends DateTimeParseInfo {
 
+    /**
+     * Instantiates a new Date 12 parse info.
+     */
     public Date12ParseInfo() {
    		super(IsoType.DATE12, 12);
    	}

@@ -28,13 +28,17 @@ import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.Bcd;
 
-/** This class is used to parse fields of type DATE_EXP.
- * 
+/**
+ * This class is used to parse fields of type DATE_EXP.
+ *
  * @author Enrique Zamudio
  */
 public class DateExpParseInfo extends DateTimeParseInfo {
 
-	public DateExpParseInfo() {
+    /**
+     * Instantiates a new Date exp parse info.
+     */
+    public DateExpParseInfo() {
 		super(IsoType.DATE_EXP, 4);
 	}
 

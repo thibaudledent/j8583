@@ -28,14 +28,18 @@ import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.Bcd;
 
-/** This class is used to parse TIME fields.
- * 
+/**
+ * This class is used to parse TIME fields.
+ *
  * @author Enrique Zamudio
  */
 public class TimeParseInfo extends DateTimeParseInfo {
 
-	
-	public TimeParseInfo() {
+
+    /**
+     * Instantiates a new Time parse info.
+     */
+    public TimeParseInfo() {
 		super(IsoType.TIME, 6);
 	}
 

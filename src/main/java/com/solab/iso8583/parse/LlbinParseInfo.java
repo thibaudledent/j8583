@@ -28,17 +28,27 @@ import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.Bcd;
 import com.solab.iso8583.util.HexCodec;
 
-/** This class is used to parse fields of type LLBIN.
- * 
+/**
+ * This class is used to parse fields of type LLBIN.
+ *
  * @author Enrique Zamudio
  */
 public class LlbinParseInfo extends FieldParseInfo {
 
+    /**
+     * Instantiates a new Llbin parse info.
+     *
+     * @param t   the t
+     * @param len the len
+     */
     public LlbinParseInfo(IsoType t, int len) {
         super(t, len);
     }
 
-	public LlbinParseInfo() {
+    /**
+     * Instantiates a new Llbin parse info.
+     */
+    public LlbinParseInfo() {
 		super(IsoType.LLBIN, 0);
 	}
 
@@ -132,11 +142,23 @@ public class LlbinParseInfo extends FieldParseInfo {
 		}
 	}
 
-	protected int getLengthForBinaryParsing(final byte b) {
+    /**
+     * Gets length for binary parsing.
+     *
+     * @param b the b
+     * @return the length for binary parsing
+     */
+    protected int getLengthForBinaryParsing(final byte b) {
     	return getFieldLength(b);
 	}
 
-	protected int getFieldLength(final byte b) {
+    /**
+     * Gets field length.
+     *
+     * @param b the b
+     * @return the field length
+     */
+    protected int getFieldLength(final byte b) {
         return (((b & 0xf0) >> 4) * 10) + (b & 0x0f);
     }
 }

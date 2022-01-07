@@ -37,30 +37,39 @@ import static com.solab.iso8583.IsoMessage.START_OF_SECONDARY_BITMAP_FIELDS;
 import static com.solab.iso8583.IsoMessage.START_OF_TERTIARY_BITMAP_FIELDS;
 import static com.solab.iso8583.IsoType.VARIABLE_LENGTH_VAR_TYPES;
 
-/** This class is used to create messages, either from scratch or from an existing String or byte
+/**
+ * This class is used to create messages, either from scratch or from an existing String or byte
  * buffer. It can be configured to put default values on newly created messages, and also to know
  * what to expect when reading messages from an InputStream.
- * <P>
+ * <p>
  * The factory can be configured to know what values to set for newly created messages, both from
  * a template (useful for fields that must be set with the same value for EVERY message created)
  * and individually (for trace [field 11] and message date [field 7]).
- * <P>
+ * <p>
  * It can also be configured to know what fields to expect in incoming messages (all possible values
  * must be stated, indicating the date type for each). This way the messages can be parsed from
  * a byte buffer.
- * 
+ *
+ * @param <T> the type parameter
  * @author Enrique Zamudio
  */
 public class MessageFactory<T extends IsoMessage> {
 
+	/**
+	 * The Log.
+	 */
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	/** This map stores the message template for each message type. */
 	private Map<Integer, T> typeTemplates = new HashMap<>();
-	/** Stores the information needed to parse messages sorted by type. */
+	/**
+	 * Stores the information needed to parse messages sorted by type.
+	 */
 	protected Map<Integer, Map<Integer, FieldParseInfo>> parseMap = new HashMap<>();
-	/** Stores the field numbers to be parsed, in order of appearance. */
-    protected Map<Integer, List<Integer>> parseOrder = new HashMap<>();
+	/**
+	 * Stores the field numbers to be parsed, in order of appearance.
+	 */
+	protected Map<Integer, List<Integer>> parseOrder = new HashMap<>();
 
 	private TraceNumberGenerator traceGen;
 	/** The ISO header to be included in each message type. */
@@ -90,9 +99,11 @@ public class MessageFactory<T extends IsoMessage> {
     private boolean variableLengthFieldsInHex;
 	private String encoding = System.getProperty("file.encoding");
 
-    /** This flag gets passed on to newly created messages and also sets this value for all
-     * field parsers in parsing guides. */
-    public void setForceStringEncoding(boolean flag) {
+	/**
+	 * This flag gets passed on to newly created messages and also sets this value for all
+	 * field parsers in parsing guides.  @param flag the flag
+	 */
+	public void setForceStringEncoding(boolean flag) {
         forceStringEncoding = flag;
         for (Map<Integer,FieldParseInfo> pm : parseMap.values()) {
             for (FieldParseInfo parser : pm.values()) {
@@ -100,12 +111,20 @@ public class MessageFactory<T extends IsoMessage> {
             }
         }
     }
-    public boolean isForceStringEncoding() {
+
+	/**
+	 * Is force string encoding boolean.
+	 *
+	 * @return the boolean
+	 */
+	public boolean isForceStringEncoding() {
         return forceStringEncoding;
     }
 
-	/** This flag gets passed on to newly created messages and also sets this value for all
-	 * field parsers in parsing guides. */
+	/**
+	 * This flag gets passed on to newly created messages and also sets this value for all
+	 * field parsers in parsing guides.  @param flag the flag
+	 */
 	public void setVariableLengthFieldsInHex(boolean flag) {
 		this.variableLengthFieldsInHex = flag;
 		for (Map<Integer,FieldParseInfo> pm : parseMap.values()) {
@@ -115,22 +134,34 @@ public class MessageFactory<T extends IsoMessage> {
 		}
 	}
 
+	/**
+	 * Is variable length fields in hex boolean.
+	 *
+	 * @return the boolean
+	 */
 	public boolean isVariableLengthFieldsInHex() {
 		return variableLengthFieldsInHex;
 	}
 
-    /** Tells the factory to create messages that encode their bitmaps in binary format
-     * even when they're encoded as text. Has no effect on binary messages. */
-    public void setUseBinaryBitmap(boolean flag) {
+	/**
+	 * Tells the factory to create messages that encode their bitmaps in binary format
+	 * even when they're encoded as text. Has no effect on binary messages.  @param flag the flag
+	 */
+	public void setUseBinaryBitmap(boolean flag) {
         binBitmap = flag;
     }
-    /** Returns true if the factory is set to create and parse bitmaps in binary format
-     * when the messages are encoded as text. */
-    public boolean isUseBinaryBitmap() {
+
+	/**
+	 * Returns true if the factory is set to create and parse bitmaps in binary format
+	 * when the messages are encoded as text.  @return the boolean
+	 */
+	public boolean isUseBinaryBitmap() {
         return binBitmap;
     }
 
-	/** Sets the character encoding used for parsing ALPHA, LLVAR and LLLVAR fields. */
+	/**
+	 * Sets the character encoding used for parsing ALPHA, LLVAR and LLLVAR fields.  @param value the value
+	 */
 	public void setCharacterEncoding(String value) {
         if (encoding == null) {
             throw new IllegalArgumentException("Cannot set null encoding.");
@@ -156,67 +187,112 @@ public class MessageFactory<T extends IsoMessage> {
         }
 	}
 
-	/** Returns the encoding used to parse ALPHA, LLVAR and LLLVAR fields. The default is the
-	 * file.encoding system property. */
+	/**
+	 * Returns the encoding used to parse ALPHA, LLVAR and LLLVAR fields. The default is the
+	 * file.encoding system property.  @return the character encoding
+	 */
 	public String getCharacterEncoding() {
 		return encoding;
 	}
 
-	/** Sets or clears the flag to pass to new messages, to include a secondary bitmap
-	 * even if it's not needed. */
+	/**
+	 * Sets or clears the flag to pass to new messages, to include a secondary bitmap
+	 * even if it's not needed.  @param flag the flag
+	 */
 	public void setForceSecondaryBitmap(boolean flag) {
 		forceb2 = flag;
 	}
+
+	/**
+	 * Is force secondary bitmap boolean.
+	 *
+	 * @return the boolean
+	 */
 	public boolean isForceSecondaryBitmap() {
 		return forceb2;
 	}
 
-	/** Sets or clears the flag to specify if field P-65 should be interpreted as a tertiary bitmap */
+	/**
+	 * Sets or clears the flag to specify if field P-65 should be interpreted as a tertiary bitmap  @param flag the flag
+	 */
 	public void setUseTertiaryBitmap(boolean flag){
 		useTertiaryBitmap = flag;
 	}
+
+	/**
+	 * Tertiary bitmap is used boolean.
+	 *
+	 * @return the boolean
+	 */
 	public boolean tertiaryBitmapIsUsed(){
 		return useTertiaryBitmap;
 	}
 
-	/** Setting this property to true avoids getting a ParseException when parsing messages that don't have
+	/**
+	 * Setting this property to true avoids getting a ParseException when parsing messages that don't have
 	 * the last field specified in the bitmap. This is common with certain providers where field 128 is
 	 * specified in the bitmap but not actually included in the messages. Default is false, which has
-	 * been the behavior in previous versions when this option didn't exist. */
+	 * been the behavior in previous versions when this option didn't exist.  @param flag the flag
+	 */
 	public void setIgnoreLastMissingField(boolean flag) {
 		ignoreLast = flag;
 	}
-	/** This flag indicates if the MessageFactory throws an exception if the last field of a message
+
+	/**
+	 * This flag indicates if the MessageFactory throws an exception if the last field of a message
 	 * is not really present even though it's specified in the bitmap. Default is false which means
-	 * an exception is thrown. */
+	 * an exception is thrown.  @return the ignore last missing field
+	 */
 	public boolean getIgnoreLastMissingField() {
 		return ignoreLast;
 	}
 
-	/** Specifies a map for custom field encoder/decoders. The keys are the field numbers. */
+	/**
+	 * Specifies a map for custom field encoder/decoders. The keys are the field numbers.  @param value the value
+	 */
 	@SuppressWarnings("rawtypes")
 	public void setCustomFields(Map<Integer, CustomField> value) {
 		customFields = value;
 	}
 
-	/** Sets the CustomField encoder for the specified field number. */
+	/**
+	 * Sets the CustomField encoder for the specified field number.  @param index the index
+	 *
+	 * @param value the value
+	 */
 	public void setCustomField(int index, CustomField<?> value) {
 		customFields.put(index, value);
 	}
-	/** Returns a custom field encoder/decoder for the specified field number, if one is available. */
+
+	/**
+	 * Returns a custom field encoder/decoder for the specified field number, if one is available.  @param <F>  the type parameter
+	 *
+	 * @param index the index
+	 * @return the custom field
+	 */
 	@SuppressWarnings("unchecked")
 	public <F> CustomField<F> getCustomField(int index) {
 		return customFields.get(index);
 	}
-	/** Returns a custom field encoder/decoder for the specified field number, if one is available. */
+
+	/**
+	 * Returns a custom field encoder/decoder for the specified field number, if one is available.  @param <F>  the type parameter
+	 *
+	 * @param index the index
+	 * @return the custom field
+	 */
 	@SuppressWarnings("unchecked")
 	public <F> CustomField<F> getCustomField(Integer index) {
 		return customFields.get(index);
 	}
 
-	/** Tells the receiver to read the configuration at the specified path. This just calls
+	/**
+	 * Tells the receiver to read the configuration at the specified path. This just calls
 	 * ConfigParser.configureFromClasspathConfig() with itself and the specified path at arguments,
-	 * but is really convenient in case the MessageFactory is being configured from within, say, Spring. */
+	 * but is really convenient in case the MessageFactory is being configured from within, say, Spring.  @param path the path
+	 *
+	 * @throws IOException the io exception
+	 */
 	public void setConfigPath(String path) throws IOException {
 		ConfigParser.configureFromClasspathConfig(this, path);
         //Now re-set some properties that need to be propagated down to the recently assigned objects
@@ -224,38 +300,53 @@ public class MessageFactory<T extends IsoMessage> {
         setForceStringEncoding(forceStringEncoding);
 	}
 
-	/** Tells the receiver to create and parse binary messages if the flag is true.
+	/**
+	 * Tells the receiver to create and parse binary messages if the flag is true.
 	 * Default is false, that is, create and parse ASCII messages. Sets both binaryHeader and fields to the flag.
+	 *
+	 * @param flag the flag
 	 */
 	public void setUseBinaryMessages(boolean flag) {
 		binaryHeader = binaryFields = flag;
 	}
-    /** Returns true is the factory is set to create and parse binary messages,
-     * false if it uses ASCII messages. Default is false. True if both binaryHeader &amp; binaryFields
-     * are set to true
-     * @deprecated Check the new flags binaryHeader and binaryFields instead.
-     */
-    @Deprecated
+
+	/**
+	 * Returns true is the factory is set to create and parse binary messages,
+	 * false if it uses ASCII messages. Default is false. True if both binaryHeader &amp; binaryFields
+	 * are set to true
+	 *
+	 * @return the use binary messages
+	 * @deprecated Check the new flags binaryHeader and binaryFields instead.
+	 */
+	@Deprecated
 	public boolean getUseBinaryMessages() {
 		return binaryHeader && binaryFields;
 	}
 
-	/** header portion of the message is written/parsed in binary, default is false */
+	/**
+	 * header portion of the message is written/parsed in binary, default is false  @param flag the flag
+	 */
 	public void setBinaryHeader(boolean flag){
 		binaryHeader = flag;
 	}
 
-	/** header portion of the message is written/parsed in binary, default is false */
+	/**
+	 * header portion of the message is written/parsed in binary, default is false  @return the boolean
+	 */
 	public boolean isBinaryHeader(){
 		return binaryHeader;
 	}
 
-	/** fields portion of the message is written/parsed in binary, default is false */
+	/**
+	 * fields portion of the message is written/parsed in binary, default is false  @param flag the flag
+	 */
 	public void setBinaryFields(boolean flag){
 		binaryFields = flag;
 	}
 
-	/** fields portion of the message is written/parsed in binary, default is false */
+	/**
+	 * fields portion of the message is written/parsed in binary, default is false  @return the boolean
+	 */
 	public boolean isBinaryFields(){
 		return binaryFields;
 	}
@@ -265,20 +356,33 @@ public class MessageFactory<T extends IsoMessage> {
 	/** fields portion of the message is written/parsed in binary */
 
 
-	/** Sets the ETX character to be sent at the end of the message. This is optional and the
+	/**
+	 * Sets the ETX character to be sent at the end of the message. This is optional and the
 	 * default is -1, which means nothing should be sent as terminator.
-	 * @param value The ASCII value of the ETX character or -1 to indicate no terminator should be used. */
+	 *
+	 * @param value The ASCII value of the ETX character or -1 to indicate no terminator should be used.
+	 */
 	public void setEtx(int value) {
 		etx = value;
 	}
+
+	/**
+	 * Gets etx.
+	 *
+	 * @return the etx
+	 */
 	public int getEtx() {
 		return etx;
 	}
 
-	/** Creates a new message of the specified type, with optional trace and date values as well
+	/**
+	 * Creates a new message of the specified type, with optional trace and date values as well
 	 * as any other values specified in a message template. If the factory is set to use binary
 	 * messages, then the returned message will be written using binary coding.
-	 * @param type The message type, for example 0x200, 0x400, etc. */
+	 *
+	 * @param type The message type, for example 0x200, 0x400, etc.
+	 * @return the t
+	 */
 	public T newMessage(int type) {
 		T m;
         if (binIsoHeaders.get(type) != null) {
@@ -325,23 +429,26 @@ public class MessageFactory<T extends IsoMessage> {
 		return m;
 	}
 
-	/** Creates a response message by calling {@link #createResponse(IsoMessage, boolean)}
+	/**
+	 * Creates a response message by calling {@link #createResponse(IsoMessage, boolean)}
 	 * with true as the second parameter.
+	 *
+	 * @param request the request
+	 * @return the t
 	 */
 	public T createResponse(T request) {
 		return createResponse(request, true);
 	}
 
-	/** Creates a message to respond to a request. Increments the message type by 16,
+	/**
+	 * Creates a message to respond to a request. Increments the message type by 16,
 	 * sets all fields from the template if there is one,
 	 * and either copies all values from the request or only the ones already in the template,
 	 * depending on the value of copyAllFields flag.
-	 * @param request An ISO8583 message with a request type (ending in 00).
-	 * @param copyAllFields If true, copies all fields from the request to the response,
-	 *                      overwriting any values already set from the template; otherwise
-	 *                      it only overwrites values for existing fields from the template.
-	 *                      If the template for a response does not exist, then all fields from
-	 *                      the request are copied even in this flag is false.
+	 *
+	 * @param request       An ISO8583 message with a request type (ending in 00).
+	 * @param copyAllFields If true, copies all fields from the request to the response,                      overwriting any values already set from the template; otherwise                      it only overwrites values for existing fields from the template.                      If the template for a response does not exist, then all fields from                      the request are copied even in this flag is false.
+	 * @return the t
 	 */
 	public T createResponse(T request, boolean copyAllFields) {
 		T resp = createIsoMessage(isoHeaders.get(request.getType() + 16));
@@ -380,8 +487,13 @@ public class MessageFactory<T extends IsoMessage> {
 		return resp;
 	}
 
-    /** Sets the timezone for the specified FieldParseInfo, if it's needed for parsing dates. */
-    public void setTimezoneForParseGuide(int messageType, int field, TimeZone tz) {
+	/**
+	 * Sets the timezone for the specified FieldParseInfo, if it's needed for parsing dates.  @param messageType the message type
+	 *
+	 * @param field the field
+	 * @param tz    the tz
+	 */
+	public void setTimezoneForParseGuide(int messageType, int field, TimeZone tz) {
         if (field == 0) {
             DateTimeParseInfo.setDefaultTimeZone(tz);
         }
@@ -397,18 +509,31 @@ public class MessageFactory<T extends IsoMessage> {
                 field, messageType);
     }
 
-    /** Convenience for parseMessage(buf, isoHeaderLength, false) */
-    public T parseMessage(byte[] buf, int isoHeaderLength)
+	/**
+	 * Convenience for parseMessage(buf, isoHeaderLength, false)  @param buf the buf
+	 *
+	 * @param isoHeaderLength the iso header length
+	 * @return the t
+	 * @throws ParseException               the parse exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	public T parseMessage(byte[] buf, int isoHeaderLength)
            	throws ParseException, UnsupportedEncodingException {
         return parseMessage(buf, isoHeaderLength, false);
     }
 
-	/** Creates a new message instance from the buffer, which must contain a valid ISO8583
+	/**
+	 * Creates a new message instance from the buffer, which must contain a valid ISO8583
 	 * message. If the factory is set to use binary messages then it will try to parse
 	 * a binary message.
-	 * @param buf The byte buffer containing the message. Must not include the length header.
-	 * @param isoHeaderLength The expected length of the ISO header, after which the message type
-	 * and the rest of the message must come. */
+	 *
+	 * @param buf             The byte buffer containing the message. Must not include the length header.
+	 * @param isoHeaderLength The expected length of the ISO header, after which the message type and the rest of the message must come.
+	 * @param binaryIsoHeader the binary iso header
+	 * @return the t
+	 * @throws ParseException               the parse exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
 	public T parseMessage(byte[] buf, int isoHeaderLength, boolean binaryIsoHeader)
         	throws ParseException, UnsupportedEncodingException {
 		final int minlength = isoHeaderLength+(binaryHeader?2:4)+(binBitmap||binaryHeader ? 8:16);
@@ -674,49 +799,65 @@ public class MessageFactory<T extends IsoMessage> {
 		}
 	}
 
-	/** Creates a Iso message, override this method in the subclass to provide your
+	/**
+	 * Creates a Iso message, override this method in the subclass to provide your
 	 * own implementations of IsoMessage.
+	 *
 	 * @param header The optional ISO header that goes before the message type
-	 * @return IsoMessage
+	 * @return IsoMessage t
 	 */
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	protected T createIsoMessage(String header) {
         return (T)new IsoMessage(header);
 	}
 
-    /** Creates a Iso message with the specified binary ISO header.
-     * Override this method in the subclass to provide your
-   	 * own implementations of IsoMessage.
-   	 * @param binHeader The optional ISO header that goes before the message type
-   	 * @return IsoMessage
-   	 */
-    @SuppressWarnings("unchecked")
+	/**
+	 * Creates a Iso message with the specified binary ISO header.
+	 * Override this method in the subclass to provide your
+	 * own implementations of IsoMessage.
+	 *
+	 * @param binHeader The optional ISO header that goes before the message type
+	 * @return IsoMessage t
+	 */
+	@SuppressWarnings("unchecked")
     protected T createIsoMessageWithBinaryHeader(byte[] binHeader) {
         return (T)new IsoMessage(binHeader);
     }
 
-    /** Sets whether the factory should set the current date on newly created messages,
-	 * in field 7. Default is false. */
+	/**
+	 * Sets whether the factory should set the current date on newly created messages,
+	 * in field 7. Default is false.  @param flag the flag
+	 */
 	public void setAssignDate(boolean flag) {
 		setDate = flag;
 	}
-	/** Returns true if the factory is assigning the current date to newly created messages
-	 * (field 7). Default is false. */
+
+	/**
+	 * Returns true if the factory is assigning the current date to newly created messages
+	 * (field 7). Default is false.  @return the assign date
+	 */
 	public boolean getAssignDate() {
 		return setDate;
 	}
 
-	/** Sets the generator that this factory will get new trace numbers from. There is no
-	 * default generator. */
+	/**
+	 * Sets the generator that this factory will get new trace numbers from. There is no
+	 * default generator.  @param value the value
+	 */
 	public void setTraceNumberGenerator(TraceNumberGenerator value) {
 		traceGen = value;
 	}
-	/** Returns the generator used to assign trace numbers to new messages. */
+
+	/**
+	 * Returns the generator used to assign trace numbers to new messages.  @return the trace number generator
+	 */
 	public TraceNumberGenerator getTraceNumberGenerator() {
 		return traceGen;
 	}
 
-	/** Sets the ISO header to be used in each message type.
+	/**
+	 * Sets the ISO header to be used in each message type.
+	 *
 	 * @param value A map where the keys are the message types and the values are the ISO headers.
 	 */
 	public void setIsoHeaders(Map<Integer, String> value) {
@@ -724,9 +865,12 @@ public class MessageFactory<T extends IsoMessage> {
 		isoHeaders.putAll(value);
 	}
 
-	/** Sets the ISO header for a specific message type.
-	 * @param type The message type, for example 0x200.
-	 * @param value The ISO header, or NULL to remove any headers for this message type. */
+	/**
+	 * Sets the ISO header for a specific message type.
+	 *
+	 * @param type  The message type, for example 0x200.
+	 * @param value The ISO header, or NULL to remove any headers for this message type.
+	 */
 	public void setIsoHeader(int type, String value) {
 		if (value == null) {
 			isoHeaders.remove(type);
@@ -736,15 +880,22 @@ public class MessageFactory<T extends IsoMessage> {
 		}
 	}
 
-	/** Returns the ISO header used for the specified type. */
+	/**
+	 * Returns the ISO header used for the specified type.  @param type the type
+	 *
+	 * @return the iso header
+	 */
 	public String getIsoHeader(int type) {
 		return isoHeaders.get(type);
 	}
 
-    /** Sets the ISO header for a specific message type, in binary format.
-   	 * @param type The message type, for example 0x200.
-   	 * @param value The ISO header, or NULL to remove any headers for this message type. */
-    public void setBinaryIsoHeader(int type, byte[] value) {
+	/**
+	 * Sets the ISO header for a specific message type, in binary format.
+	 *
+	 * @param type  The message type, for example 0x200.
+	 * @param value The ISO header, or NULL to remove any headers for this message type.
+	 */
+	public void setBinaryIsoHeader(int type, byte[] value) {
         if (value == null) {
             binIsoHeaders.remove(type);
         } else {
@@ -752,32 +903,47 @@ public class MessageFactory<T extends IsoMessage> {
             isoHeaders.remove(type);
         }
     }
-    /** Returns the binary ISO header used for the specified type. */
-    public byte[] getBinaryIsoHeader(int type) {
+
+	/**
+	 * Returns the binary ISO header used for the specified type.  @param type the type
+	 *
+	 * @return the byte [ ]
+	 */
+	public byte[] getBinaryIsoHeader(int type) {
         return binIsoHeaders.get(type);
     }
 
-	/** Adds a message template to the factory. If there was a template for the same
-	 * message type as the new one, it is overwritten. */
+	/**
+	 * Adds a message template to the factory. If there was a template for the same
+	 * message type as the new one, it is overwritten.  @param templ the templ
+	 */
 	public void addMessageTemplate(T templ) {
 		if (templ != null) {
 			typeTemplates.put(templ.getType(), templ);
 		}
 	}
 
-	/** Removes the message template for the specified type. */
+	/**
+	 * Removes the message template for the specified type.  @param type the type
+	 */
 	public void removeMessageTemplate(int type) {
 		typeTemplates.remove(type);
 	}
 
-	/** Returns the template for the specified message type. This allows templates to be modified
-	 * programmatically. */
+	/**
+	 * Returns the template for the specified message type. This allows templates to be modified
+	 * programmatically.  @param type the type
+	 *
+	 * @return the message template
+	 */
 	public T getMessageTemplate(int type) {
 		return typeTemplates.get(type);
 	}
 
-	/** Invoke this method in case you want to freeze the configuration, making message and parsing
-	 * templates, as well as iso headers and custom fields, immutable. */
+	/**
+	 * Invoke this method in case you want to freeze the configuration, making message and parsing
+	 * templates, as well as iso headers and custom fields, immutable.
+	 */
 	public void freeze() {
 		typeTemplates = Collections.unmodifiableMap(typeTemplates);
 		parseMap = Collections.unmodifiableMap(parseMap);
@@ -787,11 +953,13 @@ public class MessageFactory<T extends IsoMessage> {
 		customFields = Collections.unmodifiableMap(customFields);
 	}
 
-	/** Sets a map with the fields that are to be expected when parsing a certain type of
+	/**
+	 * Sets a map with the fields that are to be expected when parsing a certain type of
 	 * message.
+	 *
 	 * @param type The message type.
-	 * @param map A map of FieldParseInfo instances, each of which define what type and length
-	 * of field to expect. The keys will be the field numbers. */
+	 * @param map  A map of FieldParseInfo instances, each of which define what type and length of field to expect. The keys will be the field numbers.
+	 */
 	public void setParseMap(int type, Map<Integer, FieldParseInfo> map) {
 		parseMap.put(type, map);
 		ArrayList<Integer> index = new ArrayList<>();

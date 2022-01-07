@@ -23,13 +23,27 @@ package com.solab.iso8583;
  * CustomBinaryField encoders can return null for the two CustomField
  * methods IF they are only used with binary messages.
  *
- * @author Enrique Zamudio
- *         Date: 07/05/13 13:04
+ * @param <T> the type parameter
+ * @author Enrique Zamudio         Date: 07/05/13 13:04
  */
 public interface CustomBinaryField<T> extends CustomField<T> {
 
+    /**
+     * Decode binary field t.
+     *
+     * @param value  the value
+     * @param offset the offset
+     * @param length the length
+     * @return the t
+     */
     T decodeBinaryField(byte[] value, int offset, int length);
 
-   	byte[] encodeBinaryField(T value);
+    /**
+     * Encode binary field byte [ ].
+     *
+     * @param value the value
+     * @return the byte [ ]
+     */
+    byte[] encodeBinaryField(T value);
 
 }

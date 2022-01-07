@@ -25,23 +25,39 @@ import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 
-/** This class is used to parse a field from a message buffer. There are concrete subclasses for each IsoType.
- * 
+/**
+ * This class is used to parse a field from a message buffer. There are concrete subclasses for each IsoType.
+ *
  * @author Enrique Zamudio
  */
 public abstract class FieldParseInfo {
 
+	/**
+	 * The Type.
+	 */
 	protected IsoType type;
+	/**
+	 * The Length.
+	 */
 	protected final int length;
 	private String encoding = System.getProperty("file.encoding");
-    protected boolean forceStringDecoding;
-    protected boolean forceHexadecimalLength;
+	/**
+	 * The Force string decoding.
+	 */
+	protected boolean forceStringDecoding;
+	/**
+	 * The Force hexadecimal length.
+	 */
+	protected boolean forceHexadecimalLength;
     private CustomField<?> decoder;
 
-	/** Creates a new instance that parses a value of the specified type, with the specified length.
+	/**
+	 * Creates a new instance that parses a value of the specified type, with the specified length.
 	 * The length is only useful for ALPHA and NUMERIC types.
-	 * @param t The ISO type to be parsed.
-	 * @param len The length of the data to be read (useful only for ALPHA and NUMERIC types). */
+	 *
+	 * @param t   The ISO type to be parsed.
+	 * @param len The length of the data to be read (useful only for ALPHA and NUMERIC types).
+	 */
 	public FieldParseInfo(IsoType t, int len) {
 		if (t == null) {
 			throw new IllegalArgumentException("IsoType cannot be null");
@@ -50,64 +66,114 @@ public abstract class FieldParseInfo {
 		length = len;
 	}
 
-    /** Specified whether length headers for variable-length fields in text mode should
-     * be decoded using proper string conversion with the character encoding. Default is false,
-     * which means use the old behavior of decoding as ASCII. */
-    public void setForceStringDecoding(boolean flag) {
+	/**
+	 * Specified whether length headers for variable-length fields in text mode should
+	 * be decoded using proper string conversion with the character encoding. Default is false,
+	 * which means use the old behavior of decoding as ASCII.  @param flag the flag
+	 */
+	public void setForceStringDecoding(boolean flag) {
         forceStringDecoding = flag;
     }
 
-	/** Specifies whether length headers for variable-length fields in binary mode should
-	 * be decoded as a hexadecimal values. Default is false, which means decoding the length as BCD. */
+	/**
+	 * Specifies whether length headers for variable-length fields in binary mode should
+	 * be decoded as a hexadecimal values. Default is false, which means decoding the length as BCD.  @param flag the flag
+	 */
 	public void setForceHexadecimalLength(boolean flag) {
 		this.forceHexadecimalLength = flag;
 	}
 
+	/**
+	 * Sets character encoding.
+	 *
+	 * @param value the value
+	 */
 	public void setCharacterEncoding(String value) {
 		encoding = value;
 	}
+
+	/**
+	 * Gets character encoding.
+	 *
+	 * @return the character encoding
+	 */
 	public String getCharacterEncoding() {
 		return encoding;
 	}
 
-	/** Returns the specified length for the data to be parsed. */
+	/**
+	 * Returns the specified length for the data to be parsed.  @return the length
+	 */
 	public int getLength() {
 		return length;
 	}
 
-	/** Returns the data type for the data to be parsed. */
+	/**
+	 * Returns the data type for the data to be parsed.  @return the type
+	 */
 	public IsoType getType() {
 		return type;
 	}
 
-    public void setDecoder(CustomField<?> value) {
+	/**
+	 * Sets decoder.
+	 *
+	 * @param value the value
+	 */
+	public void setDecoder(CustomField<?> value) {
         decoder = value;
     }
-    public CustomField<?> getDecoder() {
+
+	/**
+	 * Gets decoder.
+	 *
+	 * @return the decoder
+	 */
+	public CustomField<?> getDecoder() {
          return decoder;
     }
 
-	/** Parses the character data from the buffer and returns the
+	/**
+	 * Parses the character data from the buffer and returns the
 	 * IsoValue with the correct data type in it.
-     * @param field The field index, useful for error reporting.
-     * @param buf The full ISO message buffer.
-     * @param pos The starting position for the field data.
-     * @param custom A CustomField to decode the field. */
+	 *
+	 * @param <T>    the type parameter
+	 * @param field  The field index, useful for error reporting.
+	 * @param buf    The full ISO message buffer.
+	 * @param pos    The starting position for the field data.
+	 * @param custom A CustomField to decode the field.
+	 * @return the iso value
+	 * @throws ParseException               the parse exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
 	public abstract <T> IsoValue<?> parse(final int field, byte[] buf, int pos,
                                       CustomField<T> custom)
             throws ParseException, UnsupportedEncodingException;
 
-	/** Parses binary data from the buffer, creating and returning an IsoValue of the configured
+	/**
+	 * Parses binary data from the buffer, creating and returning an IsoValue of the configured
 	 * type and length.
-     * @param field The field index, useful for error reporting.
-     * @param buf The full ISO message buffer.
-     * @param pos The starting position for the field data.
-     * @param custom A CustomField to decode the field. */
+	 *
+	 * @param <T>    the type parameter
+	 * @param field  The field index, useful for error reporting.
+	 * @param buf    The full ISO message buffer.
+	 * @param pos    The starting position for the field data.
+	 * @param custom A CustomField to decode the field.
+	 * @return the iso value
+	 * @throws ParseException               the parse exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
 	public abstract <T> IsoValue<?> parseBinary(final int field, byte[] buf, int pos,
                                             CustomField<T> custom)
             throws ParseException, UnsupportedEncodingException;
 
-	/** Returns a new FieldParseInfo instance that can parse the specified type. */
+	/**
+	 * Returns a new FieldParseInfo instance that can parse the specified type.  @param t the t
+	 *
+	 * @param len      the len
+	 * @param encoding the encoding
+	 * @return the instance
+	 */
 	public static FieldParseInfo getInstance(IsoType t, int len, String encoding) {
 		FieldParseInfo fpi = null;
 		if (t == IsoType.ALPHA) {
@@ -164,7 +230,16 @@ public abstract class FieldParseInfo {
 		return fpi;
 	}
 
-    protected int decodeLength(byte[] buf, int pos, int digits) throws UnsupportedEncodingException {
+	/**
+	 * Decode length int.
+	 *
+	 * @param buf    the buf
+	 * @param pos    the pos
+	 * @param digits the digits
+	 * @return the int
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	protected int decodeLength(byte[] buf, int pos, int digits) throws UnsupportedEncodingException {
         if (forceStringDecoding) {
             return Integer.parseInt(new String(buf, pos, digits, encoding), 10);
         } else {

@@ -47,18 +47,24 @@ import org.xml.sax.SAXException;
 
 import static com.solab.iso8583.IsoMessage.MAX_AMOUNT_OF_FIELDS;
 
-/** This class is used to parse a XML configuration file and configure
+/**
+ * This class is used to parse a XML configuration file and configure
  * a MessageFactory with the values from it.
- * 
+ *
  * @author Enrique Zamudio
  */
 public class ConfigParser {
 
 	private final static Logger log = LoggerFactory.getLogger(ConfigParser.class);
 
-    /** Creates a message factory configured from the default file, which is j8583.xml
-   	 * located in the root of the classpath, using the specified ClassLoader. */
-   	public static MessageFactory<IsoMessage> createDefault(
+    /**
+     * Creates a message factory configured from the default file, which is j8583.xml
+     * located in the root of the classpath, using the specified ClassLoader.  @param loader the loader
+     *
+     * @return the message factory
+     * @throws IOException the io exception
+     */
+    public static MessageFactory<IsoMessage> createDefault(
                ClassLoader loader) throws IOException {
    		if (loader.getResource("j8583.xml") == null) {
    			log.warn("ISO8583 ConfigParser cannot find j8583.xml, returning empty message factory");
@@ -68,22 +74,38 @@ public class ConfigParser {
    		}
    	}
 
-	/** Creates a message factory configured from the default file, which is j8583.xml
-	 * located in the root of the classpath, using the MessageFactory's
-     * ClassLoader. */
-	public static MessageFactory<IsoMessage> createDefault() throws IOException {
+    /**
+     * Creates a message factory configured from the default file, which is j8583.xml
+     * located in the root of the classpath, using the MessageFactory's
+     * ClassLoader.  @return the message factory
+     *
+     * @throws IOException the io exception
+     */
+    public static MessageFactory<IsoMessage> createDefault() throws IOException {
         return createDefault(MessageFactory.class.getClassLoader());
 	}
 
-	/** Creates a message factory from the specified path inside the classpath,
-     * using the specified ClassLoader. */
-	public static MessageFactory<IsoMessage> createFromClasspathConfig(
+    /**
+     * Creates a message factory from the specified path inside the classpath,
+     * using the specified ClassLoader.  @param path the path
+     *
+     * @return the message factory
+     * @throws IOException the io exception
+     */
+    public static MessageFactory<IsoMessage> createFromClasspathConfig(
             String path) throws IOException {
         return createFromClasspathConfig(MessageFactory.class.getClassLoader(), path);
     }
-    /** Creates a message factory from the specified path inside the classpath,
-     * using MessageFactory's ClassLoader. */
-   	public static MessageFactory<IsoMessage> createFromClasspathConfig(
+
+    /**
+     * Creates a message factory from the specified path inside the classpath,
+     * using MessageFactory's ClassLoader.  @param loader the loader
+     *
+     * @param path the path
+     * @return the message factory
+     * @throws IOException the io exception
+     */
+    public static MessageFactory<IsoMessage> createFromClasspathConfig(
                ClassLoader loader, String path) throws IOException {
 		MessageFactory<IsoMessage> mfact = new MessageFactory<>();
         try (InputStream ins = loader.getResourceAsStream(path)) {
@@ -97,8 +119,13 @@ public class ConfigParser {
 		return mfact;
 	}
 
-	/** Creates a message factory from the file located at the specified URL. */
-	public static MessageFactory<IsoMessage> createFromUrl(URL url) throws IOException {
+    /**
+     * Creates a message factory from the file located at the specified URL.  @param url the url
+     *
+     * @return the message factory
+     * @throws IOException the io exception
+     */
+    public static MessageFactory<IsoMessage> createFromUrl(URL url) throws IOException {
 		MessageFactory<IsoMessage> mfact = new MessageFactory<>();
 		try (InputStream stream = url.openStream()) {
 			parse(mfact, new InputSource(stream));
@@ -106,13 +133,26 @@ public class ConfigParser {
 		return mfact;
 	}
 
-    /** Creates a messageFactory from the XML contained in the specified Reader. */
+    /**
+     * Creates a messageFactory from the XML contained in the specified Reader.  @param reader the reader
+     *
+     * @return the message factory
+     * @throws IOException the io exception
+     */
     public static MessageFactory<IsoMessage> createFromReader(Reader reader) throws IOException {
         MessageFactory<IsoMessage> mfact = new MessageFactory<>();
         parse(mfact, new InputSource(reader));
         return mfact;
     }
 
+    /**
+     * Parse headers.
+     *
+     * @param <T>   the type parameter
+     * @param nodes the nodes
+     * @param mfact the mfact
+     * @throws IOException the io exception
+     */
     protected static <T extends IsoMessage> void parseHeaders(
             final NodeList nodes, final MessageFactory<T> mfact) throws IOException {
         ArrayList<Element> refs = null;
@@ -172,6 +212,14 @@ public class ConfigParser {
         }
     }
 
+    /**
+     * Parse templates.
+     *
+     * @param <T>   the type parameter
+     * @param nodes the nodes
+     * @param mfact the mfact
+     * @throws IOException the io exception
+     */
     protected static <T extends IsoMessage> void parseTemplates(
             final NodeList nodes, final MessageFactory<T> mfact) throws IOException {
         ArrayList<Element> subs = null;
@@ -247,10 +295,17 @@ public class ConfigParser {
         }
     }
 
-    /** Creates an IsoValue from the XML definition in a message template.
+    /**
+     * Creates an IsoValue from the XML definition in a message template.
      * If it's for a toplevel field and the message factory has a codec for this field,
      * that codec is assigned to that field. For nested fields, a CompositeField is
-     * created and populated. */
+     * created and populated.  @param <M>  the type parameter
+     *
+     * @param f        the f
+     * @param mfact    the mfact
+     * @param toplevel the toplevel
+     * @return the template field
+     */
     protected static <M extends IsoMessage> IsoValue<?> getTemplateField(
             Element f, MessageFactory<M> mfact, boolean toplevel) {
         final int num = Integer.parseInt(f.getAttribute("num"));
@@ -306,6 +361,14 @@ public class ConfigParser {
         return rv;
     }
 
+    /**
+     * Gets parser.
+     *
+     * @param <T>   the type parameter
+     * @param f     the f
+     * @param mfact the mfact
+     * @return the parser
+     */
     protected static <T extends IsoMessage> FieldParseInfo getParser(
             Element f, MessageFactory<T> mfact) {
         IsoType itype = IsoType.valueOf(f.getAttribute("type"));
@@ -332,6 +395,14 @@ public class ConfigParser {
         return fpi;
     }
 
+    /**
+     * Parse guides.
+     *
+     * @param <T>   the type parameter
+     * @param nodes the nodes
+     * @param mfact the mfact
+     * @throws IOException the io exception
+     */
     protected static <T extends IsoMessage> void parseGuides(
             final NodeList nodes, final MessageFactory<T> mfact) throws IOException {
         ArrayList<Element> subs = null;
@@ -408,10 +479,15 @@ public class ConfigParser {
 		return childElementsByTagName;
 	}
 
-	/** Reads the XML from the stream and configures the message factory with its values.
-	 * @param mfact The message factory to be configured with the values read from the XML.
-	 * @param source The InputSource containing the XML configuration. */
-	protected static <T extends IsoMessage> void parse(
+    /**
+     * Reads the XML from the stream and configures the message factory with its values.
+     *
+     * @param <T>    the type parameter
+     * @param mfact  The message factory to be configured with the values read from the XML.
+     * @param source The InputSource containing the XML configuration.
+     * @throws IOException the io exception
+     */
+    protected static <T extends IsoMessage> void parse(
             MessageFactory<T> mfact, InputSource source) throws IOException {
 		final DocumentBuilderFactory docfact = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docb = null;
@@ -446,9 +522,14 @@ public class ConfigParser {
         parseGuides(root.getElementsByTagName("parse"), mfact);
 	}
 
-	/** Configures a MessageFactory using the default configuration file j8583.xml. This is useful
-	 * if you have a MessageFactory created using Spring for example. */
-	public static <T extends IsoMessage> void configureFromDefault(
+    /**
+     * Configures a MessageFactory using the default configuration file j8583.xml. This is useful
+     * if you have a MessageFactory created using Spring for example.  @param <T>  the type parameter
+     *
+     * @param mfact the mfact
+     * @throws IOException the io exception
+     */
+    public static <T extends IsoMessage> void configureFromDefault(
             MessageFactory<T> mfact) throws IOException {
 		if (mfact.getClass().getClassLoader().getResource("j8583.xml") == null) {
 			log.warn("ISO8583 config file j8583.xml not found!");
@@ -457,19 +538,31 @@ public class ConfigParser {
 		}
 	}
 
-	/** This method attempts to open a stream from the XML configuration in the specified URL and
-	 * configure the message factory from that config. */
-	public static <T extends IsoMessage> void configureFromUrl(
+    /**
+     * This method attempts to open a stream from the XML configuration in the specified URL and
+     * configure the message factory from that config.  @param <T>  the type parameter
+     *
+     * @param mfact the mfact
+     * @param url   the url
+     * @throws IOException the io exception
+     */
+    public static <T extends IsoMessage> void configureFromUrl(
             MessageFactory<T> mfact, URL url) throws IOException {
 		try (InputStream stream = url.openStream()) {
 			parse(mfact, new InputSource(stream));
 		}
 	}
 
-	/** Configures a MessageFactory using the configuration file at the path specified (will be searched
-	 * within the classpath using the MessageFactory's ClassLoader). This is useful for configuring
-	 * Spring-bound instances of MessageFactory for example. */
-	public static <T extends IsoMessage> void configureFromClasspathConfig(
+    /**
+     * Configures a MessageFactory using the configuration file at the path specified (will be searched
+     * within the classpath using the MessageFactory's ClassLoader). This is useful for configuring
+     * Spring-bound instances of MessageFactory for example.  @param <T>  the type parameter
+     *
+     * @param mfact the mfact
+     * @param path  the path
+     * @throws IOException the io exception
+     */
+    public static <T extends IsoMessage> void configureFromClasspathConfig(
             MessageFactory<T> mfact, String path) throws IOException {
         try (InputStream ins = mfact.getClass().getClassLoader().getResourceAsStream(path)) {
             if (ins != null) {
@@ -481,7 +574,13 @@ public class ConfigParser {
         }
 	}
 
-    /** Configures a MessageFactory using the XML data obtained from the specified Reader. */
+    /**
+     * Configures a MessageFactory using the XML data obtained from the specified Reader.  @param <T>  the type parameter
+     *
+     * @param mfact  the mfact
+     * @param reader the reader
+     * @throws IOException the io exception
+     */
     public static <T extends IsoMessage> void configureFromReader(MessageFactory<T> mfact, Reader reader)
             throws IOException {
         parse(mfact, new InputSource(reader));

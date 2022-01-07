@@ -20,20 +20,24 @@ package com.solab.iso8583.impl;
 
 import com.solab.iso8583.TraceNumberGenerator;
 
-/** Simple implementation of a TraceNumberGenerator with an internal
+/**
+ * Simple implementation of a TraceNumberGenerator with an internal
  * number that is increased in memory but is not stored anywhere.
- * 
+ *
  * @author Enrique Zamudio
  */
 public class SimpleTraceGenerator implements TraceNumberGenerator {
 
 	private volatile int value = 0;
 
-	/** Creates a new instance that will use the specified initial value. This means
-	 * the first nextTrace() call will return this number.
-	 * @param initialValue a number between 1 and 999999.
-	 * @throws IllegalArgumentException if the number is less than 1 or greater than 999999. */
-	public SimpleTraceGenerator(int initialValue) {
+    /**
+     * Creates a new instance that will use the specified initial value. This means
+     * the first nextTrace() call will return this number.
+     *
+     * @param initialValue a number between 1 and 999999.
+     * @throws IllegalArgumentException if the number is less than 1 or greater than 999999.
+     */
+    public SimpleTraceGenerator(int initialValue) {
 		if (initialValue < 1 || initialValue > 999999) {
 			throw new IllegalArgumentException("Initial value must be between 1 and 999999");
 		}

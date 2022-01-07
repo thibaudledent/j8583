@@ -25,13 +25,20 @@ import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 
-/** This is the common abstract superclass to parse ALPHA and NUMERIC field types.
- * 
+/**
+ * This is the common abstract superclass to parse ALPHA and NUMERIC field types.
+ *
  * @author Enrique Zamudio
  */
 public abstract class AlphaNumericFieldParseInfo extends FieldParseInfo {
 
-	public AlphaNumericFieldParseInfo(IsoType t, int len) {
+    /**
+     * Instantiates a new Alpha numeric field parse info.
+     *
+     * @param t   the t
+     * @param len the len
+     */
+    public AlphaNumericFieldParseInfo(IsoType t, int len) {
 		super(t, len);
 	}
 

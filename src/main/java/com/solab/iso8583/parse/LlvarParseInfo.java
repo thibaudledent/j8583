@@ -26,17 +26,27 @@ import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.Bcd;
 
-/** This class is used to parse fields of type LLVAR.
- * 
+/**
+ * This class is used to parse fields of type LLVAR.
+ *
  * @author Enrique Zamudio
  */
 public class LlvarParseInfo extends FieldParseInfo {
 
-	public LlvarParseInfo(IsoType t, int len) {
+    /**
+     * Instantiates a new Llvar parse info.
+     *
+     * @param t   the t
+     * @param len the len
+     */
+    public LlvarParseInfo(IsoType t, int len) {
 		super(t, len);
 	}
 
-	public LlvarParseInfo() {
+    /**
+     * Instantiates a new Llvar parse info.
+     */
+    public LlvarParseInfo() {
 		super(IsoType.LLVAR, 0);
 	}
 
@@ -117,7 +127,13 @@ public class LlvarParseInfo extends FieldParseInfo {
 		}
 	}
 
-	protected int getFieldLength(final byte b) {
+    /**
+     * Gets field length.
+     *
+     * @param b the b
+     * @return the field length
+     */
+    protected int getFieldLength(final byte b) {
 		return (((b & 0xf0) >> 4) * 10) + (b & 0x0f);
 	}
 

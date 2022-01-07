@@ -26,13 +26,19 @@ import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.Bcd;
 
-/** This class is used to parse NUMERIC fields.
- * 
+/**
+ * This class is used to parse NUMERIC fields.
+ *
  * @author Enrique Zamudio
  */
 public class NumericParseInfo extends AlphaNumericFieldParseInfo {
 
-	public NumericParseInfo(int len) {
+    /**
+     * Instantiates a new Numeric parse info.
+     *
+     * @param len the len
+     */
+    public NumericParseInfo(int len) {
 		super(IsoType.NUMERIC, len);
 	}
 
