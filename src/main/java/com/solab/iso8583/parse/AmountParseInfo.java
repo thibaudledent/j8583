@@ -26,14 +26,18 @@ import com.solab.iso8583.CustomField;
 import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 
-/** This class is used to parse AMOUNT fields.
- * 
+/**
+ * This class is used to parse AMOUNT fields.
+ *
  * @author Enrique Zamudio
  */
 public class AmountParseInfo extends FieldParseInfo {
 
-	
-	public AmountParseInfo() {
+
+    /**
+     * Instantiates a new Amount parse info.
+     */
+    public AmountParseInfo() {
 		super(IsoType.AMOUNT, 12);
 	}
 

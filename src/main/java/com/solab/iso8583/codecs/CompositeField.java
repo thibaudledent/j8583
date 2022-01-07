@@ -36,8 +36,7 @@ import java.util.List;
 /**
  * A codec to manage subfields inside a field of a certain type.
  *
- * @author Enrique Zamudio
- *         Date: 25/11/13 11:25
+ * @author Enrique Zamudio         Date: 25/11/13 11:25
  */
 public class CompositeField implements CustomBinaryField<CompositeField> {
 
@@ -48,14 +47,32 @@ public class CompositeField implements CustomBinaryField<CompositeField> {
     /** Stores the parsers for the subfields. */
     private List<FieldParseInfo> parsers;
 
+    /**
+     * Sets values.
+     *
+     * @param values the values
+     */
     @SuppressWarnings("rawtypes")
     public void setValues(List<IsoValue> values) {
         this.values = values;
     }
+
+    /**
+     * Gets values.
+     *
+     * @return the values
+     */
     @SuppressWarnings("rawtypes")
     public List<IsoValue> getValues() {
         return values;
     }
+
+    /**
+     * Add value composite field.
+     *
+     * @param v the v
+     * @return the composite field
+     */
     @SuppressWarnings("rawtypes")
     public CompositeField addValue(IsoValue<?> v) {
         if (values == null) {
@@ -64,27 +81,71 @@ public class CompositeField implements CustomBinaryField<CompositeField> {
         values.add(v);
         return this;
     }
+
+    /**
+     * Add value composite field.
+     *
+     * @param <T>     the type parameter
+     * @param val     the val
+     * @param encoder the encoder
+     * @param t       the t
+     * @param length  the length
+     * @return the composite field
+     */
     public <T> CompositeField addValue(T val, CustomField<T> encoder, IsoType t, int length) {
         return addValue(t.needsLength() ? new IsoValue<>(t, val, length, encoder)
                 : new IsoValue<>(t, val, encoder));
     }
 
+    /**
+     * Gets field.
+     *
+     * @param <T> the type parameter
+     * @param idx the idx
+     * @return the field
+     */
     @SuppressWarnings("unchecked")
     public <T> IsoValue<T> getField(int idx) {
         if (idx < 0 || idx >= values.size())return null;
         return values.get(idx);
     }
+
+    /**
+     * Gets object value.
+     *
+     * @param <T> the type parameter
+     * @param idx the idx
+     * @return the object value
+     */
     public <T> T getObjectValue(int idx) {
         IsoValue<T> v = getField(idx);
         return v==null ? null : v.getValue();
     }
 
+    /**
+     * Sets parsers.
+     *
+     * @param fpis the fpis
+     */
     public void setParsers(List<FieldParseInfo> fpis) {
         parsers = fpis;
     }
+
+    /**
+     * Gets parsers.
+     *
+     * @return the parsers
+     */
     public List<FieldParseInfo> getParsers() {
         return parsers;
     }
+
+    /**
+     * Add parser composite field.
+     *
+     * @param fpi the fpi
+     * @return the composite field
+     */
     public CompositeField addParser(FieldParseInfo fpi) {
         if (parsers == null) {
             parsers = new ArrayList<>(4);

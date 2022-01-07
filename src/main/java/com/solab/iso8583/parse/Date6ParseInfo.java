@@ -31,11 +31,13 @@ import java.util.Date;
 /**
  * Parser for fields of type DATE6.
  *
- * @author Enrique Zamudio
- * Date: 4/17/18 12:41 PM
+ * @author Enrique Zamudio Date: 4/17/18 12:41 PM
  */
 public class Date6ParseInfo extends DateTimeParseInfo {
 
+    /**
+     * Instantiates a new Date 6 parse info.
+     */
     public Date6ParseInfo() {
    		super(IsoType.DATE6, 6);
    	}

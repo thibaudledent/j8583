@@ -28,13 +28,17 @@ import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.Bcd;
 
-/** This class is used to parse fields of type DATE4.
- * 
+/**
+ * This class is used to parse fields of type DATE4.
+ *
  * @author Enrique Zamudio
  */
 public class Date4ParseInfo extends DateTimeParseInfo {
 
-	public Date4ParseInfo() {
+    /**
+     * Instantiates a new Date 4 parse info.
+     */
+    public Date4ParseInfo() {
 		super(IsoType.DATE4, 4);
 	}
 

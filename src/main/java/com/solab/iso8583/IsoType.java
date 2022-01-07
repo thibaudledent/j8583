@@ -26,7 +26,8 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.TimeZone;
 
-/** Defines the possible values types that can be used in the fields.
+/**
+ * Defines the possible values types that can be used in the fields.
  * Some types required the length of the value to be specified ({@link IsoType#NUMERIC}
  * and {@link IsoType#ALPHA}). Other types have a fixed length, like dates and times.
  * Other types do not require a length to be specified, like {@link IsoType#LLVAR}
@@ -36,64 +37,113 @@ import java.util.TimeZone;
  */
 public enum IsoType {
 
-	/** A fixed-length numeric value. It is zero-filled to the left. */
+	/**
+	 * A fixed-length numeric value. It is zero-filled to the left.
+	 */
 	NUMERIC(true, 0),
-	/** A fixed-length alphanumeric value. It is filled with spaces to the right. */
+	/**
+	 * A fixed-length alphanumeric value. It is filled with spaces to the right.
+	 */
 	ALPHA(true, 0),
-	/** A date in format yyyyMMddHHmmss */
+	/**
+	 * A date in format yyyyMMddHHmmss
+	 */
 	DATE14(false, 14),
-	/** A date in format MMddHHmmss */
+	/**
+	 * A date in format MMddHHmmss
+	 */
 	DATE10(false, 10),
-	/** A date in format MMdd */
+	/**
+	 * A date in format MMdd
+	 */
 	DATE4(false, 4),
-	/** A date in format yyMM */
+	/**
+	 * A date in format yyMM
+	 */
 	DATE_EXP(false, 4),
-	/** Time of day in format HHmmss */
+	/**
+	 * Time of day in format HHmmss
+	 */
 	TIME(false, 6),
-	/** An amount, expressed in cents with a fixed length of 12. */
+	/**
+	 * An amount, expressed in cents with a fixed length of 12.
+	 */
 	AMOUNT(false, 12),
-	/** Similar to {@link IsoType#ALPHA} but holds byte arrays instead of strings. */
+	/**
+	 * Similar to {@link IsoType#ALPHA} but holds byte arrays instead of strings.
+	 */
 	BINARY(true, 0),
-	/** A variable length alphanumeric value with a 2-digit header length (both with specific encoding
-	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true). */
+	/**
+	 * A variable length alphanumeric value with a 2-digit header length (both with specific encoding
+	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true).
+	 */
 	LLVAR(false, 0),
-	/** A variable length alphanumeric value with a 3-digit header length (both with specific encoding
-	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true). */
+	/**
+	 * A variable length alphanumeric value with a 3-digit header length (both with specific encoding
+	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true).
+	 */
 	LLLVAR(false, 0),
-	/** A variable length alphanumeric value with 4-digit header length (both with specific encoding
-	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true). */
+	/**
+	 * A variable length alphanumeric value with 4-digit header length (both with specific encoding
+	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true).
+	 */
 	LLLLVAR(false, 0),
-	/** Similar to {@link IsoType#LLVAR} with a binary value and a binary length. */
+	/**
+	 * Similar to {@link IsoType#LLVAR} with a binary value and a binary length.
+	 */
 	LLBIN(false, 0),
-	/** Similar to {@link IsoType#LLLVAR} with a binary value and a binary length. */
+	/**
+	 * Similar to {@link IsoType#LLLVAR} with a binary value and a binary length.
+	 */
 	LLLBIN(false, 0),
-	/** Similar to {@link IsoType#LLLLVAR} with a binary value and a binary length. */
+	/**
+	 * Similar to {@link IsoType#LLLLVAR} with a binary value and a binary length.
+	 */
 	LLLLBIN(false, 0),
-	/** Similar to {@link IsoType#LLBIN} but with a BCD encoded length. If the data has an odd length,
+	/**
+	 * Similar to {@link IsoType#LLBIN} but with a BCD encoded length. If the data has an odd length,
 	 * it will be padded with a 0 in the first nibble.
 	 */
 	LLBCDBIN(false, 0),
-	/** Similar to {@link IsoType#LLLBIN} but with a BCD encoded length. If the data has an odd length,
+	/**
+	 * Similar to {@link IsoType#LLLBIN} but with a BCD encoded length. If the data has an odd length,
 	 * it will be padded with a 0 in the first nibble.
 	 */
 	LLLBCDBIN(false, 0),
-	/** Similar to {@link IsoType#LLLLBIN} but with a BCD encoded length. If the data has an odd length,
+	/**
+	 * Similar to {@link IsoType#LLLLBIN} but with a BCD encoded length. If the data has an odd length,
 	 * it will be padded with a 0 in the first nibble.
 	 */
 	LLLLBCDBIN(false, 0),
-	/** A variable length numerical value, length is a literal unsigned single byte value and expressed in number of digits, each digit being encoded on 4 bits */
+	/**
+	 * A variable length numerical value, length is a literal unsigned single byte value and expressed in number of digits, each digit being encoded on 4 bits
+	 */
 	LLBINLENGTHNUM(false, 0),
-	/** A variable length alphanumerical value, length is a literal unsigned single byte value and expressed in number of characters, each character being encoded on 1 byte */
+	/**
+	 * A variable length alphanumerical value, length is a literal unsigned single byte value and expressed in number of characters, each character being encoded on 1 byte
+	 */
 	LLBINLENGTHALPHANUM(false, 0),
-	/** A variable length binary value, length is a literal unsigned single byte value and expressed in number of bytes */
+	/**
+	 * A variable length binary value, length is a literal unsigned single byte value and expressed in number of bytes
+	 */
 	LLBINLENGTHBIN(false, 0),
-	/** Date in format yyMMddHHmmss. */
+	/**
+	 * Date in format yyMMddHHmmss.
+	 */
 	DATE12(false,12),
-	/** Date in format yyMMdd */
+	/**
+	 * Date in format yyMMdd
+	 */
 	DATE6(false,6);
 
-    public static final Set<IsoType> VARIABLE_LENGTH_VAR_TYPES = Collections.unmodifiableSet(EnumSet.of(LLVAR, LLLVAR, LLLLVAR, LLBINLENGTHALPHANUM));
-    public static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(EnumSet.of(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN, LLBINLENGTHNUM, LLBINLENGTHBIN));
+	/**
+	 * The constant VARIABLE_LENGTH_VAR_TYPES.
+	 */
+	public static final Set<IsoType> VARIABLE_LENGTH_VAR_TYPES = Collections.unmodifiableSet(EnumSet.of(LLVAR, LLLVAR, LLLLVAR, LLBINLENGTHALPHANUM));
+	/**
+	 * The constant VARIABLE_LENGTH_BIN_TYPES.
+	 */
+	public static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(EnumSet.of(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN, LLBINLENGTHNUM, LLBINLENGTHBIN));
 
 	private boolean needsLen;
 	private int length;
@@ -103,18 +153,27 @@ public enum IsoType {
 		length = l;
 	}
 
-	/** Returns true if the type needs a specified length. */
+	/**
+	 * Returns true if the type needs a specified length.  @return the boolean
+	 */
 	public boolean needsLength() {
 		return needsLen;
 	}
 
-	/** Returns the length of the type if it's always fixed, or 0 if it's variable. */
+	/**
+	 * Returns the length of the type if it's always fixed, or 0 if it's variable.  @return the length
+	 */
 	public int getLength() {
 		return length;
 	}
 
-	/** Formats a Date if the receiver is DATE10, DATE4, DATE_EXP, DATE12, DATE14 or TIME; throws an exception
-	 * otherwise. */
+	/**
+	 * Formats a Date if the receiver is DATE10, DATE4, DATE_EXP, DATE12, DATE14 or TIME; throws an exception
+	 * otherwise.  @param value the value
+	 *
+	 * @param tz the tz
+	 * @return the string
+	 */
 	public String format(final Date value, final TimeZone tz) {
         final SimpleDateFormat sdf;
 		if (this == DATE10) {
@@ -140,7 +199,12 @@ public enum IsoType {
         return sdf.format(value);
 	}
 
-	/** Formats the string to the given length (length is only useful if type is ALPHA, NUMERIC or BINARY). */
+	/**
+	 * Formats the string to the given length (length is only useful if type is ALPHA, NUMERIC or BINARY).  @param value the value
+	 *
+	 * @param length the length
+	 * @return the string
+	 */
 	public String format(String value, int length) {
 		if (this == ALPHA) {
 	    	if (value == null) {
@@ -197,7 +261,12 @@ public enum IsoType {
 		throw new IllegalArgumentException("Cannot format String as " + this);
 	}
 
-	/** Formats the integer value as a NUMERIC, an AMOUNT, or a String. */
+	/**
+	 * Formats the integer value as a NUMERIC, an AMOUNT, or a String.  @param value the value
+	 *
+	 * @param length the length
+	 * @return the string
+	 */
 	public String format(long value, int length) {
 		if (this == NUMERIC) {
 			String x = String.format(String.format("%%0%dd", length), value);
@@ -215,7 +284,12 @@ public enum IsoType {
 		throw new IllegalArgumentException("Cannot format number as " + this);
 	}
 
-	/** Formats the BigDecimal as an AMOUNT, NUMERIC, or a String. */
+	/**
+	 * Formats the BigDecimal as an AMOUNT, NUMERIC, or a String.  @param value the value
+	 *
+	 * @param length the length
+	 * @return the string
+	 */
 	public String format(BigDecimal value, int length) {
 		if (this == AMOUNT) {
 			return String.format("%012d", value.movePointRight(2).longValue());
@@ -229,25 +303,71 @@ public enum IsoType {
 		throw new IllegalArgumentException("Cannot format BigDecimal as " + this);
 	}
 
+	/**
+	 * Value iso value.
+	 *
+	 * @param <T> the type parameter
+	 * @param val the val
+	 * @param len the len
+	 * @return the iso value
+	 */
 	public <T> IsoValue<T> value(T val, int len) {
 		return new IsoValue<>(this, val, len);
 	}
 
+	/**
+	 * Value iso value.
+	 *
+	 * @param <T> the type parameter
+	 * @param val the val
+	 * @return the iso value
+	 */
 	public <T> IsoValue<T> value(T val) {
 		return new IsoValue<>(this, val);
 	}
 
+	/**
+	 * Call iso value.
+	 *
+	 * @param <T> the type parameter
+	 * @param val the val
+	 * @param len the len
+	 * @return the iso value
+	 */
 	public <T> IsoValue<T> call(T val, int len) {
 		return new IsoValue<>(this, val, len);
 	}
 
+	/**
+	 * Call iso value.
+	 *
+	 * @param <T> the type parameter
+	 * @param val the val
+	 * @return the iso value
+	 */
 	public <T> IsoValue<T> call(T val) {
 		return new IsoValue<>(this, val);
 	}
 
+	/**
+	 * Apply iso value.
+	 *
+	 * @param <T> the type parameter
+	 * @param val the val
+	 * @param len the len
+	 * @return the iso value
+	 */
 	public <T> IsoValue<T> apply(T val, int len) {
 		return new IsoValue<>(this, val, len);
 	}
+
+	/**
+	 * Apply iso value.
+	 *
+	 * @param <T> the type parameter
+	 * @param val the val
+	 * @return the iso value
+	 */
 	public <T> IsoValue<T> apply(T val) {
 		return new IsoValue<>(this, val);
 	}

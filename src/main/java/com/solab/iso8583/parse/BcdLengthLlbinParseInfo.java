@@ -7,6 +7,9 @@ import com.solab.iso8583.IsoType;
  */
 public class BcdLengthLlbinParseInfo extends LlbinParseInfo {
 
+    /**
+     * Instantiates a new Bcd length llbin parse info.
+     */
     public BcdLengthLlbinParseInfo() {
         super(IsoType.LLBCDBIN, 0);
     }

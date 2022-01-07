@@ -18,9 +18,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 package com.solab.iso8583;
 
-/** Defines the behavior for a custom field value encoder/decoder. This
+/**
+ * Defines the behavior for a custom field value encoder/decoder. This
  * is just an intersection of CustomFieldEncoder and CustomFieldDecoder.
- * 
+ *
+ * @param <DataType> the type parameter
  * @author Enrique Zamudio
  */
 public interface CustomField<DataType>

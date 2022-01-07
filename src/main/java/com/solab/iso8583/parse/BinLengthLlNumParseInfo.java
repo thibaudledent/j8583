@@ -7,6 +7,9 @@ import com.solab.iso8583.IsoType;
  */
 public class BinLengthLlNumParseInfo extends LlbinParseInfo {
 
+    /**
+     * Instantiates a new Bin length ll num parse info.
+     */
     public BinLengthLlNumParseInfo() {
         super(IsoType.LLBINLENGTHNUM, 0);
     }

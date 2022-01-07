@@ -26,14 +26,18 @@ import com.solab.iso8583.IsoType;
 import com.solab.iso8583.IsoValue;
 import com.solab.iso8583.util.Bcd;
 
-/** This class is used to parse fields of type LLLVAR.
- * 
+/**
+ * This class is used to parse fields of type LLLVAR.
+ *
  * @author Enrique Zamudio
  */
 public class LllvarParseInfo extends FieldParseInfo {
 
-	
-	public LllvarParseInfo() {
+
+    /**
+     * Instantiates a new Lllvar parse info.
+     */
+    public LllvarParseInfo() {
 		super(IsoType.LLLVAR, 0);
 	}
 

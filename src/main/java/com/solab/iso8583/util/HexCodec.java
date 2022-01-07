@@ -18,16 +18,29 @@
  */
 package com.solab.iso8583.util;
 
-/** Utility class to perform HEX encoding/decoding of values.
+/**
+ * Utility class to perform HEX encoding/decoding of values.
+ *
  * @author Enrique Zamudio
  */
 public final class HexCodec {
 
-	static final char[] HEX = "0123456789ABCDEF".toCharArray();
+    /**
+     * The Hex.
+     */
+    static final char[] HEX = "0123456789ABCDEF".toCharArray();
 
     private HexCodec(){}
 
-	public static String hexEncode(byte[] buffer, int start, int length) {
+    /**
+     * Hex encode string.
+     *
+     * @param buffer the buffer
+     * @param start  the start
+     * @param length the length
+     * @return the string
+     */
+    public static String hexEncode(byte[] buffer, int start, int length) {
 		if (buffer.length == 0) {
 			return "";
 		}
@@ -43,7 +56,13 @@ public final class HexCodec {
 		return new String(chars);
 	}
 
-	public static byte[] hexDecode(String hex) {
+    /**
+     * Hex decode byte [ ].
+     *
+     * @param hex the hex
+     * @return the byte [ ]
+     */
+    public static byte[] hexDecode(String hex) {
 		//A null string returns an empty array
 		if (hex == null || hex.length() == 0) {
 			return new byte[0];

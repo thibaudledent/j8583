@@ -27,31 +27,65 @@ import java.nio.ByteBuffer;
 import java.util.BitSet;
 import java.util.Map;
 
-/** Represents an ISO8583 message. This is the core class of the framework.
+/**
+ * Represents an ISO8583 message. This is the core class of the framework.
  * Contains the bitmap which is modified as fields are added/removed.
  * This class makes no assumptions as to what types belong in each field,
  * nor what fields should each different message type have; that is left
  * for the developer, since the different ISO8583 implementations can vary
  * greatly.
- * 
+ *
  * @author Enrique Zamudio
  */
 public class IsoMessage {
 
-	static final byte[] HEX = new byte[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+    /**
+     * The Hex.
+     */
+    static final byte[] HEX = new byte[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
 
+    /**
+     * The End of primary bitmap fields.
+     */
     static final int END_OF_PRIMARY_BITMAP_FIELDS = 64;
+    /**
+     * The End of secondary bitmap fields.
+     */
     static final int END_OF_SECONDARY_BITMAP_FIELDS = 128;
+    /**
+     * The End of tertiary bitmap fields.
+     */
     static final int END_OF_TERTIARY_BITMAP_FIELDS = 192;
+    /**
+     * The Index of tertiary bitmap.
+     */
     static final int INDEX_OF_TERTIARY_BITMAP = 65;
 
+    /**
+     * The constant MAX_AMOUNT_OF_FIELDS.
+     */
     public static final int MAX_AMOUNT_OF_FIELDS = END_OF_TERTIARY_BITMAP_FIELDS;
+    /**
+     * The Primary bitmap size.
+     */
     static final int PRIMARY_BITMAP_SIZE = END_OF_PRIMARY_BITMAP_FIELDS;
+    /**
+     * The Extended bitmap size.
+     */
     static final int EXTENDED_BITMAP_SIZE = END_OF_SECONDARY_BITMAP_FIELDS;
 
+    /**
+     * The Start of primary bitmap fields.
+     */
     static final int START_OF_PRIMARY_BITMAP_FIELDS = 1;
+    /**
+     * The Start of secondary bitmap fields.
+     */
     static final int START_OF_SECONDARY_BITMAP_FIELDS = END_OF_PRIMARY_BITMAP_FIELDS + 1;
+    /**
+     * The Start of tertiary bitmap fields.
+     */
     static final int START_OF_TERTIARY_BITMAP_FIELDS = END_OF_SECONDARY_BITMAP_FIELDS + 1;
 
     /** The message type. */
@@ -77,111 +111,162 @@ public class IsoMessage {
     private boolean encodeVariableLengthFieldsInHex;
     private String encoding = System.getProperty("file.encoding");
 
-    /** Creates a new empty message with no values set. */
+    /**
+     * Creates a new empty message with no values set.
+     */
     public IsoMessage() {
     }
 
-    /** Creates a new message with the specified ISO header. This will be prepended to the message. */
+    /**
+     * Creates a new message with the specified ISO header. This will be prepended to the message.  @param header the header
+     */
     protected IsoMessage(String header) {
     	isoHeader = header;
     }
-    /** Creates a new message with the specified binary ISO header. This will be prepended to the message. */
+
+    /**
+     * Creates a new message with the specified binary ISO header. This will be prepended to the message.  @param binaryHeader the binary header
+     */
     protected IsoMessage(byte[] binaryHeader) {
     	binIsoHeader = binaryHeader;
     }
 
-    /** Tells the message to encode its bitmap in binary format, even if the message
+    /**
+     * Tells the message to encode its bitmap in binary format, even if the message
      * itself is encoded as text. This has no effect if the binary flag is set, which means
-     * binary messages will always encode their bitmap in binary format. */
+     * binary messages will always encode their bitmap in binary format.  @param flag the flag
+     */
     public void setBinaryBitmap(boolean flag) {
         binBitmap = flag;
     }
-    /** Returns true if the message's bitmap is encoded in binary format, when the message
-     * is encoded as text. Default is false. */
+
+    /**
+     * Returns true if the message's bitmap is encoded in binary format, when the message
+     * is encoded as text. Default is false.  @return the boolean
+     */
     public boolean isBinaryBitmap() {
         return binBitmap;
     }
 
-    /** If set, this flag will cause the secondary bitmap to be written even if it's not needed. */
+    /**
+     * If set, this flag will cause the secondary bitmap to be written even if it's not needed.  @param flag the flag
+     */
     public void setForceSecondaryBitmap(boolean flag) {
     	forceb2 = flag;
     }
-    /** Returns true if the secondary bitmap is always included in the message, even
-     * if it's not needed. Default is false. */
+
+    /**
+     * Returns true if the secondary bitmap is always included in the message, even
+     * if it's not needed. Default is false.  @return the force secondary bitmap
+     */
     public boolean getForceSecondaryBitmap() {
     	return forceb2;
     }
 
-    /** Sets the encoding to use. */
+    /**
+     * Sets the encoding to use.  @param value the value
+     */
     public void setCharacterEncoding(String value) {
         if (value == null) {
             throw new IllegalArgumentException("Cannot set null encoding.");
         }
     	encoding = value;
     }
-    /** Returns the character encoding for Strings inside the message. Default
-     * is taken from the file.encoding system property. */
+
+    /**
+     * Returns the character encoding for Strings inside the message. Default
+     * is taken from the file.encoding system property.  @return the character encoding
+     */
     public String getCharacterEncoding() {
     	return encoding;
     }
 
-    /** Specified whether the variable-length fields should encode their length
+    /**
+     * Specified whether the variable-length fields should encode their length
      * headers using string conversion with the proper character encoding. Default
      * is false, which is the old behavior (encoding as ASCII). This is only useful
-     * for text format. */
+     * for text format.  @param flag the flag
+     */
     public void setForceStringEncoding(boolean flag) {
         forceStringEncoding = flag;
     }
 
-    /** Specified whether the variable-length fields should encode their length
-     * headers using hexadecimal values. This is only useful for binary format. */
+    /**
+     * Specified whether the variable-length fields should encode their length
+     * headers using hexadecimal values. This is only useful for binary format.  @param flag the flag
+     */
     public void setEncodeVariableLengthFieldsInHex(boolean flag) {
         this.encodeVariableLengthFieldsInHex = flag;
     }
 
+    /**
+     * Is encode variable length fields in hex boolean.
+     *
+     * @return the boolean
+     */
     public boolean isEncodeVariableLengthFieldsInHex() {
         return encodeVariableLengthFieldsInHex;
     }
 
-    /** Sets the string to be sent as ISO header, that is, after the length header but before the message type.
-     * This is useful in case an application needs some custom data in the ISO header of each message (very rare). */
+    /**
+     * Sets the string to be sent as ISO header, that is, after the length header but before the message type.
+     * This is useful in case an application needs some custom data in the ISO header of each message (very rare).  @param value the value
+     */
     public void setIsoHeader(String value) {
         isoHeader = value;
         binIsoHeader = null;
     }
-    /** Returns the ISO header that this message was created with. */
+
+    /**
+     * Returns the ISO header that this message was created with.  @return the iso header
+     */
     public String getIsoHeader() {
     	return isoHeader;
     }
 
-    /** Sets the string to be sent as ISO header, that is, after the length header but before the message type.
-     * This is useful in case an application needs some custom data in the ISO header of each message (very rare). */
+    /**
+     * Sets the string to be sent as ISO header, that is, after the length header but before the message type.
+     * This is useful in case an application needs some custom data in the ISO header of each message (very rare).  @param binaryHeader the binary header
+     */
     public void setBinaryIsoHeader(byte[] binaryHeader) {
         isoHeader = null;
         binIsoHeader = binaryHeader;
     }
-    /** Returns the binary ISO header that this message was created with. */
+
+    /**
+     * Returns the binary ISO header that this message was created with.  @return the byte [ ]
+     */
     public byte[] getBinaryIsoHeader() {
         return binIsoHeader;
     }
 
-    /** Sets the ISO message type. Common values are 0x200, 0x210, 0x400, 0x410, 0x800, 0x810. */
+    /**
+     * Sets the ISO message type. Common values are 0x200, 0x210, 0x400, 0x410, 0x800, 0x810.  @param value the value
+     */
     public void setType(int value) {
     	type = value;
     }
-    /** Returns the ISO message type. */
+
+    /**
+     * Returns the ISO message type.  @return the type
+     */
     public int getType() {
     	return type;
     }
 
-    /** Indicates whether the message should be binary. Default is false.
+    /**
+     * Indicates whether the message should be binary. Default is false.
      * To encode the message as text but the bitmap in binary format, you can set the
-     * binaryBitmap flag. */
+     * binaryBitmap flag.  @param flag the flag
+     */
     public void setBinary(boolean flag) {
     	binaryHeader = binaryFields = flag;
     }
 
-    /** Returns true if the message is binary coded (both header and fields); default is false.
+    /**
+     * Returns true if the message is binary coded (both header and fields); default is false.
+     *
+     * @return the boolean
      * @deprecated Use the new flags isBinaryHeader and isBinaryFields instead.
      */
     @Deprecated
@@ -189,50 +274,74 @@ public class IsoMessage {
     	return binaryHeader && binaryFields;
     }
 
-    /** header information is binary encoded */
+    /**
+     * header information is binary encoded  @param flag the flag
+     */
     public void setBinaryHeader(boolean flag) {
         binaryHeader = flag;
     }
 
-    /** header information is binary encoded */
+    /**
+     * header information is binary encoded  @return the boolean
+     */
     public boolean isBinaryHeader(){
         return binaryHeader;
     }
 
-    /** field data is binary encoded */
+    /**
+     * field data is binary encoded  @param flag the flag
+     */
     public void setBinaryFields(boolean flag){
         binaryFields = flag;
     }
 
-    /** field data is binary encoded */
+    /**
+     * field data is binary encoded  @return the boolean
+     */
     public boolean isBinaryFields(){
        return binaryFields;
     }
 
-    /** Sets the ETX character, which is sent at the end of the message as a terminator.
-     * Default is -1, which means no terminator is sent. */
+    /**
+     * Sets the ETX character, which is sent at the end of the message as a terminator.
+     * Default is -1, which means no terminator is sent.  @param value the value
+     */
     public void setEtx(int value) {
     	etx = value;
     }
 
-    /** Returns the stored value in the field, without converting or formatting it.
-     * @param field The field number. 1 is the secondary bitmap and is not returned as such;
-     * real fields go from 2 to 128. */
+    /**
+     * Returns the stored value in the field, without converting or formatting it.
+     *
+     * @param <T>   the type parameter
+     * @param field The field number. 1 is the secondary bitmap and is not returned as such; real fields go from 2 to 128.
+     * @return the object value
+     */
     public <T> T getObjectValue(int field) {
     	@SuppressWarnings("unchecked")
     	IsoValue<T> v = fields[field];
     	return v == null ? null : v.getValue();
     }
 
-    /** Returns the IsoValue for the specified field. First real field is 2. */
-	@SuppressWarnings("unchecked")
+    /**
+     * Returns the IsoValue for the specified field. First real field is 2.  @param <T>  the type parameter
+     *
+     * @param field the field
+     * @return the field
+     */
+    @SuppressWarnings("unchecked")
     public <T> IsoValue<T> getField(int field) {
     	return fields[field];
     }
 
-    /** Stored the field in the specified index. The first field is the secondary bitmap and has index 1,
+    /**
+     * Stored the field in the specified index. The first field is the secondary bitmap and has index 1,
      * so the first valid value for index must be 2.
-     * @return The receiver (useful for setting several fields in sequence). */
+     *
+     * @param index the index
+     * @param field the field
+     * @return The receiver (useful for setting several fields in sequence).
+     */
     public IsoMessage setField(int index, IsoValue<?> field) {
     	if (index < 2 || index > MAX_AMOUNT_OF_FIELDS) {
     		throw new IndexOutOfBoundsException("Field index must be between 2 and " + MAX_AMOUNT_OF_FIELDS);
@@ -247,7 +356,11 @@ public class IsoMessage {
     	return this;
     }
 
-    /** Convenience method for setting several fields in one call. */
+    /**
+     * Convenience method for setting several fields in one call.  @param values the values
+     *
+     * @return the fields
+     */
     public IsoMessage setFields(Map<Integer, IsoValue<?>> values) {
     	for (Map.Entry<Integer, IsoValue<?>> e : values.entrySet()) {
     		setField(e.getKey(), e.getValue());
@@ -255,25 +368,30 @@ public class IsoMessage {
     	return this;
     }
 
-    /** Sets the specified value in the specified field, creating an IsoValue internally.
-     * @param index The field number (2 to 128)
-     * @param value The value to be stored.
-     * @param t The ISO type.
-     * @param length The length of the field, used for ALPHA and NUMERIC values only, ignored
-     * with any other type.
-     * @return The receiver (useful for setting several values in sequence). */
+    /**
+     * Sets the specified value in the specified field, creating an IsoValue internally.
+     *
+     * @param index  The field number (2 to 128)
+     * @param value  The value to be stored.
+     * @param t      The ISO type.
+     * @param length The length of the field, used for ALPHA and NUMERIC values only, ignored with any other type.
+     * @return The receiver (useful for setting several values in sequence).
+     */
     public IsoMessage setValue(int index, Object value, IsoType t, int length) {
     	return setValue(index, value, null, t, length);
     }
 
-    /** Sets the specified value in the specified field, creating an IsoValue internally.
-     * @param index The field number (2 to 128)
-     * @param value The value to be stored.
+    /**
+     * Sets the specified value in the specified field, creating an IsoValue internally.
+     *
+     * @param <T>     the type parameter
+     * @param index   The field number (2 to 128)
+     * @param value   The value to be stored.
      * @param encoder An optional CustomFieldEncoder for the value.
-     * @param t The ISO type.
-     * @param length The length of the field, used for ALPHA and NUMERIC values only, ignored
-     * with any other type.
-     * @return The receiver (useful for setting several values in sequence). */
+     * @param t       The ISO type.
+     * @param length  The length of the field, used for ALPHA and NUMERIC values only, ignored with any other type.
+     * @return The receiver (useful for setting several values in sequence).
+     */
     public <T> IsoMessage setValue(int index, T value, CustomFieldEncoder<T> encoder, IsoType t, int length) {
     	if (index < 2 || index > MAX_AMOUNT_OF_FIELDS) {
     		throw new IndexOutOfBoundsException("Field index must be between 2 and " + MAX_AMOUNT_OF_FIELDS);
@@ -296,14 +414,18 @@ public class IsoMessage {
     	return this;
     }
 
-    /** A convenience method to set new values in fields that already contain values.
+    /**
+     * A convenience method to set new values in fields that already contain values.
      * The field's type, length and custom encoder are taken from the current value.
      * This method can only be used with fields that have been previously set,
      * usually from a template in the MessageFactory.
+     *
+     * @param <T>   the type parameter
      * @param index The field's index
      * @param value The new value to be set in that field.
      * @return The message itself.
-     * @throws IllegalArgumentException if there is no current field at the specified index. */
+     * @throws IllegalArgumentException if there is no current field at the specified index.
+     */
     public <T> IsoMessage updateValue(int index, T value) {
         IsoValue<T> current = getField(index);
         if (current == null) {
@@ -316,21 +438,27 @@ public class IsoMessage {
         return this;
     }
 
-    /** Returns true is the message has a value in the specified field.
-     * @param idx The field number. */
+    /**
+     * Returns true is the message has a value in the specified field.
+     *
+     * @param idx The field number.
+     * @return the boolean
+     */
     public boolean hasField(int idx) {
     	return fields[idx] != null;
     }
 
-    /** Writes a message to a stream, after writing the specified number of bytes indicating
+    /**
+     * Writes a message to a stream, after writing the specified number of bytes indicating
      * the message's length. The message will first be written to an internal memory stream
      * which will then be dumped into the specified stream. This method flushes the stream
      * after the write. There are at most three write operations to the stream: one for the
      * length header, one for the message, and the last one with for the ETX.
-     * @param outs The stream to write the message to.
+     *
+     * @param outs        The stream to write the message to.
      * @param lengthBytes The size of the message length header. Valid ranges are 0 to 4.
-     * @throws IllegalArgumentException if the specified length header is more than 4 bytes.
-     * @throws IOException if there is a problem writing to the stream. */
+     * @throws IOException if there is a problem writing to the stream.
+     */
     public void write(OutputStream outs, int lengthBytes) throws IOException {
     	if (lengthBytes > 4) {
     		throw new IllegalArgumentException("The length header can have at most 4 bytes");
@@ -367,8 +495,12 @@ public class IsoMessage {
     	outs.flush();
     }
 
-    /** Creates and returns a ByteBuffer with the data of the message, including the length header.
-     * The returned buffer is already flipped, so it is ready to be written to a Channel. */
+    /**
+     * Creates and returns a ByteBuffer with the data of the message, including the length header.
+     * The returned buffer is already flipped, so it is ready to be written to a Channel.  @param lengthBytes the length bytes
+     *
+     * @return the byte buffer
+     */
     public ByteBuffer writeToBuffer(int lengthBytes) {
     	if (lengthBytes > 4) {
     		throw new IllegalArgumentException("The length header can have at most 4 bytes");
@@ -401,7 +533,9 @@ public class IsoMessage {
     	return buf;
     }
 
-    /** Creates a BitSet for the bitmap. */
+    /**
+     * Creates a BitSet for the bitmap.  @return the bit set
+     */
     protected BitSet createBitmapBitSet() {
         BitSet bs = new BitSet(forceb2 ? 128 : 64);
         for (int i = 2 ; i <= END_OF_SECONDARY_BITMAP_FIELDS; i++) {
@@ -421,6 +555,11 @@ public class IsoMessage {
         return bs;
     }
 
+    /**
+     * Create tertiary bit set bit set.
+     *
+     * @return the bit set
+     */
     /* Creates a BitSet for fields 129-196 */
     protected BitSet createTertiaryBitSet() {
         BitSet tertiaryBitmap = new BitSet(64);
@@ -440,7 +579,9 @@ public class IsoMessage {
         setField(INDEX_OF_TERTIARY_BITMAP, bitmapValue);
     }
 
-    /** Writes the message to a memory stream and returns a byte array with the result. */
+    /**
+     * Writes the message to a memory stream and returns a byte array with the result.  @return the byte [ ]
+     */
     public byte[] writeData() {
     	ByteArrayOutputStream bout = new ByteArrayOutputStream();
     	if (isoHeader != null) {
@@ -542,8 +683,10 @@ public class IsoMessage {
         }
     }
 
-    /** Returns a string representation of the message, as if it were encoded
-     * in ASCII with no binary bitmap. */
+    /**
+     * Returns a string representation of the message, as if it were encoded
+     * in ASCII with no binary bitmap.  @return the string
+     */
     public String debugString() {
         StringBuilder sb = new StringBuilder();
         if (isoHeader != null) {
@@ -589,27 +732,55 @@ public class IsoMessage {
     }
 
     //These are for Groovy compat
-    /** Sets the specified value in the specified field, just like {@link #setField(int, IsoValue)}. */
+
+    /**
+     * Sets the specified value in the specified field, just like {@link #setField(int, IsoValue)}.  @param <T>  the type parameter
+     *
+     * @param i the
+     * @param v the v
+     */
     public <T> void putAt(int i, IsoValue<T> v) {
     	setField(i, v);
     }
-    /** Returns the IsoValue in the specified field, just like {@link #getField(int)}. */
+
+    /**
+     * Returns the IsoValue in the specified field, just like {@link #getField(int)}.  @param <T>  the type parameter
+     *
+     * @param i the
+     * @return the at
+     */
     public <T> IsoValue<T> getAt(int i) {
     	return getField(i);
     }
 
 	//These are for Scala compat
-    /** Sets the specified value in the specified field, just like {@link #setField(int, IsoValue)}. */
-	public <T> void update(int i, IsoValue<T> v) {
+
+    /**
+     * Sets the specified value in the specified field, just like {@link #setField(int, IsoValue)}.  @param <T>  the type parameter
+     *
+     * @param i the
+     * @param v the v
+     */
+    public <T> void update(int i, IsoValue<T> v) {
 		setField(i, v);
 	}
-    /** Returns the IsoValue in the specified field, just like {@link #getField(int)}. */
-	public <T> IsoValue<T> apply(int i) {
+
+    /**
+     * Returns the IsoValue in the specified field, just like {@link #getField(int)}.  @param <T>  the type parameter
+     *
+     * @param i the
+     * @return the iso value
+     */
+    public <T> IsoValue<T> apply(int i) {
 		return getField(i);
 	}
 
-    /** Copies the specified fields from the other message into the recipient. If a specified field is
-     * not present in the source message it is simply ignored. */
+    /**
+     * Copies the specified fields from the other message into the recipient. If a specified field is
+     * not present in the source message it is simply ignored.  @param src the src
+     *
+     * @param idx the idx
+     */
     public void copyFieldsFrom(IsoMessage src, int...idx) {
     	for (int i : idx) {
     		IsoValue<Object> v = src.getField(i);
@@ -619,15 +790,21 @@ public class IsoMessage {
     	}
     }
 
-    /** Remove the specified fields from the message. */
+    /**
+     * Remove the specified fields from the message.  @param idx the idx
+     */
     public void removeFields(int... idx) {
         for (int i : idx) {
             setField(i, null);
         }
     }
 
-    /** Returns true is the message contains all the specified fields.
-     * A convenience for m.hasField(x) &amp;&amp; m.hasField(y) &amp;&amp; m.hasField(z) &amp;&amp; ... */
+    /**
+     * Returns true is the message contains all the specified fields.
+     * A convenience for m.hasField(x) &amp;&amp; m.hasField(y) &amp;&amp; m.hasField(z) &amp;&amp; ...  @param idx the idx
+     *
+     * @return the boolean
+     */
     public boolean hasEveryField(int... idx) {
         for (int i : idx) {
             if (!hasField(i)) {
@@ -636,8 +813,13 @@ public class IsoMessage {
         }
         return true;
     }
-    /** Returns true is the message contains at least one of the specified fields.
-     * A convenience for m.hasField(x) || m.hasField(y) || m.hasField(z) || ... */
+
+    /**
+     * Returns true is the message contains at least one of the specified fields.
+     * A convenience for m.hasField(x) || m.hasField(y) || m.hasField(z) || ...  @param idx the idx
+     *
+     * @return the boolean
+     */
     public boolean hasAnyField(int... idx) {
         for (int i : idx) {
             if (hasField(i)) {

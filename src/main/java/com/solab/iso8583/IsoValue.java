@@ -30,13 +30,15 @@ import com.solab.iso8583.util.HexCodec;
 
 import static com.solab.iso8583.IsoType.VARIABLE_LENGTH_VAR_TYPES;
 
-/** Represents a value that is stored in a field inside an ISO8583 message.
+/**
+ * Represents a value that is stored in a field inside an ISO8583 message.
  * It can format the value when the message is generated.
  * Some values have a fixed length, other values require a length to be specified
  * so that the value can be padded to the specified length. LLVAR and LLLVAR
  * values do not need a length specification because the length is calculated
  * from the stored value.
  *
+ * @param <T> the type parameter
  * @author Enrique Zamudio
  */
 public class IsoValue<T> implements Cloneable {
@@ -49,15 +51,23 @@ public class IsoValue<T> implements Cloneable {
     private TimeZone tz;
     private boolean variableLengthFieldsInHex;
 
+	/**
+	 * Instantiates a new Iso value.
+	 *
+	 * @param t     the t
+	 * @param value the value
+	 */
 	public IsoValue(IsoType t, T value) {
 		this(t, value, null);
 	}
 
-	/** Creates a new instance that stores the specified value as the specified type.
+	/**
+	 * Creates a new instance that stores the specified value as the specified type.
 	 * Useful for storing LLVAR or LLLVAR types, as well as fixed-length value types
 	 * like DATE10, DATE4, AMOUNT, etc.
-	 * @param t the ISO type.
-	 * @param value The value to be stored.
+	 *
+	 * @param t      the ISO type.
+	 * @param value  The value to be stored.
 	 * @param custom An optional CustomFieldEncoder for the value.
 	 */
 	public IsoValue(IsoType t, T value, CustomFieldEncoder<T> custom) {
@@ -107,24 +117,49 @@ public class IsoValue<T> implements Cloneable {
 		}
 	}
 
+	/**
+	 * Instantiates a new Iso value.
+	 *
+	 * @param t   the t
+	 * @param val the val
+	 * @param len the len
+	 */
 	public IsoValue(IsoType t, T val, int len) {
 		this(t, val, len, null);
 	}
 
+	/**
+	 * Instantiates a new Iso value.
+	 *
+	 * @param t    the t
+	 * @param val  the val
+	 * @param len  the len
+	 * @param hexa the hexa
+	 */
 	public IsoValue(IsoType t, T val, int len, boolean hexa) {
 		this(t, val, len, hexa, null);
 	}
 
+	/**
+	 * Instantiates a new Iso value.
+	 *
+	 * @param t      the t
+	 * @param val    the val
+	 * @param len    the len
+	 * @param custom the custom
+	 */
 	public IsoValue(IsoType t, T val, int len, CustomFieldEncoder<T> custom) {
 		this(t, val, len, false, custom);
 	}
 
-	/** Creates a new instance that stores the specified value as the specified type.
+	/**
+	 * Creates a new instance that stores the specified value as the specified type.
 	 * Useful for storing fixed-length value types.
-	 * @param t The ISO8583 type for this field.
-	 * @param val The value to store in the field.
-	 * @param len The length for the value.
-	 * @param hexa Flag if length is encoded as hexadecimal value
+	 *
+	 * @param t      The ISO8583 type for this field.
+	 * @param val    The value to store in the field.
+	 * @param len    The length for the value.
+	 * @param hexa   Flag if length is encoded as hexadecimal value
 	 * @param custom An optional CustomFieldEncoder for the value.
 	 */
 	public IsoValue(IsoType t, T val, int len, boolean hexa, CustomFieldEncoder<T> custom) {
@@ -164,35 +199,60 @@ public class IsoValue<T> implements Cloneable {
 		}
 	}
 
-	/** Returns the ISO type to which the value must be formatted. */
+	/**
+	 * Returns the ISO type to which the value must be formatted.  @return the type
+	 */
 	public IsoType getType() {
 		return type;
 	}
 
-	/** Returns the length of the stored value, of the length of the formatted value
+	/**
+	 * Returns the length of the stored value, of the length of the formatted value
 	 * in case of NUMERIC or ALPHA. It doesn't include the field length header in case
-	 * of LLVAR or LLLVAR. */
+	 * of LLVAR or LLLVAR.  @return the length
+	 */
 	public int getLength() {
 		return length;
 	}
 
-	/** Returns the stored value without any conversion or formatting. */
+	/**
+	 * Returns the stored value without any conversion or formatting.  @return the value
+	 */
 	public T getValue() {
 		return value;
 	}
 
+	/**
+	 * Sets character encoding.
+	 *
+	 * @param value the value
+	 */
 	public void setCharacterEncoding(String value) {
 		encoding = value;
 	}
+
+	/**
+	 * Gets character encoding.
+	 *
+	 * @return the character encoding
+	 */
 	public String getCharacterEncoding() {
 		return encoding;
 	}
 
-    /** Sets the timezone, useful for date fields. */
-    public void setTimeZone(TimeZone value) {
+	/**
+	 * Sets the timezone, useful for date fields.  @param value the value
+	 */
+	public void setTimeZone(TimeZone value) {
         tz = value;
     }
-    public TimeZone getTimeZone() {
+
+	/**
+	 * Gets time zone.
+	 *
+	 * @return the time zone
+	 */
+	public TimeZone getTimeZone() {
         return tz;
     }
 
@@ -282,12 +342,24 @@ public class IsoValue<T> implements Cloneable {
 		return value == null ? 0 : toString().hashCode();
 	}
 
-	/** Returns the CustomFieldEncoder for this value. */
+	/**
+	 * Returns the CustomFieldEncoder for this value.  @return the encoder
+	 */
 	public CustomFieldEncoder<T> getEncoder() {
 		return encoder;
 	}
 
-    protected void writeLengthHeader(final int l, final OutputStream outs, final IsoType type,
+	/**
+	 * Write length header.
+	 *
+	 * @param l                   the l
+	 * @param outs                the outs
+	 * @param type                the type
+	 * @param binary              the binary
+	 * @param forceStringEncoding the force string encoding
+	 * @throws IOException the io exception
+	 */
+	protected void writeLengthHeader(final int l, final OutputStream outs, final IsoType type,
                                      final boolean binary, final boolean forceStringEncoding)
             throws IOException {
 		final int digits;
@@ -343,9 +415,8 @@ public class IsoValue<T> implements Cloneable {
 	 *
 	 * @param outs                The stream to which the value will be written.
 	 * @param binary              Specifies whether the value should be written in binary or text format.
-	 * @param forceStringEncoding When using text format, force the encoding of length headers
-	 *                            for variable-length fields to be done with the proper character encoding. When false,
-	 *                            the length headers are encoded as ASCII; this used to be the only behavior.
+	 * @param forceStringEncoding When using text format, force the encoding of length headers                            for variable-length fields to be done with the proper character encoding. When false,                            the length headers are encoded as ASCII; this used to be the only behavior.
+	 * @throws IOException the io exception
 	 */
 	public void write(final OutputStream outs, final boolean binary, final boolean forceStringEncoding) throws IOException {
 		if (type == IsoType.LLLVAR || type == IsoType.LLVAR || type == IsoType.LLLLVAR || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN) {
@@ -397,6 +468,9 @@ public class IsoValue<T> implements Cloneable {
 		}
 	}
 
+	/**
+	 * Validate decimal variable length.
+	 */
 	void validateDecimalVariableLength() {
 		switch (type) {
 			case LLVAR:

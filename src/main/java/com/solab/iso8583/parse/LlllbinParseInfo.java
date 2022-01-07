@@ -35,11 +35,20 @@ import java.text.ParseException;
  */
 public class LlllbinParseInfo  extends FieldParseInfo {
 
+    /**
+     * Instantiates a new Llllbin parse info.
+     *
+     * @param t   the t
+     * @param len the len
+     */
     public LlllbinParseInfo(IsoType t, int len) {
         super(t, len);
     }
 
-	public LlllbinParseInfo() {
+    /**
+     * Instantiates a new Llllbin parse info.
+     */
+    public LlllbinParseInfo() {
 		super(IsoType.LLLLBIN, 0);
 	}
 
@@ -131,7 +140,14 @@ public class LlllbinParseInfo  extends FieldParseInfo {
 		}
 	}
 
-	protected int getLengthForBinaryParsing(final byte[] buf, final int pos) {
+    /**
+     * Gets length for binary parsing.
+     *
+     * @param buf the buf
+     * @param pos the pos
+     * @return the length for binary parsing
+     */
+    protected int getLengthForBinaryParsing(final byte[] buf, final int pos) {
         return getFieldLength(buf, pos);
 	}
 
