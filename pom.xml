@@ -46,6 +46,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipRelease>true</skipRelease>
+        <skipDepCheck>false</skipDepCheck>
     </properties>
 
     <dependencies>
@@ -182,6 +183,24 @@
                         <version>1.4.15</version> <!-- apparently this needs to be exactly this version -->
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>6.5.2</version>
+                <configuration>
+                    <skip>${skipDepCheck}</skip>
+                    <suppressionFile>owasp-dependency-check-exclude.xml</suppressionFile>
+                    <failBuildOnCVSS>0</failBuildOnCVSS>
+                </configuration>
+                <executions>
+                    <execution>
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
