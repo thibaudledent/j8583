@@ -28,7 +28,13 @@ pipelines:
               # -B batch mode makes Maven less verbose
               # -DskipDepCheck skip OWASP dependency check during this phase
         - step:
-            name: Build and OWASP dependency check
+            name: Sonar analysis
+            caches:
+              - maven
+            script:
+              - mvn -V -B org.jacoco:jacoco-maven-plugin:prepare-agent verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        - step:
+            name: OWASP dependency check
             caches:
               - maven
             script:
