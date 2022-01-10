@@ -1,7 +1,7 @@
 image: maven:3.8.4-openjdk-17-slim
 
 clone:
- depth: full # SonarCloud scanner needs the full history to assign issues properly
+  depth: full # SonarCloud scanner needs the full history to assign issues properly
 
 pipelines:
   custom:
@@ -17,18 +17,19 @@ pipelines:
             # -B batch mode makes Maven less verbose
             # -s causes the usage of the local settings with the required credentials
   default:
-    - step:
-        name: Build and test
-        caches:
-          - maven
-        script:
-          - mvn -V -B clean install -DskipDepCheck
-          # -V triggers an output of the Maven and Java versions at the beginning of the build
-          # -B batch mode makes Maven less verbose
-          # -DskipDepCheck skip OWASP dependency check during this phase
-    - step:
-        name: Build and OWASP dependency check
-        caches:
-          - maven
-        script:
-          - mvn -V -B clean install -DskipTests
+    - parallel:
+        - step:
+            name: Build and test
+            caches:
+              - maven
+            script:
+              - mvn -V -B clean install -DskipDepCheck
+              # -V triggers an output of the Maven and Java versions at the beginning of the build
+              # -B batch mode makes Maven less verbose
+              # -DskipDepCheck skip OWASP dependency check during this phase
+        - step:
+            name: Build and OWASP dependency check
+            caches:
+              - maven
+            script:
+              - mvn -V -B clean install -DskipTests
