@@ -3,6 +3,10 @@ image: maven:3.8.4-openjdk-17-slim
 clone:
   depth: full # SonarCloud scanner needs the full history to assign issues properly
 
+definitions:
+  caches:
+    sonar: ~/.sonar/cache  # Caching SonarCloud artifacts will speed up your build
+
 pipelines:
   custom:
     release-to-maven-central:
@@ -22,14 +26,15 @@ pipelines:
             name: Build and test
             caches:
               - maven
+              - sonar
             script:
-              - mvn -V -B clean install -DskipDepCheck
+              - mvn -V -B org.jacoco:jacoco-maven-plugin:prepare-agent verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -DskipDepCheck
               # -V triggers an output of the Maven and Java versions at the beginning of the build
               # -B batch mode makes Maven less verbose
               # -DskipDepCheck skip OWASP dependency check during this phase
         - step:
-            name: Build and OWASP dependency check
+            name: OWASP dependency check
             caches:
               - maven
             script:
-              - mvn -V -B clean install -DskipTests
+              - mvn -V -B verify -DskipTests
