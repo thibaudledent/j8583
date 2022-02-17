@@ -175,7 +175,7 @@ public class IsoValue<T> implements Cloneable {
 				length = custom == null ? val.toString().length() : custom.encodeField(value).length();
 			}
 			validateDecimalVariableLength();
-		} else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN) {
+		} else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHNUM) {
 			if (len == 0) {
                 if (custom == null) {
                     length = ((byte[])val).length;
