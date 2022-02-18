@@ -120,7 +120,7 @@ public enum IsoType {
 	 */
 	LLBINLENGTHNUM(false, 0),
 	/**
-	 * Similar to {@link IsoType#LLBINLENGTHNUM}, but lenght is encoded on 2 bytes.
+	 * Similar to {@link IsoType#LLBINLENGTHNUM}, but length is encoded on 2 bytes.
 	 */
 	LLLLBINLENGTHNUM(false, 0),
 	/**
