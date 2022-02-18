@@ -709,7 +709,8 @@ public class MessageFactory<T extends IsoMessage> {
 									|| val.getType() == IsoType.LLLBCDBIN
                                     || val.getType() == IsoType.LLLLVAR
 									|| val.getType() == IsoType.LLLLBIN
-									|| val.getType() == IsoType.LLLLBCDBIN) {
+									|| val.getType() == IsoType.LLLLBCDBIN
+									|| val.getType() == IsoType.LLLLBINLENGTHNUM) {
                                 pos += 2;
                             }
 						}

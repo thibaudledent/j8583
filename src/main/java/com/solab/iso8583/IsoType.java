@@ -120,6 +120,10 @@ public enum IsoType {
 	 */
 	LLBINLENGTHNUM(false, 0),
 	/**
+	 * Similar to {@link IsoType#LLBINLENGTHNUM}, but lenght is encoded on 2 bytes.
+	 */
+	LLLLBINLENGTHNUM(false, 0),
+	/**
 	 * A variable length alphanumerical value, length is a literal unsigned single byte value and expressed in number of characters, each character being encoded on 1 byte
 	 */
 	LLBINLENGTHALPHANUM(false, 0),
@@ -143,7 +147,7 @@ public enum IsoType {
 	/**
 	 * The constant VARIABLE_LENGTH_BIN_TYPES.
 	 */
-	public static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(EnumSet.of(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN, LLBINLENGTHNUM, LLBINLENGTHBIN));
+	public static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(EnumSet.of(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN, LLBINLENGTHNUM, LLLLBINLENGTHNUM, LLBINLENGTHBIN));
 
 	private boolean needsLen;
 	private int length;

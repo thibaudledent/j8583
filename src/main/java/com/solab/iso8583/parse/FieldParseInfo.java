@@ -227,6 +227,8 @@ public abstract class FieldParseInfo {
 			fpi = new BcdLengthLlllbinParseInfo();
 		} else if (t == IsoType.LLBINLENGTHNUM) {
 			fpi = new BinLengthLlNumParseInfo();
+		} else if (t == IsoType.LLLLBINLENGTHNUM) {
+			fpi = new BinLengthLlllNumParseInfo();
 		} else if (t == IsoType.LLBINLENGTHALPHANUM) {
 			fpi = new BinLengthLlAlphaNumParseInfo();
 		} else if (t == IsoType.LLBINLENGTHBIN) {
