@@ -301,7 +301,7 @@ public class IsoValue<T> implements Cloneable {
 				final String _s = getStringEncoded();
 				return (_s.length() % 2 == 1) ? String.format("0%s", _s) : _s;
 			}
-		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM|| type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM) {
+		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM) {
 			if (value instanceof byte[]) {
 				final byte[] _v = (byte[])value;
 				final String val = encoder == null ? HexCodec.hexEncode(_v, 0, _v.length) : encoder.encodeField(value);
