@@ -686,8 +686,7 @@ public class MessageFactory<T extends IsoMessage> {
 									|| val.getType() == IsoType.DATE_EXP
 									|| val.getType() == IsoType.AMOUNT
 									|| val.getType() == IsoType.TIME
-									|| val.getType() == IsoType.LLBINLENGTHNUM
-									|| val.getType() == IsoType.LLLLBINLENGTHNUM) {
+									|| val.getType() == IsoType.LLBINLENGTHNUM) {
 								pos += (val.getLength() / 2) + (val.getLength() % 2);
                             } else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN) {
 								pos += val.getLength() / 2 + ((val.getLength() % 2 == 0) ? 0 : 1);
@@ -710,7 +709,8 @@ public class MessageFactory<T extends IsoMessage> {
 									|| val.getType() == IsoType.LLLBCDBIN
                                     || val.getType() == IsoType.LLLLVAR
 									|| val.getType() == IsoType.LLLLBIN
-									|| val.getType() == IsoType.LLLLBCDBIN) {
+									|| val.getType() == IsoType.LLLLBCDBIN
+									|| val.getType() == IsoType.LLLLBINLENGTHNUM) {
                                 pos += 2;
                             }
 						}

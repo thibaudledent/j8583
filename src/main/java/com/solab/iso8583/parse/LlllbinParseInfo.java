@@ -151,7 +151,7 @@ public class LlllbinParseInfo  extends FieldParseInfo {
         return getFieldLength(buf, pos);
 	}
 
-	private int getFieldLength(byte[] buf, int pos) {
+	protected int getFieldLength(byte[] buf, int pos) {
 		return forceHexadecimalLength ?
 				((buf[pos] & 0xff) << 8) | (buf[pos + 1] & 0xff)
 				:
