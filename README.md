@@ -40,6 +40,17 @@ To distribute the key `gpg --keyserver pgp.surfnet.nl --send-keys DB85FB21592871
 
 Then it should be available here: https://pgp.surfnet.nl/pks/lookup?search=0xDB85FB2159287141&fingerprint=on&op=index
 
+### Key expiration
+
+The `mvn deploy` might fail on:
+
+```
+gpg: signing failed: No secret key
+gpg: no default secret key: No secret key
+```
+
+It is possible that the reason for this error is simply that the gpg key has expired.
+
 ### More info
 
 Article *"Creating a Bitbucket pipeline to automate a Maven release"*, see this [link](https://thibaudledent.github.io/2019/03/01/bitbucket-pipeline/).
