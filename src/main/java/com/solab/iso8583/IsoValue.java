@@ -88,11 +88,14 @@ public class IsoValue<T> implements Cloneable {
 				length = enc.length();
 			}
 			validateDecimalVariableLength();
-		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHBIN) {
+		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHBIN) {
 			if (custom == null) {
 				if (value instanceof byte[]) {
 					length = ((byte[])value).length;
-				} else {
+				} else if (type == IsoType.LLLLBINLENGTHBIN){
+					length = value.toString().length() / 2 + (value.toString().length() % 2);
+				}
+				else {
 					length = value.toString().length() / 2 + (value.toString().length() % 2);
 				}
             } else if (custom instanceof CustomBinaryField) {
@@ -175,7 +178,7 @@ public class IsoValue<T> implements Cloneable {
 				length = custom == null ? val.toString().length() : custom.encodeField(value).length();
 			}
 			validateDecimalVariableLength();
-		} else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHNUM) {
+		} else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHBIN) {
 			if (len == 0) {
                 if (custom == null) {
                     length = ((byte[])val).length;
@@ -286,7 +289,7 @@ public class IsoValue<T> implements Cloneable {
 			return getStringEncoded();
 		} else if (value instanceof Date) {
 			return type.format((Date)value, tz);
-		} else if (type == IsoType.BINARY || type == IsoType.LLBINLENGTHBIN) {
+		} else if (type == IsoType.BINARY || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHBIN) {
 			if (value instanceof byte[]) {
                 final byte[] _v = (byte[])value;
 				return type.format(encoder == null ? HexCodec.hexEncode(_v, 0, _v.length) : encoder.encodeField(value), length * 2);
@@ -378,7 +381,7 @@ public class IsoValue<T> implements Cloneable {
 
 		if (type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLBINLENGTHALPHANUM) {
 			outs.write((byte) l);
-		} else if(type == IsoType.LLLLBINLENGTHNUM){
+		} else if(type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHBIN){
 			final byte firstByte = (byte) (l & 0xFF);
 			final byte secondByte = (byte) ((l >> 8) & 0xFF);
 			outs.write(secondByte); // Since writing from left to right
@@ -429,7 +432,7 @@ public class IsoValue<T> implements Cloneable {
 	 * @throws IOException the io exception
 	 */
 	public void write(final OutputStream outs, final boolean binary, final boolean forceStringEncoding) throws IOException {
-		if (type == IsoType.LLLVAR || type == IsoType.LLVAR || type == IsoType.LLLLVAR || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN) {
+		if (type == IsoType.LLLVAR || type == IsoType.LLVAR || type == IsoType.LLLLVAR || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHBIN) {
             writeLengthHeader(length, outs, type, binary, forceStringEncoding);
 		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM) {
 			writeLengthHeader(binary ? length : length*2, outs, type, binary, forceStringEncoding);
@@ -483,32 +486,14 @@ public class IsoValue<T> implements Cloneable {
 	 */
 	void validateDecimalVariableLength() {
 		switch (type) {
-			case LLVAR:
-			case LLBIN:
-				validateMaxLength(99);
-				break;
-			case LLLVAR:
-			case LLLBIN:
-				validateMaxLength(999);
-				break;
-			case LLLLVAR:
-			case LLLLBIN:
-				validateMaxLength(9999);
-				break;
-			case LLBCDBIN:
-				validateMaxLength(50);
-				break;
-			case LLLBCDBIN:
-				validateMaxLength(500);
-				break;
-			case LLLLBCDBIN:
-				validateMaxLength(5000);
-				break;
-		    case LLBINLENGTHNUM:
-		    case 	LLBINLENGTHALPHANUM:
-		    case LLBINLENGTHBIN:
-			    validateMaxLength(255);
-			    break;
+			case LLVAR, LLBIN -> validateMaxLength(99);
+			case LLLVAR, LLLBIN -> validateMaxLength(999);
+			case LLLLVAR, LLLLBIN -> validateMaxLength(9999);
+			case LLBCDBIN -> validateMaxLength(50);
+			case LLLBCDBIN -> validateMaxLength(500);
+			case LLLLBCDBIN -> validateMaxLength(5000);
+			case LLLLBINLENGTHBIN -> validateMaxLength(65535);
+			case LLBINLENGTHNUM, LLBINLENGTHALPHANUM, LLBINLENGTHBIN -> validateMaxLength(255);
 		}
 	}
 

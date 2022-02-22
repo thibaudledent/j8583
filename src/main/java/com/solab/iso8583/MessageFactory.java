@@ -686,9 +686,10 @@ public class MessageFactory<T extends IsoMessage> {
 									|| val.getType() == IsoType.DATE_EXP
 									|| val.getType() == IsoType.AMOUNT
 									|| val.getType() == IsoType.TIME
-									|| val.getType() == IsoType.LLBINLENGTHNUM) {
+									|| val.getType() == IsoType.LLBINLENGTHNUM
+									|| val.getType() == IsoType.LLLLBINLENGTHNUM) {
 								pos += (val.getLength() / 2) + (val.getLength() % 2);
-                            } else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN) {
+                            } else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN || val.getType() == IsoType.LLLLBINLENGTHBIN) {
 								pos += val.getLength() / 2 + ((val.getLength() % 2 == 0) ? 0 : 1);
 							} else {
 								pos += val.getLength();
@@ -710,7 +711,8 @@ public class MessageFactory<T extends IsoMessage> {
                                     || val.getType() == IsoType.LLLLVAR
 									|| val.getType() == IsoType.LLLLBIN
 									|| val.getType() == IsoType.LLLLBCDBIN
-									|| val.getType() == IsoType.LLLLBINLENGTHNUM) {
+									|| val.getType() == IsoType.LLLLBINLENGTHNUM
+									|| val.getType() == IsoType.LLLLBINLENGTHBIN) {
                                 pos += 2;
                             }
 						}
@@ -742,7 +744,7 @@ public class MessageFactory<T extends IsoMessage> {
 							pos += 2;
 						} else if (val.getType() == IsoType.LLLVAR || val.getType() == IsoType.LLLBIN || val.getType() == IsoType.LLLBCDBIN) {
 							pos += 3;
-						} else if (val.getType() == IsoType.LLLLVAR || val.getType() == IsoType.LLLLBIN || val.getType() == IsoType.LLLLBCDBIN) {
+						} else if (val.getType() == IsoType.LLLLVAR || val.getType() == IsoType.LLLLBIN || val.getType() == IsoType.LLLLBCDBIN || val.getType() == IsoType.LLLLBINLENGTHBIN) {
                             pos += 4;
                         }
 					}

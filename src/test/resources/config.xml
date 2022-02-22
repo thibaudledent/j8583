@@ -166,5 +166,7 @@
 <parse type="0287">
 	<field num="3" type="LLLLBINLENGTHNUM"/>
 </parse>
-
+<parse type="0288">
+	<field num="3" type="LLLLBINLENGTHBIN"/>
+</parse>
 </j8583-config>
