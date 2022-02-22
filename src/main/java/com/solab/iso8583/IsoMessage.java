@@ -767,7 +767,7 @@ public class IsoMessage {
                     sb.append(String.format("%02d", desc.length()));
                 } else if (v.getType() == IsoType.LLLBIN || v.getType() == IsoType.LLLBCDBIN || v.getType() == IsoType.LLLVAR) {
                     sb.append(String.format("%03d", desc.length()));
-                } else if (v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLBCDBIN || v.getType() == IsoType.LLLLVAR || v.getType() == IsoType.LLLLBINLENGTHNUM) {
+                } else if (v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLBCDBIN || v.getType() == IsoType.LLLLVAR || v.getType() == IsoType.LLLLBINLENGTHNUM || v.getType() == IsoType.LLLLBINLENGTHBIN) {
                     sb.append(String.format("%04d", desc.length()));
                 }
                 sb.append(desc);

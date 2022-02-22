@@ -132,6 +132,10 @@ public enum IsoType {
 	 */
 	LLBINLENGTHBIN(false, 0),
 	/**
+	 * A variable length binary value, length is a literal unsigned double byte value and expressed in number of bytes
+	 */
+	LLLLBINLENGTHBIN(false, 0),
+	/**
 	 * Date in format yyMMddHHmmss.
 	 */
 	DATE12(false,12),
@@ -147,7 +151,7 @@ public enum IsoType {
 	/**
 	 * The constant VARIABLE_LENGTH_BIN_TYPES.
 	 */
-	public static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(EnumSet.of(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN, LLBINLENGTHNUM, LLLLBINLENGTHNUM, LLBINLENGTHBIN));
+	public static final Set<IsoType> VARIABLE_LENGTH_BIN_TYPES = Collections.unmodifiableSet(EnumSet.of(LLBIN, LLLBIN, LLLLBIN, LLBCDBIN, LLLBCDBIN, LLLLBCDBIN, LLBINLENGTHNUM, LLLLBINLENGTHNUM, LLBINLENGTHBIN, LLLLBINLENGTHBIN));
 
 	private boolean needsLen;
 	private int length;

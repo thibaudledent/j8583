@@ -171,7 +171,7 @@ public class CompositeField implements CustomBinaryField<CompositeField> {
                     } else {
                         pos += v.getLength();
                     }
-                    if (v.getType() == IsoType.LLVAR || v.getType() == IsoType.LLBIN || v.getType() == IsoType.LLBCDBIN || v.getType() == IsoType.LLBINLENGTHNUM || v.getType() == IsoType.LLLLBINLENGTHNUM || v.getType() == IsoType.LLBINLENGTHALPHANUM || v.getType() == IsoType.LLBINLENGTHBIN) {
+                    if (v.getType() == IsoType.LLVAR || v.getType() == IsoType.LLBIN || v.getType() == IsoType.LLBCDBIN || v.getType() == IsoType.LLBINLENGTHNUM || v.getType() == IsoType.LLLLBINLENGTHNUM || v.getType() == IsoType.LLBINLENGTHALPHANUM || v.getType() == IsoType.LLBINLENGTHBIN || v.getType() == IsoType.LLLLBINLENGTHBIN) {
                         pos++;
                     } else if (v.getType() == IsoType.LLLVAR || v.getType() == IsoType.LLLBIN || v.getType() == IsoType.LLLBCDBIN
                             || v.getType() == IsoType.LLLLVAR || v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLBCDBIN) {
@@ -204,7 +204,7 @@ public class CompositeField implements CustomBinaryField<CompositeField> {
                         pos+=2;
                     } else if (v.getType() == IsoType.LLLVAR || v.getType() == IsoType.LLLBIN || v.getType() == IsoType.LLLBCDBIN) {
                         pos+=3;
-                    } else if (v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLBCDBIN || v.getType() == IsoType.LLLLVAR) {
+                    } else if (v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLBCDBIN || v.getType() == IsoType.LLLLVAR  || v.getType() == IsoType.LLLLBINLENGTHBIN) {
                         pos+=4;
                     }
                     vals.add(v);

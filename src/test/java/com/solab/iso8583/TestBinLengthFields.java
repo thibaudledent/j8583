@@ -100,4 +100,40 @@ public class TestBinLengthFields {
         String decodeValue = iso2.getField(3).toString();
         Assert.assertEquals(fieldValue, decodeValue);
     }
+
+    @Test
+    public void testLLLLBINLENGTHBIN() throws IOException, ParseException {
+        final String fieldValue = "0123";
+        MessageFactory messageFactory = new MessageFactory();
+        messageFactory.setConfigPath("config.xml");
+        messageFactory.setUseBinaryMessages(true);
+
+        IsoMessage iso1 = messageFactory.newMessage(0x288);
+        iso1.setField(3, new IsoValue<>(IsoType.LLLLBINLENGTHBIN, fieldValue));
+        byte[] binaryMessage = iso1.writeData();
+
+        Assert.assertEquals("028820000000000000000002" + fieldValue, HexCodec.hexEncode(binaryMessage,0, binaryMessage.length));
+
+        IsoMessage iso2 = messageFactory.parseMessage(binaryMessage, 0);
+        String decodeValue = iso2.getField(3).toString();
+        Assert.assertEquals(fieldValue, decodeValue);
+    }
+
+    @Test
+    public void testLLLLBINLENGTHBIN_MAXVALUE() throws IOException, ParseException {
+        final String fieldValue = "49".repeat(65535);
+        MessageFactory messageFactory = new MessageFactory();
+        messageFactory.setConfigPath("config.xml");
+        messageFactory.setUseBinaryMessages(true);
+
+        IsoMessage iso1 = messageFactory.newMessage(0x288);
+        iso1.setField(3, new IsoValue<>(IsoType.LLLLBINLENGTHBIN, fieldValue));
+        byte[] binaryMessage = iso1.writeData();
+
+        Assert.assertEquals("02882000000000000000FFFF" + fieldValue, HexCodec.hexEncode(binaryMessage,0, binaryMessage.length));
+
+        IsoMessage iso2 = messageFactory.parseMessage(binaryMessage, 0);
+        String decodeValue = iso2.getField(3).toString();
+        Assert.assertEquals(fieldValue, decodeValue);
+    }
 }
