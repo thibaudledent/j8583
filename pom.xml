@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.bitbucket.thibaudledent.j8583</groupId>
     <artifactId>j8583</artifactId>
-    <version>1.16.0</version>
+    <version>1.16.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>j8583</name>
 
@@ -22,7 +22,8 @@
     </licenses>
 
     <scm>
-        <connection>scm:git: https://bitbucket.org/thibaudledent/j8583.git</connection>
+        <connection>scm:git:https://bitbucket.org/thibaudledent/j8583.git</connection>
+        <developerConnection>scm:git:https://bitbucket.org/thibaudledent/j8583.git</developerConnection>
         <url>https://bitbucket.org/thibaudledent/j8583</url>
     </scm>
 
@@ -201,6 +202,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M5</version>
             </plugin>
         </plugins>
     </build>
