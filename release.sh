@@ -20,7 +20,7 @@ mvn -B -C release:prepare --settings ./settings.xml \
   -DdevelopmentVersion="$NEXT_DEV_VERSION" \
   -DscmCommentPrefix="Releasing $RELEASE_VERSION [maven-release-plugin]"
 
-git push --tags remote-origin HEAD:master
+git push --tags origin HEAD:master
 
 echo "Performing release $RELEASE_VERSION."
 mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -Dmaven.javadoc.skip=true' release:perform --settings ./settings.xml
