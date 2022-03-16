@@ -1,10 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -eEuxo pipefail
 
 # Get release version & next dev version
 git fetch --tags
 
 echo "Determine the release version of the application from the previous tag and the provided release scope."
-CURRENT_DEV_VERSION="$(mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -Ev '(^\[|Download\w+:)')"
+CURRENT_DEV_VERSION="$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)"
 RELEASE_VERSION="$(echo "$CURRENT_DEV_VERSION" | sed -e "s/-SNAPSHOT$//")"
 echo "The release version is $RELEASE_VERSION"
 
