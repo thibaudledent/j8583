@@ -1,16 +1,15 @@
 package com.solab.iso8583;
 
+import com.solab.iso8583.util.HexCodec;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.solab.iso8583.util.HexCodec;
 
 /** Test binary message encoding and binary fields. */
 public class TestBinaries {
@@ -263,5 +262,23 @@ public class TestBinaries {
         iso2 = messageFactory.parseMessage(buf, 0);
         value = iso2.getField(3).toString();
         Assert.assertEquals("0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD0123456789ABCDEF640123456789ABCD", value);
+    }
+
+    @Test
+    public void testLLBCDAlphaNum() throws IOException, ParseException {
+        final String fieldValue = "1".repeat(28);
+        MessageFactory<IsoMessage> messageFactory = new MessageFactory<>();
+        messageFactory.setConfigPath("config.xml");
+        messageFactory.setUseBinaryMessages(true);
+
+        IsoMessage iso1 = messageFactory.newMessage(0x289);
+        iso1.setField(3, new IsoValue<>(IsoType.LLBCDLENGTHALPHANUM, fieldValue));
+        byte[] binaryMessage = iso1.writeData();
+
+        Assert.assertEquals("0289" + "2000000000000000" + "28" + "31".repeat(28), HexCodec.hexEncode(binaryMessage,0, binaryMessage.length));
+
+        IsoMessage iso2 = messageFactory.parseMessage(binaryMessage, 0);
+        String decodedValue = iso2.getField(3).toString();
+        Assert.assertEquals(fieldValue, decodedValue);
     }
 }

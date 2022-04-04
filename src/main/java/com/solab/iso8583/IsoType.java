@@ -128,6 +128,10 @@ public enum IsoType {
 	 */
 	LLBINLENGTHALPHANUM(false, 0),
 	/**
+	 * A variable BCD encoded length, length is a literal unsigned single byte value and expressed in number of bytes
+	 */
+	LLBCDLENGTHALPHANUM(false, 0),
+	/**
 	 * A variable length binary value, length is a literal unsigned single byte value and expressed in number of bytes
 	 */
 	LLBINLENGTHBIN(false, 0),

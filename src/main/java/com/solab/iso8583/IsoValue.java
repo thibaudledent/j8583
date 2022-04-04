@@ -18,15 +18,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 package com.solab.iso8583;
 
+import com.solab.iso8583.util.Bcd;
+import com.solab.iso8583.util.HexCodec;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.TimeZone;
-
-import com.solab.iso8583.util.Bcd;
-import com.solab.iso8583.util.HexCodec;
 
 import static com.solab.iso8583.IsoType.VARIABLE_LENGTH_VAR_TYPES;
 
@@ -108,7 +108,7 @@ public class IsoValue<T> implements Cloneable {
 				length = enc.length();
 			}
 			validateDecimalVariableLength();
-		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM) {
+		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBCDLENGTHALPHANUM) {
 			if (value instanceof byte[]) {
                 length = ((byte[])value).length * 2;
 			} else {
@@ -178,7 +178,7 @@ public class IsoValue<T> implements Cloneable {
 				length = custom == null ? val.toString().length() : custom.encodeField(value).length();
 			}
 			validateDecimalVariableLength();
-		} else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHBIN) {
+		} else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHBIN || type == IsoType.LLBCDLENGTHALPHANUM) {
 			if (len == 0) {
                 if (custom == null) {
                     length = ((byte[])val).length;
@@ -203,7 +203,7 @@ public class IsoValue<T> implements Cloneable {
 	}
 
 	/**
-	 * Returns the ISO type to which the value must be formatted.  
+	 * Returns the ISO type to which the value must be formatted.
      * @return the type
 	 */
 	public IsoType getType() {
@@ -213,7 +213,7 @@ public class IsoValue<T> implements Cloneable {
 	/**
 	 * Returns the length of the stored value, of the length of the formatted value
 	 * in case of NUMERIC or ALPHA. It doesn't include the field length header in case
-	 * of LLVAR or LLLVAR.  
+	 * of LLVAR or LLLVAR.
      * @return the length
 	 */
 	public int getLength() {
@@ -221,7 +221,7 @@ public class IsoValue<T> implements Cloneable {
 	}
 
 	/**
-	 * Returns the stored value without any conversion or formatting.  
+	 * Returns the stored value without any conversion or formatting.
      * @return the value
 	 */
 	public T getValue() {
@@ -247,7 +247,7 @@ public class IsoValue<T> implements Cloneable {
 	}
 
 	/**
-	 * Sets the timezone, useful for date fields.  
+	 * Sets the timezone, useful for date fields.
      * @param value the value
 	 */
 	public void setTimeZone(TimeZone value) {
@@ -304,7 +304,7 @@ public class IsoValue<T> implements Cloneable {
 				final String _s = getStringEncoded();
 				return (_s.length() % 2 == 1) ? String.format("0%s", _s) : _s;
 			}
-		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM) {
+		} else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLBCDLENGTHALPHANUM || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM) {
 			if (value instanceof byte[]) {
 				final byte[] _v = (byte[])value;
 				final String val = encoder == null ? HexCodec.hexEncode(_v, 0, _v.length) : encoder.encodeField(value);
@@ -350,7 +350,7 @@ public class IsoValue<T> implements Cloneable {
 	}
 
 	/**
-	 * Returns the CustomFieldEncoder for this value.  
+	 * Returns the CustomFieldEncoder for this value.
      * @return the encoder
 	 */
 	public CustomFieldEncoder<T> getEncoder() {
@@ -432,7 +432,7 @@ public class IsoValue<T> implements Cloneable {
 	 * @throws IOException the io exception
 	 */
 	public void write(final OutputStream outs, final boolean binary, final boolean forceStringEncoding) throws IOException {
-		if (type == IsoType.LLLVAR || type == IsoType.LLVAR || type == IsoType.LLLLVAR || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHBIN) {
+		if (type == IsoType.LLLVAR || type == IsoType.LLVAR || type == IsoType.LLLLVAR || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHBIN || type == IsoType.LLBCDLENGTHALPHANUM) {
             writeLengthHeader(length, outs, type, binary, forceStringEncoding);
 		} else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM) {
 			writeLengthHeader(binary ? length : length*2, outs, type, binary, forceStringEncoding);
@@ -486,7 +486,7 @@ public class IsoValue<T> implements Cloneable {
 	 */
 	void validateDecimalVariableLength() {
 		switch (type) {
-			case LLVAR, LLBIN -> validateMaxLength(99);
+			case LLVAR, LLBIN, LLBCDLENGTHALPHANUM -> validateMaxLength(99);
 			case LLLVAR, LLLBIN -> validateMaxLength(999);
 			case LLLLVAR, LLLLBIN -> validateMaxLength(9999);
 			case LLBCDBIN -> validateMaxLength(50);

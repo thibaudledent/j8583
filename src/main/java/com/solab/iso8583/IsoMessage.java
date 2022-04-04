@@ -763,7 +763,7 @@ public class IsoMessage {
             IsoValue<?> v = fields[i];
             if (v != null) {
                 String desc = v.toString();
-                if (v.getType() == IsoType.LLBIN || v.getType() == IsoType.LLBCDBIN || v.getType() == IsoType.LLVAR || v.getType() == IsoType.LLBINLENGTHNUM || v.getType() == IsoType.LLBINLENGTHALPHANUM || v.getType() == IsoType.LLBINLENGTHBIN)  {
+                if (v.getType() == IsoType.LLBIN || v.getType() == IsoType.LLBCDBIN || v.getType() == IsoType.LLBCDLENGTHALPHANUM || v.getType() == IsoType.LLVAR || v.getType() == IsoType.LLBINLENGTHNUM || v.getType() == IsoType.LLBINLENGTHALPHANUM || v.getType() == IsoType.LLBINLENGTHBIN)  {
                     sb.append(String.format("%02d", desc.length()));
                 } else if (v.getType() == IsoType.LLLBIN || v.getType() == IsoType.LLLBCDBIN || v.getType() == IsoType.LLLVAR) {
                     sb.append(String.format("%03d", desc.length()));
