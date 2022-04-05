@@ -266,19 +266,24 @@ public class TestBinaries {
 
     @Test
     public void testLLBCDAlphaNum() throws IOException, ParseException {
-        final String fieldValue = "1".repeat(28);
+        final String field3Value = "1".repeat(28);
+        final String field4Value = "1234";
         MessageFactory<IsoMessage> messageFactory = new MessageFactory<>();
         messageFactory.setConfigPath("config.xml");
         messageFactory.setUseBinaryMessages(true);
 
         IsoMessage iso1 = messageFactory.newMessage(0x289);
-        iso1.setField(3, new IsoValue<>(IsoType.LLBCDLENGTHALPHANUM, fieldValue));
+        iso1.setField(3, new IsoValue<>(IsoType.LLBCDLENGTHALPHANUM, field3Value));
+        iso1.setField(4, new IsoValue<>(IsoType.LLBINLENGTHBIN, field4Value));
         byte[] binaryMessage = iso1.writeData();
 
-        Assert.assertEquals("0289" + "2000000000000000" + "28" + "31".repeat(28), HexCodec.hexEncode(binaryMessage,0, binaryMessage.length));
+        Assert.assertEquals("0289" + "3000000000000000" + "28" + "31".repeat(28) + "02" + field4Value, HexCodec.hexEncode(binaryMessage,0, binaryMessage.length));
 
         IsoMessage iso2 = messageFactory.parseMessage(binaryMessage, 0);
-        String decodedValue = iso2.getField(3).toString();
-        Assert.assertEquals(fieldValue, decodedValue);
+        String decodedField3Value = iso2.getField(3).toString();
+        String decodedField4Value = iso2.getField(4).toString();
+
+        Assert.assertEquals(field3Value, decodedField3Value);
+        Assert.assertEquals(field4Value, decodedField4Value);
     }
 }

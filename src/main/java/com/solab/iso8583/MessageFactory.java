@@ -694,7 +694,7 @@ public class MessageFactory<T extends IsoMessage> {
 									|| val.getType() == IsoType.LLBINLENGTHNUM
 									|| val.getType() == IsoType.LLLLBINLENGTHNUM) {
 								pos += (val.getLength() / 2) + (val.getLength() % 2);
-                            } else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN || val.getType() == IsoType.LLBCDLENGTHALPHANUM || val.getType() == IsoType.LLLLBINLENGTHBIN) {
+                            } else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN || val.getType() == IsoType.LLLLBINLENGTHBIN) {
 								pos += val.getLength() / 2 + ((val.getLength() % 2 == 0) ? 0 : 1);
 							} else {
 								pos += val.getLength();
