@@ -169,4 +169,7 @@
 <parse type="0288">
 	<field num="3" type="LLLLBINLENGTHBIN"/>
 </parse>
+<parse type="0289">
+	<field num="3" type="LLBCDLENGTHALPHANUM"/>
+</parse>
 </j8583-config>

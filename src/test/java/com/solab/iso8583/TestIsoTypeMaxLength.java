@@ -27,6 +27,7 @@ public class TestIsoTypeMaxLength {
             {IsoType.LLBINLENGTHALPHANUM, "LLBINLENGTHALPHANUM can only hold values up to 255 chars", 256},
             {IsoType.LLBINLENGTHBIN, "LLBINLENGTHBIN can only hold values up to 255 chars", 256},
             {IsoType.LLLLBINLENGTHBIN, "LLLLBINLENGTHBIN can only hold values up to 65535 chars", 65536},
+            {IsoType.LLBCDLENGTHALPHANUM, "LLBCDLENGTHALPHANUM can only hold values up to 99 chars", 100},
         });
     }
 
@@ -53,9 +54,9 @@ public class TestIsoTypeMaxLength {
     }
 
     @Test
-    public void shouldThrowIllegalArgumentExceptionWhithoutUsingLengthInConstructor() {
+    public void shouldThrowIllegalArgumentExceptionWithoutUsingLengthInConstructor() {
+        final String LONG_VALUE = "value".repeat(lengthThatWillFail);
         try {
-            final String LONG_VALUE = "value".repeat(lengthThatWillFail);
             // When
             new IsoValue<>(type, LONG_VALUE);
             Assert.fail("IllegalArgumentException expected.");

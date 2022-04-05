@@ -18,17 +18,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 */
 package com.solab.iso8583;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.util.*;
-
+import com.solab.iso8583.parse.ConfigParser;
 import com.solab.iso8583.parse.DateTimeParseInfo;
+import com.solab.iso8583.parse.FieldParseInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.solab.iso8583.parse.ConfigParser;
-import com.solab.iso8583.parse.FieldParseInfo;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 import static com.solab.iso8583.IsoMessage.MAX_AMOUNT_OF_FIELDS;
 import static com.solab.iso8583.IsoMessage.PRIMARY_BITMAP_SIZE;
@@ -611,7 +617,6 @@ public class MessageFactory<T extends IsoMessage> {
                 if (forceStringEncoding) {
                     byte[] _bb = new String(buf, primaryBitmapStart, 16, encoding).getBytes();
                     System.arraycopy(_bb, 0, primaryBitmap, 0, primaryBitmap.length);
-                    int x = 1;
                 } else {
 					System.arraycopy(buf, primaryBitmapStart, primaryBitmap, 0, 16);
 				}
@@ -689,7 +694,7 @@ public class MessageFactory<T extends IsoMessage> {
 									|| val.getType() == IsoType.LLBINLENGTHNUM
 									|| val.getType() == IsoType.LLLLBINLENGTHNUM) {
 								pos += (val.getLength() / 2) + (val.getLength() % 2);
-                            } else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN || val.getType() == IsoType.LLLLBINLENGTHBIN) {
+                            } else if (val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLLBCDBIN || val.getType() == IsoType.LLLLBCDBIN || val.getType() == IsoType.LLBCDLENGTHALPHANUM || val.getType() == IsoType.LLLLBINLENGTHBIN) {
 								pos += val.getLength() / 2 + ((val.getLength() % 2 == 0) ? 0 : 1);
 							} else {
 								pos += val.getLength();
@@ -703,7 +708,7 @@ public class MessageFactory<T extends IsoMessage> {
 								} else if (val.getType() == IsoType.LLLLVAR) {
 									pos += 4;
 								}
-							} else if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLBINLENGTHNUM || val.getType() == IsoType.LLBINLENGTHALPHANUM || val.getType() == IsoType.LLBINLENGTHBIN) {
+							} else if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLBINLENGTHNUM  || val.getType() == IsoType.LLBINLENGTHBIN || val.getType() == IsoType.LLBCDLENGTHALPHANUM) {
 								pos++;
 							} else if (val.getType() == IsoType.LLLVAR
 									|| val.getType() == IsoType.LLLBIN
@@ -740,7 +745,7 @@ public class MessageFactory<T extends IsoMessage> {
 						m.setField(i, val);
 						//To get the correct next position, we need to get the number of bytes, not chars
 						pos += val.toString().getBytes(fpi.getCharacterEncoding()).length;
-						if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLBINLENGTHNUM || val.getType() == IsoType.LLBINLENGTHALPHANUM || val.getType() == IsoType.LLBINLENGTHBIN) {
+						if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLBCDLENGTHALPHANUM || val.getType() == IsoType.LLBINLENGTHNUM || val.getType() == IsoType.LLBINLENGTHALPHANUM || val.getType() == IsoType.LLBINLENGTHBIN) {
 							pos += 2;
 						} else if (val.getType() == IsoType.LLLVAR || val.getType() == IsoType.LLLBIN || val.getType() == IsoType.LLLBCDBIN) {
 							pos += 3;
