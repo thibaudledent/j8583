@@ -708,7 +708,7 @@ public class MessageFactory<T extends IsoMessage> {
 								} else if (val.getType() == IsoType.LLLLVAR) {
 									pos += 4;
 								}
-							} else if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLBINLENGTHNUM  || val.getType() == IsoType.LLBINLENGTHBIN || val.getType() == IsoType.LLBCDLENGTHALPHANUM) {
+							} else if (val.getType() == IsoType.LLVAR || val.getType() == IsoType.LLBIN || val.getType() == IsoType.LLBCDBIN || val.getType() == IsoType.LLBINLENGTHNUM || val.getType() == IsoType.LLBINLENGTHALPHANUM || val.getType() == IsoType.LLBINLENGTHBIN || val.getType() == IsoType.LLBCDLENGTHALPHANUM) {
 								pos++;
 							} else if (val.getType() == IsoType.LLLVAR
 									|| val.getType() == IsoType.LLLBIN
