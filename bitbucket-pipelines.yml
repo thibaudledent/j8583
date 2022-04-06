@@ -1,4 +1,4 @@
-image: maven:3.8.4-openjdk-17-slim
+image: maven:3.8.5-openjdk-17-slim
 
 clone:
   depth: full # SonarCloud scanner needs the full history to assign issues properly
