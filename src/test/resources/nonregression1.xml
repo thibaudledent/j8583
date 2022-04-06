@@ -1,0 +1,33 @@
+<j8583-config>
+    <parse type="0100">
+        <field num="2" type="LLBINLENGTHNUM">Primary Account Number</field>
+        <field num="3" type="NUMERIC" length="6">Processing Code</field>
+        <field num="4" type="NUMERIC" length="12">Amount, Transaction</field>
+        <field num="7" type="NUMERIC" length="10">Transmission Date and Time</field>
+        <field num="11" type="NUMERIC" length="6">Systems Trace Audit Number</field>
+        <field num="12" type="NUMERIC" length="6">Time, Local Transaction</field>
+        <field num="13" type="NUMERIC" length="4">Date, Local Transaction</field>
+        <field num="14" type="NUMERIC" length="4">Date, expiration</field>
+        <field num="18" type="NUMERIC" length="4">Acceptor activity code</field>
+        <field num="22" type="NUMERIC" length="3">Point of service entry mode</field>
+        <field num="23" type="NUMERIC" length="3">Card Sequence Number</field>
+        <field num="25" type="NUMERIC" length="2">Origin type</field>
+        <field num="26" type="NUMERIC" length="2">PIN length</field>
+        <field num="32" type="LLBINLENGTHNUM">Acquirer Institution Id Code</field>
+        <field num="35" type="LLBINLENGTHNUM">Track 2 Data</field>
+        <field num="37" type="ALPHA" length="12">Retrieval Reference Number</field>
+        <field num="41" type="ALPHA" length="8">Card Acceptor Terminal Id</field>
+        <field num="42" type="ALPHA" length="15">Card Acceptor Id Code</field>
+        <field num="43" type="ALPHA" length="40">Card Acceptor Name/Location</field>
+        <field num="47" type="LLBINLENGTHALPHANUM">Additional data, national</field>
+        <field num="48" type="LLBINLENGTHBIN">Security Data</field>
+        <field num="49" type="NUMERIC" length="3">Currency Code Transaction</field>
+        <field num="52" type="LLBINLENGTHBIN" >Pin Data</field>
+        <field num="53" type="NUMERIC" length="16">Security Information</field>
+        <field num="54" type="LLBINLENGTHALPHANUM">Additional Amounts</field>
+        <field num="55" type="LLBINLENGTHBIN">Microcircuit card data</field>
+        <field num="56" type="LLBINLENGTHBIN">Additional data</field>
+        <field num="59" type="LLBINLENGTHBIN">National data</field>
+        <field num="112" type="LLBINLENGTHBIN">Funds transfer data</field>
+    </parse>
+</j8583-config>
