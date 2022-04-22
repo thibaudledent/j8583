@@ -2,16 +2,16 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.bitbucket.thibaudledent.j8583</groupId>
+    <groupId>com.github.thibaudledent.j8583</groupId>
     <artifactId>j8583</artifactId>
-    <version>1.17.1</version>
+    <version>1.17.2</version>
     <packaging>jar</packaging>
     <name>j8583</name>
 
     <description>Java implementation of the ISO 8583 protocol, focused on making the creation, edition and reading of
         ISO8583 messages as simple and flexible as possible.
     </description>
-    <url>https://bitbucket.org/thibaudledent/j8583</url>
+    <url>https://github.com/thibaudledent/j8583</url>
 
     <licenses>
         <license>
@@ -22,9 +22,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:https://bitbucket.org/thibaudledent/j8583.git</connection>
-        <developerConnection>scm:git:https://bitbucket.org/thibaudledent/j8583.git</developerConnection>
-        <url>https://bitbucket.org/thibaudledent/j8583</url>
+        <connection>scm:git:https://github.com/thibaudledent/j8583.git</connection>
+        <developerConnection>scm:git:https://github.com/thibaudledent/j8583.git</developerConnection>
+        <url>https://github.com/thibaudledent/j8583</url>
     </scm>
 
     <distributionManagement>

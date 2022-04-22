@@ -14,11 +14,11 @@ To release a new version of the library to Maven Central:
 
 2) Merge the Pull Request to the master branch
 
-3) Run the custom pipeline for the release (go to [branches](https://bitbucket.org/thibaudledent/j8583/branches/) and run the dedicated pipeline):
+3) Run the custom pipeline for the release (go to [branches](https://github.com/thibaudledent/j8583/branches) and run the dedicated pipeline):
 
-   ![gif](https://bitbucket.org/thibaudledent/j8583/raw/ded5f57141cf1680b5debbfe77fa84de3e8f4282/how_to_release.gif)
+   ![gif](https://raw.githubusercontent.com/thibaudledent/j8583/master/how_to_release.gif)
 
-4) Once the pipeline is green, your new version will appear in [repo1.maven.org/.../j8583/](https://repo1.maven.org/maven2/org/bitbucket/thibaudledent/j8583/j8583/) (and a bit later in: [search.maven.org/artifact/.../j8583](https://search.maven.org/artifact/org.bitbucket.thibaudledent.j8583/j8583))
+4) Once the pipeline is green, your new version will appear in [repo1.maven.org/.../j8583/](https://repo1.maven.org/maven2/com/github/thibaudledent/j8583/j8583/) (and a bit later in: [search.maven.org/artifact/.../j8583](https://search.maven.org/artifact/com.github.thibaudledent.j8583/j8583))
 
 ### Repository Variable
 
