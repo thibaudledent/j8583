@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: CI
 
 on:
   # Trigger analysis when pushing in master or pull requests, and when creating
@@ -11,6 +11,9 @@ on:
       - opened
       - synchronize
       - reopened
+  schedule:
+    # every day at 1am
+    - cron:  '0 1 * * *'
 
 jobs:
   owasp:
