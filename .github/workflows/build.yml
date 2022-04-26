@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  # Trigger analysis when pushing in master or pull requests, and when creating
+  # a pull request.
+  push:
+    branches:
+      - master
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  schedule:
+    # every day at 1am
+    - cron:  '0 1 * * *'
+
+jobs:
+  owasp:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: OWASP dependency check
+      run: mvn -V -B verify -DskipTests
+           # -V triggers an output of the Maven and Java versions at the beginning of the build
+           # -B batch mode makes Maven less verbose
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build and test
+        run: mvn -V -B clean install -DskipDepCheck
+             # -V triggers an output of the Maven and Java versions at the beginning of the build
+             # -B batch mode makes Maven less verbose
+             # -DskipDepCheck skip OWASP dependency check during this phase
