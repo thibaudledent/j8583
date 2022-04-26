@@ -1,0 +1,26 @@
+name: OWASP
+
+on:
+  # Trigger analysis when pushing in master
+  push:
+    branches:
+      - master
+  schedule:
+    # every week at 00:00 on Sunday
+    - cron:  '0 0 * * 0'
+
+jobs:
+  owasp:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: OWASP dependency check
+      run: mvn -V -B verify -DskipTests
+           # -V triggers an output of the Maven and Java versions at the beginning of the build
+           # -B batch mode makes Maven less verbose
