@@ -41,7 +41,7 @@ import static com.solab.iso8583.IsoType.VARIABLE_LENGTH_VAR_TYPES;
  * @param <T> the type parameter
  * @author Enrique Zamudio
  */
-public class IsoValue<T> implements Cloneable {
+public class IsoValue<T> {
 
     private final IsoType type;
     private final T value;
