@@ -1,5 +1,7 @@
 name: release-to-maven-central
 
+on: workflow_dispatch
+
 jobs:
   owasp:
     runs-on: ubuntu-latest
