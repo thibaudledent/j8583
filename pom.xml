@@ -161,31 +161,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.13</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    <!-- Set this to true and the release will automatically proceed and sync to Central Repository will follow -->
-                </configuration>
-                <dependencies>
-                    <!--
-                      TODO:
-                        Remove after OSSRH-66257, NEXUS-26993 are fixed,
-                        possibly via https://github.com/sonatype/nexus-maven-plugins/pull/91
-                      See also https://stackoverflow.com/a/70157413/9321274
-                    -->
-                    <dependency>
-                        <groupId>com.thoughtworks.xstream</groupId>
-                        <artifactId>xstream</artifactId>
-                        <version>1.4.15</version> <!-- apparently this needs to be exactly this version -->
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
                 <version>7.1.0</version>
