@@ -29,5 +29,5 @@ jobs:
         GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
         OSSRH_USER_TOKEN: ${{ secrets.OSSRH_USER_TOKEN }}
         OSSRH_PWD_TOKEN: ${{ secrets.OSSRH_PWD_TOKEN }}
-        GPG_EXECUTABLE: ${{ secrets.GPG_EXECUTABLE }}
+        GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

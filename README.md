@@ -16,13 +16,14 @@ To release a new version of the library to Maven Central:
 
 4) Once the pipeline is green, your new version will appear in [repo1.maven.org/.../j8583/](https://repo1.maven.org/maven2/io/github/thibaudledent/j8583/j8583/) (and a bit later in: [search.maven.org/artifact/.../j8583](https://search.maven.org/artifact/io.github.thibaudledent.j8583/j8583))
 
-### Secrets Repository Variable
+### Secrets Repository Variables
 
-See [Secret Actions](https://github.com/thibaudledent/j8583/settings/secrets/actions) in the settings of the repository. The following variable should be set:
+See [Secret Actions](https://github.com/thibaudledent/j8583/settings/secrets/actions) in the settings of the repository. The following variables should be set:
 
-* `GPG_PASSPHRASE`: passphrase of the secret gpg key
-* `OSSRH_USER_TOKEN`: the `XXX` part of `<username>XXX</username>` from https://oss.sonatype.org/#profile;User%20Token
-* `OSSRH_PWD_TOKEN`:  the `XXX` part of `<password>XXX</password>` from https://oss.sonatype.org/#profile;User%20Token
+* `GPG_PASSPHRASE`: secret gpg key passphrase
+* `GPG_KEYNAME`: gpg key keyname
+* `OSSRH_USER_TOKEN`: the `XXX` part of `<username>XXX</username>` from https://s01.oss.sonatype.org/#profile;User%20Token
+* `OSSRH_PWD_TOKEN`:  the `XXX` part of `<password>XXX</password>` from https://s01.oss.sonatype.org/#profile;User%20Token
 * `GPG_OWNERTRUST`: `gpg --export-ownertrust | base64 | tr -d '\n'`
 * `GPG_SECRET_KEY`: `gpg -a --export-secret-keys thibaudledent@gmail.com | base64 | tr -d '\n'`
 
