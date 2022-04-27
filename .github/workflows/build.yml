@@ -29,12 +29,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Build, analyze and test
         run: mvn -V -B org.jacoco:jacoco-maven-plugin:prepare-agent verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -DskipDepCheck
                # -V triggers an output of the Maven and Java versions at the beginning of the build
                # -B batch mode makes Maven less verbose
                # -DskipDepCheck skip OWASP dependency check during this phase
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
