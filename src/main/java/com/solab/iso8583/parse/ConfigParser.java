@@ -281,7 +281,7 @@ public class ConfigParser {
                 m.setCharacterEncoding(mfact.getCharacterEncoding());
                 for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
                     if (tref.hasField(i)) {
-                        m.setField(i, tref.getField(i).clone());
+                        m.setField(i, new IsoValue<>(tref.getField(i)));
                     }
                 }
                 NodeList fields = elem.getElementsByTagName("field");
