@@ -8,23 +8,17 @@ This repository is a **fork** of [https://bitbucket.org/chochos/j8583](https://b
 
 To release a new version of the library to Maven Central:
 
-1) Increment the version of the library in the main `pom.xml` (e.g. set it to `1.13.8`) and create a Pull Request:
-
-   ![pom](how_to_release_update_pom.png)
+1) Increment the [version](https://github.com/thibaudledent/j8583/blob/master/pom.xml#L7) of the library in the main `pom.xml`  and create a Pull Request
 
 2) Merge the Pull Request to the master branch
 
-3) Run the custom pipeline for the release (go to [branches](https://github.com/thibaudledent/j8583/branches) and run the dedicated pipeline):
-
-   ![gif](https://raw.githubusercontent.com/thibaudledent/j8583/master/how_to_release.gif)
+3) Run the [release-to-maven-central](https://github.com/thibaudledent/j8583/actions/workflows/release.yaml) workflow (see also [Manually running a workflow](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow))
 
 4) Once the pipeline is green, your new version will appear in [repo1.maven.org/.../j8583/](https://repo1.maven.org/maven2/com/github/thibaudledent/j8583/j8583/) (and a bit later in: [search.maven.org/artifact/.../j8583](https://search.maven.org/artifact/com.github.thibaudledent.j8583/j8583))
 
-### Repository Variable
+### Secrets Repository Variable
 
-https://bitbucket.org/thibaudledent/j8583/admin/addon/admin/pipelines/repository-variables
-
-![repository_variable](repository_variables.png)
+See [Secret Actions](https://github.com/thibaudledent/j8583/settings/secrets/actions) in the settings of the repository. The following variable should be set:
 
 * `GPG_PASSPHRASE`: passphrase of the secret gpg key
 * `OSSRH_USER_TOKEN`: the `XXX` part of `<username>XXX</username>` from https://oss.sonatype.org/#profile;User%20Token
@@ -36,9 +30,9 @@ https://bitbucket.org/thibaudledent/j8583/admin/addon/admin/pipelines/repository
 
 List of available servers: https://www.duinsoft.nl/keyservers.php.
 
-To distribute the key `gpg --keyserver pgp.surfnet.nl --send-keys DB85FB2159287141`
+To distribute the key `gpg --keyserver pgp.surfnet.nl --send-keys DB85FB2159287141`.
 
-Then it should be available here: https://pgp.surfnet.nl/pks/lookup?search=0xDB85FB2159287141&fingerprint=on&op=index
+Then it should be available here: https://pgp.surfnet.nl/pks/lookup?search=0xDB85FB2159287141&fingerprint=on&op=index.
 
 ### Key expiration
 
@@ -51,6 +45,6 @@ gpg: no default secret key: No secret key
 
 It is possible that the reason for this error is simply that the gpg key has expired.
 
-### More info
+### More info about automating a Maven release
 
 Article *"Creating a Bitbucket pipeline to automate a Maven release"*, see this [link](https://thibaudledent.github.io/2019/03/01/bitbucket-pipeline/).
