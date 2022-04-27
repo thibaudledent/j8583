@@ -27,3 +27,7 @@ jobs:
       env:
         GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
         GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
+        OSSRH_USER_TOKEN: ${{ secrets.OSSRH_USER_TOKEN }}
+        OSSRH_PWD_TOKEN: ${{ secrets.OSSRH_PWD_TOKEN }}
+        GPG_EXECUTABLE: ${{ secrets.GPG_EXECUTABLE }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
