@@ -3,7 +3,7 @@ name: release-to-maven-central
 on: workflow_dispatch
 
 jobs:
-  owasp:
+  release:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -24,3 +24,6 @@ jobs:
        # -V triggers an output of the Maven and Java versions at the beginning of the build
        # -B batch mode makes Maven less verbose
        # -s causes the usage of the local settings with the required credentials
+      env:
+        GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+        GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
