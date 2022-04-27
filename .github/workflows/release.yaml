@@ -1,5 +1,9 @@
 name: release-to-maven-central
 
+on:
+  schedule:
+    - cron:  '0 5 31 2 *'
+
 jobs:
   owasp:
     runs-on: ubuntu-latest
