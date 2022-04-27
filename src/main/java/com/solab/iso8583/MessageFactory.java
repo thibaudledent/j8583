@@ -432,7 +432,7 @@ public class MessageFactory<T extends IsoMessage> {
 				if (templ.hasField(i)) {
 					//We could detect here if there's a custom object with a CustomField,
 					//but we can't copy the value so there's no point.
-					m.setField(i, templ.getField(i).clone());
+					m.setField(i, new IsoValue<>(templ.getField(i)));
 				}
 			}
 		}
@@ -490,22 +490,22 @@ public class MessageFactory<T extends IsoMessage> {
 		if (templ == null) {
 			for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
 				if (request.hasField(i)) {
-					resp.setField(i, request.getField(i).clone());
+					resp.setField(i, new IsoValue<>(request.getField(i)));
 				}
 			}
 		} else if (copyAllFields) {
 			for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
 				if (request.hasField(i)) {
-					resp.setField(i, request.getField(i).clone());
+					resp.setField(i, new IsoValue<>(request.getField(i)));
 				} else if (templ.hasField(i)) {
-					resp.setField(i, templ.getField(i).clone());
+					resp.setField(i, new IsoValue<>(templ.getField(i)));
 				}
 			}
 		} else {
 			for (int i = 2; i <= MAX_AMOUNT_OF_FIELDS; i++) {
 				if (templ.hasField(i)) {
 					IsoMessage srcmsg = request.hasField(i) ? request : templ;
-					resp.setField(i, srcmsg.getField(i).clone());
+					resp.setField(i, new IsoValue<>(srcmsg.getField(i)));
 				}
 			}
 		}
