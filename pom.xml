@@ -48,13 +48,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipRelease>true</skipRelease>
         <skipDepCheck>false</skipDepCheck>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>thibaudledent-1</sonar.organization>
+        <sonar.projectKey>thibaudledent_j85832</sonar.projectKey>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>3.0.1</version>
+            <version>4.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -78,6 +81,20 @@
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.8</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>3.9.1.2184</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -96,7 +113,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.12.0</version>
                 <configuration>
                     <skip>${skipRelease}</skip>
                     <locales>en,es</locales>
@@ -118,7 +135,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.2</version>
+                <version>3.4.0</version>
                 <configuration>
                     <skip>${skipRelease}</skip>
                     <links>
@@ -161,34 +178,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.12</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    <!-- Set this to true and the release will automatically proceed and sync to Central Repository will follow -->
-                </configuration>
-                <dependencies>
-                    <!--
-                      TODO:
-                        Remove after OSSRH-66257, NEXUS-26993 are fixed,
-                        possibly via https://github.com/sonatype/nexus-maven-plugins/pull/91
-                      See also https://stackoverflow.com/a/70157413/9321274
-                    -->
-                    <dependency>
-                        <groupId>com.thoughtworks.xstream</groupId>
-                        <artifactId>xstream</artifactId>
-                        <version>1.4.15</version> <!-- apparently this needs to be exactly this version -->
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>7.0.4</version>
+                <version>7.1.0</version>
                 <configuration>
                     <skip>${skipDepCheck}</skip>
                     <suppressionFile>owasp-dependency-check-exclude.xml</suppressionFile>
@@ -210,4 +202,32 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>coverage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
