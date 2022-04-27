@@ -12,7 +12,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <gpg.keyname>${GPG_EXECUTABLE}</gpg.keyname>
+                <gpg.keyname>${GPG_KEYNAME}</gpg.keyname>
                 <gpg.passphrase>${GPG_PASSPHRASE}</gpg.passphrase>
             </properties>
         </profile>
