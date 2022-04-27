@@ -49,6 +49,8 @@
         <skipRelease>true</skipRelease>
         <skipDepCheck>false</skipDepCheck>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>thibaudledent-1</sonar.organization>
+        <sonar.projectKey>thibaudledent_j85832</sonar.projectKey>
     </properties>
 
     <dependencies>
