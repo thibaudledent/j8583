@@ -2,8 +2,8 @@
     <servers>
         <server>
             <id>ossrh</id>
-            <username>${env.OSSRH_USER_TOKEN}</username>
-            <password>${env.OSSRH_PWD_TOKEN}</password>
+            <username>${{ secrets.OSSRH_USER_TOKEN }}</username>
+            <password>${{ secrets.OSSRH_PWD_TOKEN }}</password>
         </server>
     </servers>
     <profiles>
@@ -12,8 +12,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <gpg.keyname>${env.GPG_EXECUTABLE}</gpg.keyname>
-                <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+                <gpg.keyname>${{ secrets.GPG_EXECUTABLE }}</gpg.keyname>
+                <gpg.passphrase>${{ secrets.GPG_PASSPHRASE }}</gpg.passphrase>
             </properties>
         </profile>
     </profiles>
