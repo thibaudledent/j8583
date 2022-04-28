@@ -4,6 +4,29 @@ j8583 is a Java implementation of the ISO8583 protocol.
 
 This repository is a **fork** of [https://bitbucket.org/chochos/j8583](https://bitbucket.org/chochos/j8583).
 
+## Download
+
+Gradle:
+```gradle
+dependencies {
+  implementation 'io.github.thibaudledent.j8583:j8583:1.17.3'
+}
+```
+
+Maven:
+```xml
+<dependency>
+  <groupId>io.github.thibaudledent.j8583</groupId>
+  <artifactId>j8583</artifactId>
+  <version>1.17.3</version>
+</dependency>
+```
+
+[j8583 jar downloads](https://maven-badges.herokuapp.com/maven-central/io.github.thibaudledent.j8583/j8583) are available from Maven Central.
+
+![Build Status](https://github.com/thibaudledent/j8583/actions/workflows/build.yml/badge.svg)
+
+
 ## How to release
 
 To release a new version of the library to Maven Central:
