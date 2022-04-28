@@ -22,7 +22,8 @@ Maven:
 </dependency>
 ```
 
-[j8583 jar downloads](https://maven-badges.herokuapp.com/maven-central/io.github.thibaudledent.j8583/j8583) are available from Maven Central.
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.thibaudledent.j8583/j8583/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.thibaudledent.j8583/j8583)
 
 ![Build Status](https://github.com/thibaudledent/j8583/actions/workflows/build.yml/badge.svg)
 
