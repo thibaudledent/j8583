@@ -1,6 +1,6 @@
 # j8583
 
-![Build Status](https://github.com/thibaudledent/j8583/actions/workflows/build.yml/badge.svg)
+![Build Status](https://github.com/thibaudledent/j8583/actions/workflows/build.yml/badge.svg) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=thibaudledent_j85832&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=thibaudledent_j85832) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=thibaudledent_j85832&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=thibaudledent_j85832) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=thibaudledent_j85832&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=thibaudledent_j85832) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=thibaudledent_j85832&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=thibaudledent_j85832)
 
 j8583 is a Java implementation of the ISO8583 protocol.
 
