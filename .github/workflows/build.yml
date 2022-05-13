@@ -1,11 +1,7 @@
 name: build
 
 on:
-  # Trigger analysis when pushing in master or pull requests, and when creating
-  # a pull request.
-  push:
-    branches:
-      - master
+  # Trigger analysis when pushing pull requests, and when creating a pull request.
   pull_request:
     types:
       - opened

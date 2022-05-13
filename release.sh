@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -eEuxo pipefail
 
+# Install required packages
+sudo apt-get update && sudo apt-get install -y gpg gpg-agent git --no-install-recommends
+GPG_TTY=$(tty) # to fix the 'gpg: signing failed: Inappropriate ioctl for device', see https://github.com/keybase/keybase-issues/issues/2798#issue-205008630
+export GPG_TTY
+echo "$GPG_SECRET_KEY" | base64 --decode | gpg --batch --import # use 'batch' otherwise gpg2 is asking for a passphrase, see https://superuser.com/a/1135950
+echo "$GPG_OWNERTRUST" | base64 --decode | gpg --import-ownertrust
+
+# Configure git credentials
+git config --global user.email "action@github.com"
+git config --global user.name "GitHub Action"
+
 # Get release version & next dev version
 git fetch --tags
 
