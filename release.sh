@@ -27,7 +27,6 @@ echo "The next development version is $NEXT_DEV_VERSION"
 
 echo "Preparing release $RELEASE_VERSION."
 mvn -B -C release:prepare --settings ./settings.xml \
-  -Darguments='-DsuppressionFiles=owasp-dependency-check-exclude.xml -DretireJsAnalyzerEnabled=false -DskipTests -DskipDepCheck' \
   -DpushChanges=false \
   -DautoVersionSubmodules \
   -DreleaseVersion="$RELEASE_VERSION" \
@@ -37,4 +36,4 @@ mvn -B -C release:prepare --settings ./settings.xml \
 git push --tags remote-origin HEAD:master
 
 echo "Performing release $RELEASE_VERSION."
-mvn -B -C -Darguments='-DdeployAtEnd -Dmaven.javadoc.skip=true' release:perform --settings ./settings.xml
+mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -Dmaven.javadoc.skip=true' release:perform --settings ./settings.xml
