@@ -1,13 +1,9 @@
-name: release
+name: manual-release-to-maven-central
 
-on:
-  # Trigger analysis when pushing in master
-  push:
-    branches:
-      - master
+on: workflow_dispatch
 
 jobs:
-  release:
+  manual-release:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -17,13 +13,17 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Release to Maven Central
+    - name: Manual release to Maven Central
       run: |
        sudo apt-get update && sudo apt-get install -y gpg gpg-agent git --no-install-recommends
        export GPG_TTY=$(tty) # to fix the 'gpg: signing failed: Inappropriate ioctl for device', see https://github.com/keybase/keybase-issues/issues/2798#issue-205008630
        echo $GPG_SECRET_KEY | base64 --decode | gpg --batch --import # use 'batch' otherwise gpg2 is asking for a passphrase, see https://superuser.com/a/1135950
        echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
-       "${GITHUB_WORKSPACE}/release.sh"
+       mvn -V -B -s settings.xml deploy -DskipRelease=false
+       # ./release.sh # TODO
+       # -V triggers an output of the Maven and Java versions at the beginning of the build
+       # -B batch mode makes Maven less verbose
+       # -s causes the usage of the local settings with the required credentials
       env:
         GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
         GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
