@@ -36,7 +36,7 @@ To release a new version of the library to Maven Central:
 
 3) Run the [release-to-maven-central](https://github.com/thibaudledent/j8583/actions/workflows/release.yaml) workflow (see also [Manually running a workflow](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow))
 
-4) Once the pipeline is green, your new version will appear in [repo1.maven.org/.../j8583/](https://repo1.maven.org/maven2/io/github/thibaudledent/j8583/j8583/) (and a bit later in: [search.maven.org/artifact/.../j8583](https://search.maven.org/artifact/io.github.thibaudledent.j8583/j8583))
+4) Once the pipeline is green, your new version will appear after some time in [repo1.maven.org/.../j8583/](https://repo1.maven.org/maven2/io/github/thibaudledent/j8583/j8583/) (and a bit later in: [search.maven.org/artifact/.../j8583](https://search.maven.org/artifact/io.github.thibaudledent.j8583/j8583))
 
 ### Secrets Repository Variables
 
@@ -48,6 +48,7 @@ See [Secret Actions](https://github.com/thibaudledent/j8583/settings/secrets/act
 * `OSSRH_PWD_TOKEN`:  the `XXX` part of `<password>XXX</password>` from https://s01.oss.sonatype.org/#profile;User%20Token
 * `GPG_OWNERTRUST`: `gpg --export-ownertrust | base64 | tr -d '\n'`
 * `GPG_SECRET_KEY`: `gpg -a --export-secret-keys thibaudledent@gmail.com | base64 | tr -d '\n'`
+* `GITHUB_TOKEN`: a personal access token to be able to push the new versions during the release (see https://github.com/settings/tokens/)
 
 ### Distribute the key
 
