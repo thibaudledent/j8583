@@ -13,7 +13,7 @@ echo "$GPG_OWNERTRUST" | base64 --decode | gpg --import-ownertrust
 # Configure git credentials
 git config --global user.email "action@github.com"
 git config --global user.name "GitHub Action"
-git remote set-url origin https://x-access-token:"$GITHUB_TOKEN"@github.com/"$GITHUB_REPOSITORY" # workaround to be able to push (master branch) see https://stackoverflow.com/a/58393457/9321274
+git remote set-url origin https://x-access-token:"$RELEASE_TOKEN"@github.com/"$GITHUB_REPOSITORY" # workaround to be able to push (master branch) see https://stackoverflow.com/a/58393457/9321274 and https://www.paulmowat.co.uk/blog/resolve-github-action-gh006-protected-branch-update-failed
 
 # Get release version & next dev version
 git fetch --tags
