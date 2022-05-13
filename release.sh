@@ -27,13 +27,13 @@ echo "The next development version is $NEXT_DEV_VERSION"
 
 echo "Preparing release $RELEASE_VERSION."
 mvn -B -C release:prepare --settings ./settings.xml \
-  -DpushChanges=false \
+  -DpushChanges=true \
   -DautoVersionSubmodules \
   -DreleaseVersion="$RELEASE_VERSION" \
   -DdevelopmentVersion="$NEXT_DEV_VERSION" \
   -DscmCommentPrefix="Releasing $RELEASE_VERSION [maven-release-plugin]"
 
-git push --tags remote-origin HEAD:master
+git push origin --tags
 
 echo "Performing release $RELEASE_VERSION."
 mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -Dmaven.javadoc.skip=true' release:perform --settings ./settings.xml
