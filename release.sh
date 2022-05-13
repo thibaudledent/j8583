@@ -6,7 +6,7 @@ git fetch --tags
 
 echo "Determine the release version of the application from the previous tag and the provided release scope."
 CURRENT_DEV_VERSION="$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)"
-RELEASE_VERSION="$(echo "$CURRENT_DEV_VERSION" | sed -e "s/-SNAPSHOT$//")"
+RELEASE_VERSION="${CURRENT_DEV_VERSION//-SNAPSHOT/}"
 echo "The release version is $RELEASE_VERSION"
 
 NEXT_DEV_VERSION=$(echo "$RELEASE_VERSION" | awk '{split($1,a,"."); print a[1] "." a[2] "."  a[3]+1 "-SNAPSHOT"}')
