@@ -27,3 +27,5 @@ jobs:
         OSSRH_PWD_TOKEN: ${{ secrets.OSSRH_PWD_TOKEN }}
         GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        TOKEN: ${{ secrets.TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}

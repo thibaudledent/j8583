@@ -48,7 +48,7 @@ See [Secret Actions](https://github.com/thibaudledent/j8583/settings/secrets/act
 * `OSSRH_PWD_TOKEN`:  the `XXX` part of `<password>XXX</password>` from https://s01.oss.sonatype.org/#profile;User%20Token
 * `GPG_OWNERTRUST`: `gpg --export-ownertrust | base64 | tr -d '\n'`
 * `GPG_SECRET_KEY`: `gpg -a --export-secret-keys thibaudledent@gmail.com | base64 | tr -d '\n'`
-* `GITHUB_TOKEN`: a personal access token to be able to push the new versions during the release (see https://github.com/settings/tokens/)
+* `TOKEN`: a personal access token to be able to push the new versions during the release (see https://github.com/settings/tokens/)
 
 ### Distribute the key
 
