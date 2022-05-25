@@ -37,8 +37,7 @@ mvn -B -C release:prepare --settings ./settings.xml \
   -DscmCommentPrefix="Releasing $RELEASE_VERSION [maven-release-plugin]"
 
 git push origin --tags
-git push --set-upstream origin master
-hub pull-request
+gh pr create --base master --title "release-$RELEASE_VERSION"
 
 echo "Performing release $RELEASE_VERSION."
 mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -Dmaven.javadoc.skip=true' release:perform --settings ./settings.xml
