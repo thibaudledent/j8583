@@ -11,8 +11,8 @@ echo "$GPG_SECRET_KEY" | base64 --decode | gpg --batch --import # use 'batch' ot
 echo "$GPG_OWNERTRUST" | base64 --decode | gpg --import-ownertrust
 
 # Configure git credentials
-git config --global user.email "action@github.com"
-git config --global user.name "GitHub Action"
+git config --global user.email "thibaudledent@gmail.com"
+git config --global user.name "Thibaud Ledent"
 git remote set-url origin https://x-access-token:"$RELEASE_TOKEN"@github.com/"$GITHUB_REPOSITORY" # workaround to be able to push (master branch) see https://stackoverflow.com/a/58393457/9321274 and https://www.paulmowat.co.uk/blog/resolve-github-action-gh006-protected-branch-update-failed
 git checkout "${GITHUB_REF:11}"
 
