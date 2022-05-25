@@ -13,6 +13,7 @@ echo "$GPG_OWNERTRUST" | base64 --decode | gpg --import-ownertrust
 # Configure git credentials
 git config --global user.email "action@github.com"
 git config --global user.name "GitHub Action"
+git remote set-url origin https://x-access-token:"$RELEASE_TOKEN"@github.com/"$GITHUB_REPOSITORY" # workaround to authenticate
 
 # Get release version & next dev version
 git fetch --tags
