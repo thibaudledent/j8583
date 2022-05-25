@@ -13,6 +13,7 @@ echo "$GPG_OWNERTRUST" | base64 --decode | gpg --import-ownertrust
 # Configure git credentials
 git config --global user.email "action@github.com"
 git config --global user.name "GitHub Action"
+
 echo "Github configuration"
 [ -z "$RELEASE_TOKEN" ] && echo "RELEASE_TOKEN not set"
 echo "$GITHUB_REPOSITORY"
