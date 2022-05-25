@@ -17,8 +17,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-        token: ${{ secrets.RELEASE_TOKEN }}
-        ref: ${{ github.head_ref }}
     - name: Release to Maven Central
       run: |
        "${GITHUB_WORKSPACE}/release.sh"
@@ -29,5 +27,3 @@ jobs:
         OSSRH_PWD_TOKEN: ${{ secrets.OSSRH_PWD_TOKEN }}
         GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-        GITHUB_REPOSITORY: ${{ github.repository }}

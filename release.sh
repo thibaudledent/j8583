@@ -11,10 +11,8 @@ echo "$GPG_SECRET_KEY" | base64 --decode | gpg --batch --import # use 'batch' ot
 echo "$GPG_OWNERTRUST" | base64 --decode | gpg --import-ownertrust
 
 # Configure git credentials
-git config --global user.email "thibaudledent@gmail.com"
-git config --global user.name "Thibaud Ledent"
-git remote set-url origin https://x-access-token:"$RELEASE_TOKEN"@github.com/"$GITHUB_REPOSITORY" # workaround to be able to push (master branch) see https://stackoverflow.com/a/58393457/9321274 and https://www.paulmowat.co.uk/blog/resolve-github-action-gh006-protected-branch-update-failed
-git checkout "${GITHUB_REF:11}"
+git config --global user.email "action@github.com"
+git config --global user.name "GitHub Action"
 
 # Get release version & next dev version
 git fetch --tags
@@ -27,6 +25,9 @@ echo "The release version is $RELEASE_VERSION"
 NEXT_DEV_VERSION=$(echo "$RELEASE_VERSION" | awk '{split($1,a,"."); print a[1] "." a[2] "."  a[3]+1 "-SNAPSHOT"}')
 echo "The next development version is $NEXT_DEV_VERSION"
 
+# To avoid the error: GH006: Protected branch update failed for refs/heads/master (At least 1 approving review is required by reviewers with write access)
+git checkout -b release-"$RELEASE_VERSION"-$RANDOM
+
 echo "Preparing release $RELEASE_VERSION."
 mvn -B -C release:prepare --settings ./settings.xml \
   -DpushChanges=true \
@@ -36,6 +37,7 @@ mvn -B -C release:prepare --settings ./settings.xml \
   -DscmCommentPrefix="Releasing $RELEASE_VERSION [maven-release-plugin]"
 
 git push origin --tags
+git push --set-upstream origin master
 
 echo "Performing release $RELEASE_VERSION."
 mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -Dmaven.javadoc.skip=true' release:perform --settings ./settings.xml
