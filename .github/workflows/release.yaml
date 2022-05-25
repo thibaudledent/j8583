@@ -20,6 +20,8 @@ jobs:
     - name: Release to Maven Central
       run: |
        "${GITHUB_WORKSPACE}/release.sh"
+      with:
+        token: ${{ secrets.RELEASE_TOKEN }}
       env:
         GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
         GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
