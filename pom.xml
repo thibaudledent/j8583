@@ -182,6 +182,7 @@
                 <artifactId>dependency-check-maven</artifactId>
                 <version>7.1.0</version>
                 <configuration>
+                    <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled> <!-- see https://github.com/jeremylong/DependencyCheck/issues/4535 -->
                     <skip>${skipDepCheck}</skip>
                     <suppressionFile>owasp-dependency-check-exclude.xml</suppressionFile>
                     <failBuildOnCVSS>0</failBuildOnCVSS>
