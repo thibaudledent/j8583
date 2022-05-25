@@ -26,7 +26,7 @@ NEXT_DEV_VERSION=$(echo "$RELEASE_VERSION" | awk '{split($1,a,"."); print a[1] "
 echo "The next development version is $NEXT_DEV_VERSION"
 
 # To avoid the error: GH006: Protected branch update failed for refs/heads/master (At least 1 approving review is required by reviewers with write access)
-git checkout -b release-$RELEASE_VERSION-$RANDOM
+git checkout -b release-"$RELEASE_VERSION"-$RANDOM
 
 echo "Preparing release $RELEASE_VERSION."
 mvn -B -C release:prepare --settings ./settings.xml \
