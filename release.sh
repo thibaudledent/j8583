@@ -13,6 +13,7 @@ echo "$GPG_OWNERTRUST" | base64 --decode | gpg --import-ownertrust
 # Configure git credentials
 git config --global user.email "action@github.com"
 git config --global user.name "GitHub Action"
+LAST_COMMIT_HASH=$(git rev-parse HEAD)
 
 # Get release version & next dev version
 git fetch --tags
@@ -37,8 +38,7 @@ mvn -B -C release:prepare --settings ./settings.xml \
   -DscmCommentPrefix="Releasing $RELEASE_VERSION [maven-release-plugin]"
 
 git push origin --tags
-git push --set-upstream origin master
-hub pull-request
+git request-pull "$LAST_COMMIT_HASH" https://github.com/"$GITHUB_REPOSITORY" master
 
 echo "Performing release $RELEASE_VERSION."
 mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -Dmaven.javadoc.skip=true' release:perform --settings ./settings.xml
