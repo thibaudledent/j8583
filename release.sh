@@ -38,6 +38,7 @@ mvn -B -C release:prepare --settings ./settings.xml \
 
 git push origin --tags
 git push --set-upstream origin master
+hub pull-request
 
 echo "Performing release $RELEASE_VERSION."
 mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -Dmaven.javadoc.skip=true' release:perform --settings ./settings.xml
