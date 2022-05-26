@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 set -eEuxo pipefail
 
-if git log --merges -n 1 | grep -qE "Merge .*after-release-[0-9]+\.[0-9]+\.[0-9]+"; then
-    echo "This pull request is a follow-up of a release and will not trigger a new one."
-    exit 0
+git --no-pager log -n 1 --pretty=oneline
+
+if git --no-pager log -n 1 --pretty=oneline | grep -qE "Merge .*after-release-[0-9]+\.[0-9]+\.[0-9]+"; then
+  echo "This pull request is a follow-up of a release and will not trigger a new one."
+  exit 0
 fi
 
 # Install required packages
