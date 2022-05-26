@@ -34,7 +34,8 @@ NEXT_DEV_VERSION=$(echo "$RELEASE_VERSION" | awk '{split($1,a,"."); print a[1] "
 echo "The next development version is $NEXT_DEV_VERSION"
 
 # To avoid the error: GH006: Protected branch update failed for refs/heads/master (At least 1 approving review is required by reviewers with write access)
-git checkout -b release-"$RELEASE_VERSION"-$RANDOM
+BRANCH_NAME=release-"$RELEASE_VERSION"-$RANDOM
+git checkout -b "$BRANCH_NAME"
 
 echo "Preparing release $RELEASE_VERSION."
 mvn -B -C release:prepare --settings ./settings.xml \
@@ -45,6 +46,7 @@ mvn -B -C release:prepare --settings ./settings.xml \
   -DscmCommentPrefix="Releasing $RELEASE_VERSION [maven-release-plugin]"
 
 git push origin --tags
+git push --set-upstream origin "$BRANCH_NAME"
 hub pull-request -m "release-$RELEASE_VERSION"
 
 echo "Performing release $RELEASE_VERSION."
