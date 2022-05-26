@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Set up JDK 17
+    - name: Set up JDK 18
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '18'
         distribution: 'temurin'
         cache: maven
     - name: Release to Maven Central
@@ -28,4 +28,3 @@ jobs:
         GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
