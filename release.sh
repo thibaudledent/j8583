@@ -50,4 +50,4 @@ git push --set-upstream origin "$BRANCH_NAME"
 hub pull-request -m "release-$RELEASE_VERSION"
 
 echo "Performing release $RELEASE_VERSION."
-mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -Dmaven.javadoc.skip=true' release:perform --settings ./settings.xml
+mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -DskipRelease=false' release:perform --settings ./settings.xml

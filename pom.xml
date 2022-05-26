@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.thibaudledent.j8583</groupId>
     <artifactId>j8583</artifactId>
-    <version>1.17.12-SNAPSHOT</version>
+    <version>1.17.13-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>j8583</name>
 
@@ -182,7 +182,6 @@
                 <artifactId>dependency-check-maven</artifactId>
                 <version>7.1.0</version>
                 <configuration>
-                    <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled> <!-- see https://github.com/jeremylong/DependencyCheck/issues/4535 -->
                     <skip>${skipDepCheck}</skip>
                     <suppressionFile>owasp-dependency-check-exclude.xml</suppressionFile>
                     <failBuildOnCVSS>0</failBuildOnCVSS>
