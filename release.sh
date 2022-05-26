@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -eEuxo pipefail
 
+if git log --merges -n 1 | grep -qE "Merge .*after-release-[0-9]+\.[0-9]+\.[0-9]+"; then
+    echo "This pull request is a follow-up of a release and will not trigger a new one."
+    exit 0
+fi
+
 # Install required packages
 sudo apt-get update && sudo apt-get install -y gpg gpg-agent git --no-install-recommends
 
@@ -33,8 +38,8 @@ echo "The release version is $RELEASE_VERSION"
 NEXT_DEV_VERSION=$(echo "$RELEASE_VERSION" | awk '{split($1,a,"."); print a[1] "." a[2] "."  a[3]+1 "-SNAPSHOT"}')
 echo "The next development version is $NEXT_DEV_VERSION"
 
-# To avoid the error: GH006: Protected branch update failed for refs/heads/master (At least 1 approving review is required by reviewers with write access)
-BRANCH_NAME=release-"$RELEASE_VERSION"-$RANDOM
+# Create a new branch to avoid the error: GH006: Protected branch update failed for refs/heads/master (At least 1 approving review is required by reviewers with write access)
+BRANCH_NAME=after-release-"$RELEASE_VERSION"-$RANDOM
 git checkout -b "$BRANCH_NAME"
 
 echo "Preparing release $RELEASE_VERSION."
@@ -47,7 +52,7 @@ mvn -B -C release:prepare --settings ./settings.xml \
 
 git push origin --tags
 git push --set-upstream origin "$BRANCH_NAME"
-hub pull-request -m "release-$RELEASE_VERSION"
+hub pull-request -m "Update snapshot version after release-$RELEASE_VERSION"
 
 echo "Performing release $RELEASE_VERSION."
 mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -DskipRelease=false' release:perform --settings ./settings.xml
