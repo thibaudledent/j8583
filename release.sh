@@ -52,6 +52,11 @@ mvn -B -C release:prepare --settings ./settings.xml \
   -DdevelopmentVersion="$NEXT_DEV_VERSION" \
   -DscmCommentPrefix="Releasing $RELEASE_VERSION [maven-release-plugin]"
 
+# Update the versions in the readme
+README_VERSION=$(grep -E "^\s{2}<version>([0-9]|.)+</version>" README.md | grep -oP "[0-9]+\.[0-9]+\.[0-9]+")
+sed -i "s/$README_VERSION/$RELEASE_VERSION/g" README.md
+git commit -am "Update the versions in the readme to $RELEASE_VERSION"
+
 git push origin --tags
 git push --set-upstream origin "$BRANCH_NAME"
 hub pull-request -m "Update snapshot version after release-$RELEASE_VERSION"
