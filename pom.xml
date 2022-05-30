@@ -101,8 +101,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.10.1</version>
                 <configuration>
-                    <source>18</source>
-                    <target>18</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -139,7 +139,7 @@
                 <configuration>
                     <skip>${skipRelease}</skip>
                     <links>
-                        <link>https://docs.oracle.com/en/java/javase/18/docs/api/</link>
+                        <link>https://docs.oracle.com/en/java/javase/17/docs/api/</link>
                         <link>http://slf4j.org/apidocs/</link>
                     </links>
                 </configuration>
