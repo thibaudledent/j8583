@@ -501,7 +501,8 @@ public class IsoValue<T> {
             case LLLBCDBIN -> validateMaxLength(500);
             case LLLLBCDBIN -> validateMaxLength(5000);
             case LLLLBINLENGTHBIN -> validateMaxLength(65535);
-            case LLBINLENGTHNUM, LLBINLENGTHALPHANUM, LLBINLENGTHBIN -> validateMaxLength(255);
+            case LLBINLENGTHNUM, LLBINLENGTHALPHANUM -> validateMaxLength(255);
+            case LLBINLENGTHBIN -> validateMaxLength(510);
         }
     }
 
