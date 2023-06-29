@@ -117,7 +117,7 @@ public class IsoValue<T> {
                 length = enc.length();
             }
             validateDecimalVariableLength();
-        } else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBCDLENGTHALPHANUM) {
+        } else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLLLBINLENGTHALPHANUM || type == IsoType.LLBCDLENGTHALPHANUM) {
             if (value instanceof byte[] bytesValue) {
                 length = (bytesValue).length * 2;
             } else {
@@ -187,7 +187,7 @@ public class IsoValue<T> {
                 length = custom == null ? val.toString().length() : custom.encodeField(value).length();
             }
             validateDecimalVariableLength();
-        } else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHBIN || type == IsoType.LLBCDLENGTHALPHANUM) {
+        } else if (t == IsoType.LLBIN || t == IsoType.LLLBIN || t == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM ||  type == IsoType.LLLLBINLENGTHALPHANUM ||type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHBIN || type == IsoType.LLBCDLENGTHALPHANUM) {
             if (len == 0) {
                 if (custom == null) {
                     length = ((byte[]) val).length;
@@ -321,7 +321,7 @@ public class IsoValue<T> {
                 final String _s = getStringEncoded();
                 return (_s.length() % 2 == 1) ? String.format("0%s", _s) : _s;
             }
-        } else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLBCDLENGTHALPHANUM || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM) {
+        } else if (type == IsoType.LLBCDBIN || type == IsoType.LLLBCDBIN || type == IsoType.LLBCDLENGTHALPHANUM || type == IsoType.LLLLBCDBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLLLBINLENGTHALPHANUM) {
             if (value instanceof byte[] bytesValue) {
                 final String val = encoder == null ? HexCodec.hexEncode(bytesValue, 0, bytesValue.length) : encoder.encodeField(value);
                 if (length == val.length() - 1) {
@@ -389,7 +389,7 @@ public class IsoValue<T> {
 
         if (type == IsoType.LLBINLENGTHNUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLBINLENGTHALPHANUM) {
             outs.write((byte) l);
-        } else if (type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHBIN) {
+        } else if (type == IsoType.LLLLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHALPHANUM) {
             final byte firstByte = (byte) (l & 0xFF);
             final byte secondByte = (byte) ((l >> 8) & 0xFF);
             outs.write(secondByte); // Since writing from left to right
@@ -440,7 +440,7 @@ public class IsoValue<T> {
      * @throws IOException the io exception
      */
     public void write(final OutputStream outs, final boolean binary, final boolean forceStringEncoding) throws IOException {
-        if (type == IsoType.LLLVAR || type == IsoType.LLVAR || type == IsoType.LLLLVAR || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHBIN || type == IsoType.LLBCDLENGTHALPHANUM) {
+        if (type == IsoType.LLLVAR || type == IsoType.LLVAR || type == IsoType.LLLLVAR || type == IsoType.LLBINLENGTHALPHANUM || type == IsoType.LLLLBINLENGTHALPHANUM || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHBIN || type == IsoType.LLBCDLENGTHALPHANUM) {
             writeLengthHeader(length, outs, type, binary, forceStringEncoding);
         } else if (type == IsoType.LLBIN || type == IsoType.LLLBIN || type == IsoType.LLLLBIN || type == IsoType.LLBINLENGTHNUM || type == IsoType.LLLLBINLENGTHNUM) {
             writeLengthHeader(binary ? length : length * 2, outs, type, binary, forceStringEncoding);
@@ -501,7 +501,7 @@ public class IsoValue<T> {
             case LLLBCDBIN -> validateMaxLength(500);
             case LLLLBCDBIN -> validateMaxLength(5000);
             case LLLLBINLENGTHBIN -> validateMaxLength(65535);
-            case LLBINLENGTHNUM, LLBINLENGTHALPHANUM -> validateMaxLength(255);
+            case LLBINLENGTHNUM, LLBINLENGTHALPHANUM, LLLLBINLENGTHALPHANUM -> validateMaxLength(255);
             case LLBINLENGTHBIN -> validateMaxLength(510);
         }
     }
