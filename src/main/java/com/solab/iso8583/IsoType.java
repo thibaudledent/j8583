@@ -128,6 +128,10 @@ public enum IsoType {
 	 */
 	LLBINLENGTHALPHANUM(false, 0),
 	/**
+	 * A variable length alphanumerical value, length is a literal unsigned single byte value and expressed in number of characters, each character being encoded on 1 byte
+	 */
+	LLLLBINLENGTHALPHANUM(false, 0),
+	/**
 	 * A variable BCD encoded length, length is a literal unsigned single byte value and expressed in number of bytes
 	 */
 	LLBCDLENGTHALPHANUM(false, 0),
@@ -151,7 +155,7 @@ public enum IsoType {
 	/**
 	 * The constant VARIABLE_LENGTH_VAR_TYPES.
 	 */
-	public static final Set<IsoType> VARIABLE_LENGTH_VAR_TYPES = Collections.unmodifiableSet(EnumSet.of(LLVAR, LLLVAR, LLLLVAR, LLBINLENGTHALPHANUM));
+	public static final Set<IsoType> VARIABLE_LENGTH_VAR_TYPES = Collections.unmodifiableSet(EnumSet.of(LLVAR, LLLVAR, LLLLVAR, LLBINLENGTHALPHANUM, LLLLBINLENGTHALPHANUM));
 	/**
 	 * The constant VARIABLE_LENGTH_BIN_TYPES.
 	 */

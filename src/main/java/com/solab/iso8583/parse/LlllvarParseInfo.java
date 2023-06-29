@@ -40,6 +40,16 @@ public class LlllvarParseInfo  extends FieldParseInfo {
 		super(IsoType.LLLLVAR, 0);
 	}
 
+	/**
+	 * Instantiates a new Lllbin parse info.
+	 *
+	 * @param t   the t
+	 * @param len the len
+	 */
+	public LlllvarParseInfo(IsoType t, int len) {
+		super(t, len);
+	}
+
     @Override
 	public <T> IsoValue<?> parse(final int field, final byte[] buf,
                              final int pos, final CustomField<T> custom)

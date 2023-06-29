@@ -25,6 +25,7 @@ public class TestIsoTypeMaxLength {
             {IsoType.LLLLBCDBIN, "LLLLBCDBIN can only hold values up to 5000 chars", 5001},
             {IsoType.LLBINLENGTHNUM, "LLBINLENGTHNUM can only hold values up to 255 chars", 256},
             {IsoType.LLBINLENGTHALPHANUM, "LLBINLENGTHALPHANUM can only hold values up to 255 chars", 256},
+            {IsoType.LLLLBINLENGTHALPHANUM, "LLLLBINLENGTHALPHANUM can only hold values up to 255 chars", 256},
             {IsoType.LLBINLENGTHBIN, "LLBINLENGTHBIN can only hold values up to 510 chars", 511},
             {IsoType.LLLLBINLENGTHBIN, "LLLLBINLENGTHBIN can only hold values up to 65535 chars", 65536},
             {IsoType.LLBCDLENGTHALPHANUM, "LLBCDLENGTHALPHANUM can only hold values up to 99 chars", 100},

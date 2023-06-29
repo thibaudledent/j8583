@@ -173,4 +173,7 @@
 	<field num="3" type="LLBCDLENGTHALPHANUM"/>
 	<field num="4" type="LLBINLENGTHBIN"/>
 </parse>
+	<parse type="0290">
+		<field num="3" type="LLLLBINLENGTHALPHANUM"/>
+	</parse>
 </j8583-config>
