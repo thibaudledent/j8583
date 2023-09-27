@@ -286,4 +286,26 @@ public class TestBinaries {
         Assert.assertEquals(field3Value, decodedField3Value);
         Assert.assertEquals(field4Value, decodedField4Value);
     }
+
+    @Test
+    public void testRawBinaryWithNonBinaryMessage() throws IOException, ParseException {
+        MessageFactory messageFactory = new MessageFactory();
+        messageFactory.setCharacterEncoding("Cp277");
+        messageFactory.setForceStringEncoding(true);
+        messageFactory.setConfigPath("config.xml");
+        messageFactory.setUseBinaryMessages(false);
+
+        IsoMessage iso1 = messageFactory.newMessage(0x291);
+        byte[] rawValue = new byte[]{ 0, (byte)0x12, (byte)0x34, (byte)0x56, (byte)0x78, (byte)0x63, (byte)0x15, (byte)0x25};
+        iso1.setField(64, new IsoValue<>(IsoType.RAW_BINARY, rawValue, 8));
+        byte[] buf = iso1.writeData();
+
+        // When
+        IsoMessage iso2 = messageFactory.parseMessage(buf, 0);
+
+        // Then
+        //      The message is retrieved as-is (appended with 0's to match the expected length)
+        String value = iso2.getField(64).toString();
+        Assert.assertEquals("0012345678631525", value);
+    }
 }

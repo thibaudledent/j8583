@@ -73,6 +73,11 @@ public enum IsoType {
 	 * Similar to {@link IsoType#ALPHA} but holds byte arrays instead of strings.
 	 */
 	BINARY(true, 0),
+    /**
+     * A fixed-length byte array. It is passed on to and read from the resulting ISO-message as-is.
+     * Similar to {@link IsoType#BINARY}, but always behaves like {@link MessageFactory#isBinaryFields()} returns true.
+     */
+    RAW_BINARY(true, 0),
 	/**
 	 * A variable length alphanumeric value with a 2-digit header length (both with specific encoding
 	 * if {@link MessageFactory#setForceStringEncoding(boolean)} is set to true).
@@ -253,7 +258,7 @@ public enum IsoType {
 	        return new String(c);
 		} else if (this == AMOUNT) {
 			return IsoType.NUMERIC.format(new BigDecimal(value).movePointRight(2).longValue(), 12);
-		} else if (this == BINARY) {
+		} else if (this == BINARY || this == RAW_BINARY) {
 
 	    	if (value == null) {
 	    		value = "";
