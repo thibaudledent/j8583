@@ -176,4 +176,7 @@
 <parse type="0290">
 	<field num="3" type="LLLLBINLENGTHALPHANUM"/>
 </parse>
+<parse type="0291">
+	<field num="64" type="RAW_BINARY" length="8"/>
+</parse>
 </j8583-config>
