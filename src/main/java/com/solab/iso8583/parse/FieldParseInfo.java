@@ -189,6 +189,8 @@ public abstract class FieldParseInfo {
 			fpi = new AlphaParseInfo(len);
 		} else if (t == IsoType.AMOUNT) {
 			fpi = new AmountParseInfo();
+		} else if (t == IsoType.RAW_BINARY){
+			fpi = new RawBinaryParseInfo(len);
 		} else if (t == IsoType.BINARY) {
 			fpi = new BinaryParseInfo(len);
 		} else if (t == IsoType.DATE10) {

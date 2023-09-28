@@ -28,6 +28,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static com.solab.iso8583.IsoType.RAW_BINARY;
 import static com.solab.iso8583.IsoType.VARIABLE_LENGTH_VAR_TYPES;
 
 /**
@@ -308,7 +309,7 @@ public class IsoValue<T> {
             return getStringEncoded();
         } else if (value instanceof Date date) {
             return type.format(date, tz);
-        } else if (type == IsoType.BINARY || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHBIN) {
+        } else if (type == IsoType.BINARY || type == IsoType.RAW_BINARY || type == IsoType.LLBINLENGTHBIN || type == IsoType.LLLLBINLENGTHBIN) {
             if (value instanceof byte[] bytesValue) {
                 return type.format(encoder == null ? HexCodec.hexEncode(bytesValue, 0, bytesValue.length) : encoder.encodeField(value), length * 2);
             } else {
@@ -465,8 +466,8 @@ public class IsoValue<T> {
                 return;
             }
         }
-        if (binary && (type == IsoType.BINARY || IsoType.VARIABLE_LENGTH_BIN_TYPES.contains(type))) {
-            int missing;
+        if (type == RAW_BINARY || binary && (type == IsoType.BINARY || IsoType.VARIABLE_LENGTH_BIN_TYPES.contains(type))) {
+            final int missing;
             if (value instanceof byte[] bytesValue) {
                 outs.write(bytesValue);
                 missing = length - (bytesValue).length;
@@ -479,7 +480,7 @@ public class IsoValue<T> {
                 outs.write(binval);
                 missing = length - binval.length;
             }
-            if (type == IsoType.BINARY && missing > 0) {
+            if (missing > 0 && (type == IsoType.RAW_BINARY || type == IsoType.BINARY)) {
                 for (int i = 0; i < missing; i++) {
                     outs.write(0);
                 }
