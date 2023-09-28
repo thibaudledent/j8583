@@ -466,7 +466,7 @@ public class IsoValue<T> {
                 return;
             }
         }
-        if (type == RAW_BINARY ||binary && (type == IsoType.BINARY || IsoType.VARIABLE_LENGTH_BIN_TYPES.contains(type))) {
+        if (type == RAW_BINARY || binary && (type == IsoType.BINARY || IsoType.VARIABLE_LENGTH_BIN_TYPES.contains(type))) {
             final int missing;
             if (value instanceof byte[] bytesValue) {
                 outs.write(bytesValue);
