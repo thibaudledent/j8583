@@ -9,7 +9,7 @@ if git --no-pager log -n 1 --pretty=oneline | grep -qE "Merge .*after-release-[0
 fi
 
 # Install required packages
-sudo apt-get update && sudo apt-get install -y gpg gpg-agent git --no-install-recommends
+sudo apt-get update && sudo apt-get install -y gpg gpg-agent git hub --no-install-recommends
 
 # Export variables for the release
 # shellcheck disable=SC2155 # Declare and assign separately to avoid masking return values -> it does not work for tty
