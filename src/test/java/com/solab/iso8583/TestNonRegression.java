@@ -1,15 +1,15 @@
 package com.solab.iso8583;
 
 import jakarta.xml.bind.DatatypeConverter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
 
-public class TestNonRegression {
+class TestNonRegression {
     @Test
-    public void testNonRegression1() throws IOException, ParseException {
+    void testNonRegression1() throws IOException, ParseException {
         MessageFactory<IsoMessage> messageFactory = new MessageFactory<>();
         messageFactory.setConfigPath("nonregression1.xml");
         messageFactory.setUseBinaryMessages(true);
@@ -28,10 +28,10 @@ public class TestNonRegression {
         String expectedField53Value = "0000040101000000";
         String decodedField53Value = iso2.getField(53).toString();
 
-        Assert.assertEquals(expectedField47Value, decodedField47Value);
-        Assert.assertEquals(expectedField48Value, decodedField48Value);
-        Assert.assertEquals(expectedField49Value, decodedField49Value);
-        Assert.assertEquals(expectedField52Value, decodedField52Value);
-        Assert.assertEquals(expectedField53Value, decodedField53Value);
+        Assertions.assertEquals(expectedField47Value, decodedField47Value);
+        Assertions.assertEquals(expectedField48Value, decodedField48Value);
+        Assertions.assertEquals(expectedField49Value, decodedField49Value);
+        Assertions.assertEquals(expectedField52Value, decodedField52Value);
+        Assertions.assertEquals(expectedField53Value, decodedField53Value);
     }
 }

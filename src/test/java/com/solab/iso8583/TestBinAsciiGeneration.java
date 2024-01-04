@@ -1,16 +1,16 @@
 package com.solab.iso8583;
 
 import com.solab.iso8583.parse.ConfigParser;
-import org.junit.Test;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
-public class TestBinAsciiGeneration {
+class TestBinAsciiGeneration {
     @Test
-    public void generateBinAscii800() throws Exception{
+    void generateBinAscii800() throws Exception{
         MessageFactory<IsoMessage> mf = ConfigParser.createDefault();
         IsoMessage msg = mf.newMessage(0x800);
-        Assert.assertFalse("Bin Header should default to false", msg.isBinaryHeader());
-        Assert.assertFalse("Bin Fields should default to false", msg.isBinaryFields());
+        Assertions.assertFalse(msg.isBinaryHeader(), "Bin Header should default to false");
+        Assertions.assertFalse(msg.isBinaryFields(), "Bin Fields should default to false");
 
         msg.setBinaryHeader(true);
 
@@ -24,7 +24,7 @@ public class TestBinAsciiGeneration {
 
         byte[] expected = TestBinAsciiParsing.loadData("bin_ascii_800.bin");
 
-        Assert.assertArrayEquals(expected,actual);
+        Assertions.assertArrayEquals(expected,actual);
     }
 
 }

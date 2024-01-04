@@ -2,16 +2,16 @@ package com.solab.iso8583;
 
 import com.solab.iso8583.parse.ConfigParser;
 import com.solab.iso8583.util.HexCodec;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
 
-public class TestLlbins {
+class TestLlbins {
 
     @Test
-    public void lbinsDontPadOddLengthValues() throws IOException, ParseException {
+    void lbinsDontPadOddLengthValues() throws IOException, ParseException {
         // Given
         final String expectedHexMessage = "11006D0005800000000108123456789011121300000003012345000301234500030123453132333435360010123456789000000000000064123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781111111111111111";
         final MessageFactory<IsoMessage> mf = ConfigParser.createDefault();
@@ -35,30 +35,30 @@ public class TestLlbins {
         final byte[] message1 = isoMessage1.writeData();
 
         // Then
-        Assert.assertEquals(expectedHexMessage, HexCodec.hexEncode(message1, 0, message1.length));
+        Assertions.assertEquals(expectedHexMessage, HexCodec.hexEncode(message1, 0, message1.length));
 
         // When - Deserialize
         mf.setConfigPath("llbin.xml");
         final IsoMessage isoMessage2 = mf.parseMessage(message1, 0);
 
         // Then
-        Assert.assertEquals("LLBIN", isoMessage2.getField(2).getType().name());
-        Assert.assertEquals("1234567890111213", isoMessage2.getField(2).toString());
-        Assert.assertEquals("000000", isoMessage2.getField(3).toString());
-        Assert.assertEquals("012345", isoMessage2.getField(5).toString());
-        Assert.assertEquals("012345", isoMessage2.getField(6).toString());
-        Assert.assertEquals("012345", isoMessage2.getField(8).toString());
-        Assert.assertEquals("123456", isoMessage2.getField(22).toString());
-        Assert.assertEquals("LLLLBIN", isoMessage2.getField(24).getType().name());
-        Assert.assertEquals("12345678900000000000", isoMessage2.getField(24).toString());
-        Assert.assertEquals("LLLBIN", isoMessage2.getField(25).getType().name());
-        Assert.assertEquals("12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678", isoMessage2.getField(25).toString());
-        Assert.assertEquals("1111111111111111", isoMessage2.getField(64).toString());
+        Assertions.assertEquals("LLBIN", isoMessage2.getField(2).getType().name());
+        Assertions.assertEquals("1234567890111213", isoMessage2.getField(2).toString());
+        Assertions.assertEquals("000000", isoMessage2.getField(3).toString());
+        Assertions.assertEquals("012345", isoMessage2.getField(5).toString());
+        Assertions.assertEquals("012345", isoMessage2.getField(6).toString());
+        Assertions.assertEquals("012345", isoMessage2.getField(8).toString());
+        Assertions.assertEquals("123456", isoMessage2.getField(22).toString());
+        Assertions.assertEquals("LLLLBIN", isoMessage2.getField(24).getType().name());
+        Assertions.assertEquals("12345678900000000000", isoMessage2.getField(24).toString());
+        Assertions.assertEquals("LLLBIN", isoMessage2.getField(25).getType().name());
+        Assertions.assertEquals("12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678", isoMessage2.getField(25).toString());
+        Assertions.assertEquals("1111111111111111", isoMessage2.getField(64).toString());
 
         // When - Serialize again
         final byte[] message2 = isoMessage2.writeData();
 
         // Then
-        Assert.assertEquals(expectedHexMessage, HexCodec.hexEncode(message2, 0, message2.length));
+        Assertions.assertEquals(expectedHexMessage, HexCodec.hexEncode(message2, 0, message2.length));
     }
 }

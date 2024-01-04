@@ -1,32 +1,31 @@
 package com.solab.iso8583;
 
 import com.solab.iso8583.parse.ConfigParser;
-import org.junit.Test;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 /** author Dave King, djking@gmail.com */
-public class TestBinAsciiParsing {
+class TestBinAsciiParsing {
 
     @Test
-    public void binAscii100Message() throws Exception{
+    void binAscii100Message() throws Exception{
         MessageFactory<IsoMessage> mf = ConfigParser.createFromClasspathConfig("bin_ascii.conf.xml");
         mf.setBinaryHeader(true);
 
         byte[] data = loadData("bin_ascii_100.bin");
         IsoMessage msg = mf.parseMessage(data,4);
-        Assert.assertEquals("Client ID","8264430055",msg.getField(2).getValue());
-        Assert.assertEquals("POS Data","000000000050084090210",msg.getField(61).getValue());
+        Assertions.assertEquals("8264430055",msg.getField(2).getValue(), "Client ID");
+        Assertions.assertEquals("000000000050084090210",msg.getField(61).getValue(), "POS Data");
     }
 
     @Test
-    public void binAscii810Message() throws Exception{
+    void binAscii810Message() throws Exception{
         MessageFactory<IsoMessage> mf = ConfigParser.createFromClasspathConfig("bin_ascii.conf.xml");
         mf.setBinaryHeader(true);
 
@@ -44,8 +43,8 @@ public class TestBinAsciiParsing {
             expected = c.getTime().getTime();
         }
 
-        Assert.assertEquals("DateTime",expected,actual);
-        Assert.assertEquals("810 msg type","001",msg.getField(70).getValue());
+        Assertions.assertEquals(expected,actual, "DateTime");
+        Assertions.assertEquals("001",msg.getField(70).getValue(), "810 msg type");
     }
 
     public static byte[] loadData(String s) throws IOException {

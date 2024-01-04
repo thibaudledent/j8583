@@ -1,17 +1,17 @@
 package com.solab.iso8583;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class TestIsoType {
+class TestIsoType {
 
     @Test
-    public void shouldNotFormatDateWithWeekOfYear() throws ParseException {
+    void shouldNotFormatDateWithWeekOfYear() throws ParseException {
         // Given
         Date date = new SimpleDateFormat("yyyy/MM/dd").parse("2015/12/31");
 
@@ -19,7 +19,7 @@ public class TestIsoType {
         String formatedDate = IsoType.DATE14.format(date, TimeZone.getDefault());
 
         // Then
-        Assert.assertEquals("20151231000000", formatedDate);
+        Assertions.assertEquals("20151231000000", formatedDate);
     }
 
 }
