@@ -1,17 +1,17 @@
 package com.solab.iso8583;
 
 import com.solab.iso8583.util.HexCodec;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 
-public class TestHexadecimalLengthDecoding {
+class TestHexadecimalLengthDecoding {
 
     @Test
-    public void shouldParseLengthWithBcdDecoding() throws IOException, ParseException {
+    void shouldParseLengthWithBcdDecoding() throws IOException, ParseException {
         // Given
         MessageFactory<IsoMessage> mf = createMessageFactory();
         String input = "0100" +                                 //MTI
@@ -29,19 +29,19 @@ public class TestHexadecimalLengthDecoding {
         final IsoMessage m = mf.parseMessage(HexCodec.hexDecode(input), 0);
 
         // Then
-        Assert.assertNotNull(m);
-        Assert.assertEquals("666666666", m.getField(2).toString());
-        Assert.assertEquals("01234567890123456789012345", m.getField(3).toString());
-        Assert.assertEquals("C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0", m.getField(4).toString());
-        Assert.assertEquals(repeat("5", 112), m.getField(5).toString());
-        Assert.assertEquals(repeat("C1", 112), m.getField(6).toString());
-        Assert.assertEquals(repeat("6", 1112), m.getField(7).toString());
-        Assert.assertEquals(repeat("C2", 1112), m.getField(8).toString());
-        Assert.assertEquals("88888888", m.getField(9).toString());
+        Assertions.assertNotNull(m);
+        Assertions.assertEquals("666666666", m.getField(2).toString());
+        Assertions.assertEquals("01234567890123456789012345", m.getField(3).toString());
+        Assertions.assertEquals("C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0C0", m.getField(4).toString());
+        Assertions.assertEquals(repeat("5", 112), m.getField(5).toString());
+        Assertions.assertEquals(repeat("C1", 112), m.getField(6).toString());
+        Assertions.assertEquals(repeat("6", 1112), m.getField(7).toString());
+        Assertions.assertEquals(repeat("C2", 1112), m.getField(8).toString());
+        Assertions.assertEquals("88888888", m.getField(9).toString());
     }
 
     @Test
-    public void shouldWriteLengthWithBcdDecoding() throws IOException {
+    void shouldWriteLengthWithBcdDecoding() throws IOException {
         // Given
         Object[][] inputs = {
                 {IsoType.LLBCDBIN, "26", "01234567890123456789012345"},
@@ -62,7 +62,7 @@ public class TestHexadecimalLengthDecoding {
 
             String result = getResultAsString(isoValue);
             // Then
-            Assert.assertEquals(len + value, result);
+            Assertions.assertEquals(len + value, result);
         }
     }
 

@@ -1,8 +1,8 @@
 package com.solab.iso8583;
 
 import com.solab.iso8583.parse.ConfigParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -14,17 +14,16 @@ import java.text.ParseException;
  * @author Enrique Zamudio
  *         Date: 18/01/13 10:13
  */
-public class TestIssue4 {
+class TestIssue4 {
 
     @Test
-    public void testTextBitmap() throws IOException, ParseException {
+    void testTextBitmap() throws IOException, ParseException {
         MessageFactory<IsoMessage> tmf = new MessageFactory<>();
         ConfigParser.configureFromClasspathConfig(tmf, "issue4.xml");
         IsoMessage tm = tmf.newMessage(0x800);
         final ByteBuffer bb = tm.writeToBuffer(2);
-        Assert.assertEquals("Wrong message length for new TXT",
-                70, bb.array().length);
-        Assert.assertEquals(68, bb.getShort());
+        Assertions.assertEquals(70, bb.array().length, "Wrong message length for new TXT");
+        Assertions.assertEquals(68, bb.getShort());
 
         MessageFactory<IsoMessage> tmfp = new MessageFactory<>();
         ConfigParser.configureFromClasspathConfig(tmfp, "issue4.xml");
@@ -32,19 +31,18 @@ public class TestIssue4 {
         bb.get(buf2);
         tm = tmfp.parseMessage(buf2, 0);
         final ByteBuffer bbp = tm.writeToBuffer(2);
-        Assert.assertArrayEquals("Parsed-reencoded TXT differs from original",
-                bb.array(), bbp.array());
+        Assertions.assertArrayEquals(bb.array(), bbp.array(), "Parsed-reencoded TXT differs from original");
     }
 
     @Test
-    public void testBinaryBitmap() throws IOException, ParseException {
+    void testBinaryBitmap() throws IOException, ParseException {
         MessageFactory<IsoMessage> mf = new MessageFactory<>();
         ConfigParser.configureFromClasspathConfig(mf, "issue4.xml");
         IsoMessage bm = mf.getMessageTemplate(0x800);
         bm.setBinaryBitmap(true);
         final ByteBuffer bb = bm.writeToBuffer(2);
-        Assert.assertEquals("Wrong message length for new BIN", 62, bb.array().length);
-        Assert.assertEquals(60, bb.getShort());
+        Assertions.assertEquals(62, bb.array().length, "Wrong message length for new BIN");
+        Assertions.assertEquals(60, bb.getShort());
 
         MessageFactory<IsoMessage> mfp = new MessageFactory<>();
         mfp.setUseBinaryBitmap(true);
@@ -52,12 +50,10 @@ public class TestIssue4 {
         byte[] buf2 = new byte[bb.remaining()];
         bb.get(buf2);
         bm = mfp.parseMessage(buf2, 0);
-        Assert.assertTrue("Parsed message should have binary bitmap flag set",
-                bm.isBinaryBitmap());
-        Assert.assertFalse(bm.isBinaryHeader() || bm.isBinaryFields());
+        Assertions.assertTrue(bm.isBinaryBitmap(), "Parsed message should have binary bitmap flag set");
+        Assertions.assertFalse(bm.isBinaryHeader() || bm.isBinaryFields());
         final ByteBuffer bbp = bm.writeToBuffer(2);
-        Assert.assertArrayEquals("Parsed-reencoded BIN differs from original",
-                bb.array(), bbp.array());
+        Assertions.assertArrayEquals(bb.array(), bbp.array(), "Parsed-reencoded BIN differs from original");
     }
 
 }

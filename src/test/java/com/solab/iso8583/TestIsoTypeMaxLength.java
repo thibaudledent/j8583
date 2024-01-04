@@ -1,18 +1,15 @@
 package com.solab.iso8583;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-@RunWith(Parameterized.class)
-public class TestIsoTypeMaxLength {
+class TestIsoTypeMaxLength {
 
-    @Parameterized.Parameters(name = "type={0}, expected={1}, lengthThatWillFail={2}")
-    public static Collection<Object[]> data() {
+    private static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
             {IsoType.LLVAR, "LLVAR can only hold values up to 99 chars", 100},
             {IsoType.LLLVAR, "LLLVAR can only hold values up to 999 chars", 1000},
@@ -32,38 +29,30 @@ public class TestIsoTypeMaxLength {
         });
     }
 
-    private final IsoType type;
-    private final String expected;
-    private final int lengthThatWillFail;
-
-    public TestIsoTypeMaxLength(final IsoType type, final String expected, final int lengthThatWillFail) {
-        this.type = type;
-        this.expected = expected;
-        this.lengthThatWillFail = lengthThatWillFail;
-    }
-
-    @Test
-    public void shouldThrowIllegalArgumentExceptionWhenUsingLengthInConstructor() {
+    @ParameterizedTest(name = "type={0}, expected={1}, lengthThatWillFail={2}")
+    @MethodSource("data")
+    void shouldThrowIllegalArgumentExceptionWhenUsingLengthInConstructor(final IsoType type, final String expected, final int lengthThatWillFail) {
         try {
             // When
             new IsoValue<>(type, "value", lengthThatWillFail);
-            Assert.fail("IllegalArgumentException expected.");
+            Assertions.fail("IllegalArgumentException expected.");
         } catch (IllegalArgumentException e) {
             // Then
-            Assert.assertEquals(expected, e.getMessage());
+            Assertions.assertEquals(expected, e.getMessage());
         }
     }
 
-    @Test
-    public void shouldThrowIllegalArgumentExceptionWithoutUsingLengthInConstructor() {
+    @ParameterizedTest(name = "type={0}, expected={1}, lengthThatWillFail={2}")
+    @MethodSource("data")
+    void shouldThrowIllegalArgumentExceptionWithoutUsingLengthInConstructor(final IsoType type, final String expected, final int lengthThatWillFail) {
         final String LONG_VALUE = "value".repeat(lengthThatWillFail);
         try {
             // When
             new IsoValue<>(type, LONG_VALUE);
-            Assert.fail("IllegalArgumentException expected.");
+            Assertions.fail("IllegalArgumentException expected.");
         } catch (IllegalArgumentException e) {
             // Then
-            Assert.assertEquals(expected, e.getMessage());
+            Assertions.assertEquals(expected, e.getMessage());
         }
     }
 

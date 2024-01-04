@@ -1,8 +1,8 @@
 package com.solab.iso8583;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -14,14 +14,14 @@ import java.util.TimeZone;
  * @author Enrique Zamudio
  * Date: 4/17/18 11:50 AM
  */
-public class TestTimezones {
+class TestTimezones {
 
     private final TimeZone utc = TimeZone.getTimeZone("UTC");
     private final TimeZone gmt5 = TimeZone.getTimeZone("GMT-500");
     private MessageFactory<IsoMessage> mf;
 
-   	@Before
-   	public void init() throws IOException {
+   	@BeforeEach
+   	void init() throws IOException {
         mf = new MessageFactory<>();
         mf.setCharacterEncoding("UTF-8");
         mf.setConfigPath("timezones.xml");
@@ -29,25 +29,25 @@ public class TestTimezones {
    	}
 
     @Test
-    public void testTemplate() {
+    void testTemplate() {
         IsoMessage t = mf.getMessageTemplate(0x100);
-        Assert.assertTrue(t.hasEveryField(7, 12, 13));
-        Assert.assertEquals(utc, t.getField(7).getTimeZone());
-        Assert.assertEquals(gmt5, t.getField(12).getTimeZone());
-        Assert.assertNull(t.getField(13).getTimeZone());
+        Assertions.assertTrue(t.hasEveryField(7, 12, 13));
+        Assertions.assertEquals(utc, t.getField(7).getTimeZone());
+        Assertions.assertEquals(gmt5, t.getField(12).getTimeZone());
+        Assertions.assertNull(t.getField(13).getTimeZone());
         t = mf.newMessage(0x100);
-        Assert.assertTrue(t.hasField(7));
-        Assert.assertEquals(utc, t.getField(7).getTimeZone());
+        Assertions.assertTrue(t.hasField(7));
+        Assertions.assertEquals(utc, t.getField(7).getTimeZone());
     }
 
     @Test
-    public void testParsingGuide() throws ParseException, IOException {
+    void testParsingGuide() throws ParseException, IOException {
         String trama = "011002180000000000001231112233112233112233";
         IsoMessage m = mf.parseMessage(trama.getBytes(), 0);
-        Assert.assertTrue(m.hasEveryField(7, 12, 13));
-        Assert.assertEquals(utc, m.getField(7).getTimeZone());
-        Assert.assertEquals(gmt5, m.getField(12).getTimeZone());
-        Assert.assertNull(m.getField(13).getTimeZone());
+        Assertions.assertTrue(m.hasEveryField(7, 12, 13));
+        Assertions.assertEquals(utc, m.getField(7).getTimeZone());
+        Assertions.assertEquals(gmt5, m.getField(12).getTimeZone());
+        Assertions.assertNull(m.getField(13).getTimeZone());
     }
 
 }
