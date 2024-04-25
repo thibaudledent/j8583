@@ -30,3 +30,4 @@ jobs:
         OSSRH_PWD_TOKEN: ${{ secrets.OSSRH_PWD_TOKEN }}
         GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
