@@ -28,3 +28,4 @@ jobs:
         GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        NVD_API_KEY: ${{ secrets.NVD_API_KEY }}

@@ -25,6 +25,7 @@ See [Secret Actions](https://github.com/thibaudledent/j8583/settings/secrets/act
 * `GPG_OWNERTRUST`: `gpg --export-ownertrust | base64 | tr -d '\n'`
 * `GPG_SECRET_KEY`: `gpg -a --export-secret-keys thibaudledent@gmail.com | base64 | tr -d '\n'`
 * `RELEASE_TOKEN`: a Personal Access Token to create a pull request when performing the release (see https://github.com/settings/tokens)
+* `NVD_API_KEY`: NVD API Key from https://nvd.nist.gov/developers/request-an-api-key for OWASP vulnerability check
 
 ## Distribute the key
 
