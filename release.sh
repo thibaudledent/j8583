@@ -46,6 +46,7 @@ git checkout -b "$BRANCH_NAME"
 
 echo "Preparing release $RELEASE_VERSION."
 mvn -B -C release:prepare --settings ./settings.xml \
+  -DskipDepCheck \
   -DpushChanges=true \
   -DautoVersionSubmodules \
   -DreleaseVersion="$RELEASE_VERSION" \
