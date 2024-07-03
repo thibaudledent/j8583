@@ -46,7 +46,6 @@ git checkout -b "$BRANCH_NAME"
 
 echo "Preparing release $RELEASE_VERSION."
 mvn -B -C release:prepare --settings ./settings.xml \
-  -DskipDepCheck \
   -DpushChanges=true \
   -DautoVersionSubmodules \
   -DreleaseVersion="$RELEASE_VERSION" \
@@ -63,4 +62,4 @@ git push --set-upstream origin "$BRANCH_NAME"
 hub pull-request -m "Update snapshot version after release-$RELEASE_VERSION"
 
 echo "Performing release $RELEASE_VERSION."
-mvn -B -C -Darguments='-DdeployAtEnd -DskipDepCheck -DskipRelease=false' release:perform --settings ./settings.xml
+mvn -B -C -Darguments='-DdeployAtEnd -DskipRelease=false' release:perform --settings ./settings.xml
