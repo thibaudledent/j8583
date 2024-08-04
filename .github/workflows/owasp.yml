@@ -16,6 +16,12 @@ jobs:
         java-version: '22'
         distribution: 'temurin'
         cache: maven
+    - name: Cache NVD data for OWASP dependency-check-maven plugin
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository/org/owasp/dependency-check-data/
+        key: ${{ runner.os }}-owasp
+        restore-keys: ${{ runner.os }}-owasp
     - name: OWASP dependency check
       run: mvn -V -B verify -DskipTests -DskipDepCheck=false --settings ./settings.xml
            # -V triggers an output of the Maven and Java versions at the beginning of the build
