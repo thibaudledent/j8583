@@ -27,5 +27,4 @@ jobs:
            # -V triggers an output of the Maven and Java versions at the beginning of the build
            # -B batch mode makes Maven less verbose
       env:
-        # NVD API Key for OWASP vulnerability check
         NVD_API_KEY: ${{ secrets.NVD_API_KEY }}

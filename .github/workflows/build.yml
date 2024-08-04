@@ -45,7 +45,6 @@ jobs:
                # -B batch mode makes Maven less verbose
                # -DskipDepCheck skip OWASP dependency check during this phase
         env:
-          # Needed to get some information about the pull request, if any
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # SonarCloud access token should be generated from https://sonarcloud.io/account/security/
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
