@@ -40,7 +40,7 @@ jobs:
           key: ${{ runner.os }}-owasp
           restore-keys: ${{ runner.os }}-owasp
       - name: Build, analyze and test
-        run: mvn -V -B org.jacoco:jacoco-maven-plugin:prepare-agent verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        run: mvn -V -B org.jacoco:jacoco-maven-plugin:prepare-agent verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --settings ./settings.xml
                # -V triggers an output of the Maven and Java versions at the beginning of the build
                # -B batch mode makes Maven less verbose
                # -DskipDepCheck skip OWASP dependency check during this phase
