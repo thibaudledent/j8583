@@ -16,7 +16,7 @@ To force a release a new version of the library to Maven Central:
 
 ## Secrets Repository Variables
 
-See [Secret Actions](https://github.com/thibaudledent/j8583/settings/secrets/actions) in the settings of the repository. The following variables should be set:
+See [Secret Actions](https://github.com/thibaudledent/j8583/settings/secrets/actions) in the settings of the repository. The following variables can be set:
 
 * `GPG_PASSPHRASE`: secret gpg key passphrase
 * `GPG_KEYNAME`: gpg key keyname
@@ -26,6 +26,8 @@ See [Secret Actions](https://github.com/thibaudledent/j8583/settings/secrets/act
 * `GPG_SECRET_KEY`: `gpg -a --export-secret-keys thibaudledent@gmail.com | base64 | tr -d '\n'`
 * `RELEASE_TOKEN`: a Personal Access Token to create a pull request when performing the release (see https://github.com/settings/tokens)
 * `NVD_API_KEY`: NVD API Key from https://nvd.nist.gov/developers/request-an-api-key for OWASP vulnerability check
+* `GITHUB_TOKEN`: github token needed to get some information about the pull request
+* `SONAR_TOKEN`: SonarCloud access token should be generated from https://sonarcloud.io/account/security/
 
 ## Distribute the key
 

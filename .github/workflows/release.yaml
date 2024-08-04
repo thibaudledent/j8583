@@ -17,6 +17,12 @@ jobs:
         java-version: '22'
         distribution: 'temurin'
         cache: maven
+    - name: Cache NVD data for OWASP dependency-check-maven plugin
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository/org/owasp/dependency-check-data/
+        key: ${{ runner.os }}-owasp
+        restore-keys: ${{ runner.os }}-owasp
     - name: Release to Maven Central
       run: |
        "${GITHUB_WORKSPACE}/release.sh"
