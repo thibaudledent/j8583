@@ -30,7 +30,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-owasp-data-
     - name: OWASP dependency check
-      run: mvn -V -B verify -DskipTests -DskipDepCheck=false -Ddata.directory=$HOME/.local/share/dependency-check/data --settings ./settings.xml
+      run: mvn -V -B verify -DskipTests -DskipDepCheck=false -Ddata.directory=$HOME/.local/share/dependency-check/data -Danalyzer.nvd.api.key=${{ secrets.NVD_API_KEY }} --settings ./settings.xml
            # -V triggers an output of the Maven and Java versions at the beginning of the build
            # -B batch mode makes Maven less verbose
       env:
