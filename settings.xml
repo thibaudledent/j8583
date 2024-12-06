@@ -14,9 +14,6 @@
             <properties>
                 <gpg.keyname>${GPG_KEYNAME}</gpg.keyname>
                 <gpg.passphrase>${GPG_PASSPHRASE}</gpg.passphrase>
-                <nvdApiKey>${NVD_API_KEY}</nvdApiKey>
-                <nvdValidForHours>24</nvdValidForHours>
-                <nvdApiDelay>6000</nvdApiDelay>
             </properties>
         </profile>
     </profiles>

@@ -188,6 +188,7 @@
                 <version>9.2.0</version>
                 <configuration>
                     <skip>${skipDepCheck}</skip>
+                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                     <suppressionFile>owasp-dependency-check-exclude.xml</suppressionFile>
                     <failBuildOnCVSS>0</failBuildOnCVSS>
                 </configuration>
