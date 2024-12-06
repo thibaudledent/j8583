@@ -8,21 +8,21 @@ This repository is a **fork** of [https://bitbucket.org/chochos/j8583](https://b
 
 ## Download
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.thibaudledent.j8583/j8583.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.github.thibaudledent.j8583%22%20AND%20a:%22j8583%22)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.thibaudledent.j8583/j8583.svg?label=Maven%20Central)](https://central.sonatype.com/search?smo=true&namespace=io.github.thibaudledent.j8583&name=j8583)
 
 Maven:
 ```xml
 <dependency>
   <groupId>io.github.thibaudledent.j8583</groupId>
   <artifactId>j8583</artifactId>
-  <version>1.22.9</version>
+  <version>1.23.0</version>
 </dependency>
 ```
 
 Gradle:
 ```gradle
 dependencies {
-  implementation 'io.github.thibaudledent.j8583:j8583:1.22.9'
+  implementation 'io.github.thibaudledent.j8583:j8583:1.23.0'
 }
 ```
 
