@@ -1,14 +1,9 @@
 name: Renovate
 on:
-  push:
-    branches:
-      - renovate
-  pull_request:
-    branches:
-      - renovate
   schedule:
     # every week at 00:00 on Sunday
     - cron: '0 0 * * 0'
+  workflow_dispatch:
 
 jobs:
   renovate:
