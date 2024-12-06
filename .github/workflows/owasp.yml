@@ -1,6 +1,12 @@
 name: OWASP
 
 on:
+  push:
+    branches:
+      - owasp-cache
+  pull_request:
+    branches:
+      - owasp-cache
   schedule:
     # every week at 00:00 on Sunday
     - cron:  '0 0 * * 0'
@@ -16,8 +22,15 @@ jobs:
         java-version: '22'
         distribution: 'temurin'
         cache: maven
+    - name: Cache OWASP Dependency-Check Data
+      uses: actions/cache@v4
+      with:
+        path: ~/.local/share/dependency-check/data
+        key: ${{ runner.os }}-owasp-data-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-owasp-data-
     - name: OWASP dependency check
-      run: mvn -V -B verify -DskipTests -DskipDepCheck=false --settings ./settings.xml
+      run: mvn -V -B verify -DskipTests -DskipDepCheck=false -Ddata.directory=$HOME/.local/share/dependency-check/data --settings ./settings.xml
            # -V triggers an output of the Maven and Java versions at the beginning of the build
            # -B batch mode makes Maven less verbose
       env:
