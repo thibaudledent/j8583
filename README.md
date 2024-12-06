@@ -8,7 +8,7 @@ This repository is a **fork** of [https://bitbucket.org/chochos/j8583](https://b
 
 ## Download
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.thibaudledent.j8583/j8583.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.github.thibaudledent.j8583%22%20AND%20a:%22j8583%22)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.thibaudledent.j8583/j8583.svg?label=Maven%20Central)](https://central.sonatype.com/search?smo=true&namespace=io.github.thibaudledent.j8583&name=j8583)
 
 Maven:
 ```xml
