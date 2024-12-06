@@ -1,12 +1,6 @@
 name: OWASP
 
 on:
-  push:
-    branches:
-      - owasp-cache
-  pull_request:
-    branches:
-      - owasp-cache
   schedule:
     # every week at 00:00 on Sunday
     - cron:  '0 0 * * 0'
@@ -28,7 +22,7 @@ jobs:
         path: ~/.m2/repository/org/owasp/dependency-check-data/
         key: ${{ runner.os }}-owasp-data-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
-          ${{ runner.os }}-owasp-data-
+          ${{ runner.os }}-owasp-data
     - name: OWASP dependency check
       run: mvn -V -B verify -DskipTests -DskipDepCheck=false --settings ./settings.xml
            # -V triggers an output of the Maven and Java versions at the beginning of the build
