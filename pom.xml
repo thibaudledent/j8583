@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.thibaudledent.j8583</groupId>
     <artifactId>j8583</artifactId>
-    <version>1.23.2-SNAPSHOT</version>
+    <version>1.23.2</version>
     <packaging>jar</packaging>
     <name>j8583</name>
 
@@ -24,7 +24,7 @@
         <connection>scm:git:https://github.com/thibaudledent/j8583.git</connection>
         <developerConnection>scm:git:https://github.com/thibaudledent/j8583.git</developerConnection>
         <url>https://github.com/thibaudledent/j8583</url>
-      <tag>HEAD</tag>
+      <tag>j8583-1.23.2</tag>
   </scm>
 
     <distributionManagement>
