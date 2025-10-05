@@ -15,14 +15,14 @@ Maven:
 <dependency>
   <groupId>io.github.thibaudledent.j8583</groupId>
   <artifactId>j8583</artifactId>
-  <version>1.23.16</version>
+  <version>1.25.1</version>
 </dependency>
 ```
 
 Gradle:
 ```gradle
 dependencies {
-  implementation 'io.github.thibaudledent.j8583:j8583:1.23.16'
+  implementation 'io.github.thibaudledent.j8583:j8583:1.25.1'
 }
 ```
 
