@@ -20,8 +20,8 @@ See [Secret Actions](https://github.com/thibaudledent/j8583/settings/secrets/act
 
 * `GPG_PASSPHRASE`: secret gpg key passphrase
 * `GPG_KEYNAME`: gpg key keyname
-* `OSSRH_USER_TOKEN`: the `XXX` part of `<username>XXX</username>` from https://central.sonatype.com/account (Generate User Token)
-* `OSSRH_PWD_TOKEN`:  the `XXX` part of `<password>XXX</password>` from https://central.sonatype.com/account (Generate User Token)
+* `CENTRAL_TOKEN_USERNAME`: the `XXX` part of `<username>XXX</username>` from https://central.sonatype.com/account (Generate User Token)
+* `CENTRAL_TOKEN_PASSWORD`: the `XXX` part of `<password>XXX</password>` from https://central.sonatype.com/account (Generate User Token)
 * `GPG_OWNERTRUST`: `gpg --export-ownertrust | base64 | tr -d '\n'`
 * `GPG_SECRET_KEY`: `gpg -a --export-secret-keys thibaudledent@gmail.com | base64 | tr -d '\n'`
 * `RELEASE_TOKEN`: a Personal Access Token to create a pull request when performing the release (see https://github.com/settings/tokens)
