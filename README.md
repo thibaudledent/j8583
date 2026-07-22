@@ -1,6 +1,6 @@
 # j8583
 
-![Build Status](https://github.com/thibaudledent/j8583/actions/workflows/build.yml/badge.svg) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=thibaudledent_j85832&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=thibaudledent_j85832)
+![Build Status](https://github.com/thibaudledent/j8583/actions/workflows/build.yml/badge.svg) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=thibaudledent_j85832&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=thibaudledent_j85832) [![javadoc](https://javadoc.io/badge2/io.github.thibaudledent.j8583/j8583/javadoc.svg)](https://javadoc.io/doc/io.github.thibaudledent.j8583/j8583)
 
 j8583 is a Java implementation of the ISO8583 protocol.
 
@@ -9,6 +9,8 @@ This repository is a **fork** of [https://bitbucket.org/chochos/j8583](https://b
 ## Download
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.thibaudledent.j8583/j8583.svg?label=Maven%20Central)](https://central.sonatype.com/search?smo=true&namespace=io.github.thibaudledent.j8583&name=j8583)
+
+The Javadoc is published on [javadoc.io](https://javadoc.io/doc/io.github.thibaudledent.j8583/j8583).
 
 Maven:
 ```xml
