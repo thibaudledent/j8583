@@ -1,10 +1,10 @@
 name: release
 
 on:
-  # Trigger analysis when pushing in master
+  # Trigger analysis when pushing in main
   push:
     branches:
-      - master
+      - main
 
 jobs:
   release:

@@ -1,14 +1,14 @@
 # About the release
 
-A release is automatically triggered after each merge to the master branch.
+A release is automatically triggered after each merge to the main branch.
 
 ## Manual release
 
 To force a release a new version of the library to Maven Central:
 
-1) Increment the [version](https://github.com/thibaudledent/j8583/blob/master/pom.xml#L7) of the library in the main `pom.xml`  and create a Pull Request
+1) Increment the [version](https://github.com/thibaudledent/j8583/blob/main/pom.xml#L7) of the library in the main `pom.xml`  and create a Pull Request
 
-2) Merge the Pull Request to the master branch
+2) Merge the Pull Request to the main branch
 
 3) Run the [manual-release](https://github.com/thibaudledent/j8583/actions/workflows/manual-release.yaml) workflow (see also [Manually running a workflow](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow))
 
