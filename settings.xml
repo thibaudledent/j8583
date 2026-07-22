@@ -1,9 +1,9 @@
 <settings>
     <servers>
         <server>
-            <id>ossrh</id>
-            <username>${OSSRH_USER_TOKEN}</username>
-            <password>${OSSRH_PWD_TOKEN}</password>
+            <id>central</id>
+            <username>${CENTRAL_TOKEN_USERNAME}</username>
+            <password>${CENTRAL_TOKEN_PASSWORD}</password>
         </server>
     </servers>
     <profiles>

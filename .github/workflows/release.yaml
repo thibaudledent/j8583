@@ -23,8 +23,8 @@ jobs:
       env:
         GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
         GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
-        OSSRH_USER_TOKEN: ${{ secrets.OSSRH_USER_TOKEN }}
-        OSSRH_PWD_TOKEN: ${{ secrets.OSSRH_PWD_TOKEN }}
+        CENTRAL_TOKEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
+        CENTRAL_TOKEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
         GPG_KEYNAME: ${{ secrets.GPG_KEYNAME }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
