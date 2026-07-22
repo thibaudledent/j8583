@@ -28,9 +28,9 @@ dependencies {
 
 ## How to release
 
-A release is automatically triggered after each merge to the master branch. Your new version will appear after some time in [repo1.maven.org/.../j8583/](https://repo1.maven.org/maven2/io/github/thibaudledent/j8583/j8583/) (and a bit later in: [search.maven.org/artifact/.../j8583](https://search.maven.org/artifact/io.github.thibaudledent.j8583/j8583)).
+A release is automatically triggered after each merge to the main branch. Your new version will appear after some time in [repo1.maven.org/.../j8583/](https://repo1.maven.org/maven2/io/github/thibaudledent/j8583/j8583/) (and a bit later in: [search.maven.org/artifact/.../j8583](https://search.maven.org/artifact/io.github.thibaudledent.j8583/j8583)).
 
-More info about the release [here](https://github.com/thibaudledent/j8583/blob/master/RELEASE.md).
+More info about the release [here](https://github.com/thibaudledent/j8583/blob/main/RELEASE.md).
 
 ## How to contribute
 

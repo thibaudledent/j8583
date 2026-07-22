@@ -40,7 +40,7 @@ echo "The release version is $RELEASE_VERSION"
 NEXT_DEV_VERSION=$(echo "$RELEASE_VERSION" | awk '{split($1,a,"."); print a[1] "." a[2] "."  a[3]+1 "-SNAPSHOT"}')
 echo "The next development version is $NEXT_DEV_VERSION"
 
-# Create a new branch to avoid the error: GH006: Protected branch update failed for refs/heads/master (At least 1 approving review is required by reviewers with write access)
+# Create a new branch to avoid the error: GH006: Protected branch update failed for refs/heads/main (At least 1 approving review is required by reviewers with write access)
 BRANCH_NAME=after-release-"$RELEASE_VERSION"-$RANDOM
 git checkout -b "$BRANCH_NAME"
 
