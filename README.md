@@ -34,8 +34,8 @@ More info about the release [here](https://github.com/thibaudledent/j8583/blob/m
 
 ## How to contribute
 
-You won't get push rights on this project but you can:
+To contribute to this repository:
 * fork this repository
 * do your changes and propose a merge request from your fork to this repository
 
-More info: https://gist.github.com/Chaser324/ce0505fbed06b947d962
+More info: ["GitHub Standard Fork & Pull Request Workflow"](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
