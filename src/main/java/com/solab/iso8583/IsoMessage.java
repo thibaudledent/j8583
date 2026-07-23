@@ -100,6 +100,12 @@ public class IsoMessage {
 
     private static final char MASK_CHAR = '*';
 
+    /** Field numbers masked by the no-arg {@link #debugString()}. Empty by default so that
+     * method's behavior is unchanged unless explicitly configured, usually via
+     * {@link MessageFactory#setSensitiveFields(Set)} which propagates it to every message
+     * the factory creates or parses. */
+    private Set<Integer> sensitiveFields = Set.of();
+
     /** The message type. */
     private int type;
 
@@ -188,7 +194,32 @@ public class IsoMessage {
     }
 
     /**
-     * Sets the encoding to use.  
+     * Returns the field numbers masked by the no-arg {@link #debugString()}. Default is
+     * an empty set, meaning debugString() shows every field in clear text unless this
+     * is configured (usually via {@link MessageFactory#setSensitiveFields(Set)}).
+     *
+     * @return the sensitive fields
+     */
+    public Set<Integer> getSensitiveFields() {
+        return sensitiveFields;
+    }
+
+    /**
+     * Sets the field numbers to be masked by the no-arg {@link #debugString()}, instead
+     * of having to remember to pass them to {@link #debugString(Set)} on every call.
+     * {@link #COMMONLY_SENSITIVE_FIELDS} is a reasonable starting point.
+     *
+     * @param value the field numbers to mask
+     */
+    public void setSensitiveFields(Set<Integer> value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Cannot set null sensitiveFields.");
+        }
+        sensitiveFields = Set.copyOf(value);
+    }
+
+    /**
+     * Sets the encoding to use.
      *
      * @param value the value
      */
@@ -741,16 +772,18 @@ public class IsoMessage {
 
     /**
      * Returns a string representation of the message, as if it were encoded
-     * in ASCII with no binary bitmap. This includes the clear-text value of every field,
-     * which for real ISO8583 traffic commonly means cardholder data such as PANs, track
-     * data or PIN blocks. Avoid writing the result of this method to logs; use
-     * {@link #debugString(Set)} with a set of sensitive field numbers instead (see
-     * {@link #COMMONLY_SENSITIVE_FIELDS} for a reasonable starting point).
+     * in ASCII with no binary bitmap. Field values are shown in clear text, except for
+     * the field numbers configured via {@link #setSensitiveFields(Set)} (empty by
+     * default), which are masked. For real ISO8583 traffic this commonly means
+     * cardholder data such as PANs, track data or PIN blocks, so before logging the
+     * result make sure {@link #getSensitiveFields()} is configured appropriately (see
+     * {@link #COMMONLY_SENSITIVE_FIELDS} for a reasonable starting point), or call
+     * {@link #debugString(Set)} directly with an explicit set of fields to mask.
      *
      * @return the string
      */
     public String debugString() {
-        return debugString(Set.of());
+        return debugString(sensitiveFields);
     }
 
     /**

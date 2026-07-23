@@ -76,6 +76,25 @@ class TestParsing {
 				"Exception message must not contain field content from the buffer");
 	}
 
+	/** Enabling the unsafe/non-PCI-DSS-compliant raw logging flag must not change the
+	 * thrown exception (only the opt-in log line gains the hex-encoded buffer). */
+	@Test
+	void testUnknownMessageTypeStillThrowsWithUnsafeLoggingEnabled() {
+		mf.setUnsafeNonPciDssCompliantRawMessageLoggingEnabled(true);
+		final IsoMessage m = mf.newMessage(0x200);
+		final byte[] data = m.writeData();
+		final int headerLength = mf.getIsoHeader(0x200).length();
+		data[headerLength] = '9';
+		data[headerLength + 1] = '9';
+		data[headerLength + 2] = '9';
+		data[headerLength + 3] = '9';
+		final ParseException ex = Assertions.assertThrows(ParseException.class,
+				() -> mf.parseMessage(data, headerLength));
+		Assertions.assertTrue(ex.getMessage().contains("9999"));
+		Assertions.assertFalse(ex.getMessage().contains("4591700012340000="),
+				"Exception message itself must still never contain field content, regardless of the flag");
+	}
+
 	@Test
 	void testNoFields() {
 		Assertions.assertThrows(ParseException.class, () -> mf.parseMessage("0210B23A80012EA080180000000014000004".getBytes(), 0));
