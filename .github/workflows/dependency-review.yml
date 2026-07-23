@@ -1,0 +1,45 @@
+name: Dependency Review
+
+# Fast, PR-time gate against known-vulnerable dependencies (direct and transitive),
+# backed by GitHub's own Advisory Database. Unlike the OWASP dependency-check Maven
+# plugin used in owasp.yml (which syncs the full NVD database and is comprehensive
+# but slow, hence kept as a weekly-only scan there), this has no database to sync and
+# typically completes in well under a minute, so it's cheap enough to run on every push
+# to a pull request.
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up JDK 26
+        uses: actions/setup-java@v5
+        with:
+          java-version: '26'
+          distribution: 'temurin'
+          cache: maven
+      - name: Submit Maven dependency graph
+        # Resolves the full (direct + transitive) dependency tree and submits it to
+        # GitHub's dependency graph, so dependency-review-action below can diff against
+        # an accurate baseline instead of just the direct dependencies declared in
+        # pom.xml. Also keeps main's snapshot fresh on every merge, for future PR diffs.
+        uses: advanced-security/maven-dependency-submission-action@v4
+      - name: Dependency Review
+        # Only meaningful on a pull_request event, where there's a base ref to diff
+        # the head ref's dependency graph against.
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
