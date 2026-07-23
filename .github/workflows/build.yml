@@ -11,6 +11,13 @@ on:
     # every day at 1am
     - cron:  '0 1 * * *'
 
+# contents: write is needed by the "Submit Maven dependency graph" step below. It has no
+# effect on pull_request events from forks though: GitHub always forces GITHUB_TOKEN to
+# read-only there regardless of this setting, which is exactly why that step is skipped
+# in that case (see its "if" condition).
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,6 +34,30 @@ jobs:
           java-version: '26'
           distribution: 'temurin'
           cache: maven
+      - name: Submit Maven dependency graph
+        # Resolves the full (direct + transitive) dependency tree and submits it to
+        # GitHub's dependency graph, so the Dependency Review step below can diff PRs
+        # against an accurate baseline instead of just the direct dependencies declared
+        # in pom.xml. Requires contents: write, which pull_request events from forks
+        # never get (a hard GitHub restriction) - skip it there rather than fail the
+        # build for an unrelated reason; Dependency Review still works from GitHub's
+        # auto-detected pom.xml graph in that case, just without full transitive
+        # resolution. Also runs on the daily schedule trigger, keeping main's graph
+        # snapshot fresh as a diff baseline for future PRs.
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: advanced-security/maven-dependency-submission-action@v4
+      - name: Dependency Review
+        # Fast, PR-time gate against known-vulnerable dependencies (direct and
+        # transitive), backed by GitHub's own Advisory Database. Unlike the OWASP
+        # dependency-check Maven plugin used in owasp.yml (which syncs the full NVD
+        # database and is comprehensive but slow, hence kept as a weekly-only scan
+        # there), this has no database to sync and finishes in well under a minute.
+        # Only meaningful on a pull_request event, where there's a base ref to diff
+        # the head ref's dependency graph against.
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
       - name: Cache SonarCloud packages
         uses: actions/cache@v6
         with:
