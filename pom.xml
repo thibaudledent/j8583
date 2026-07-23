@@ -144,6 +144,33 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>2.9.2</version>
+                <configuration>
+                    <outputFormat>json</outputFormat>
+                    <outputName>bom</outputName>
+                    <!-- Default (true) infers from the current invocation whether a deploy
+                         is coming and skips otherwise; that would mean no SBOM is produced
+                         during a plain "mvn verify"/"package" (e.g. in PR builds), only
+                         during an actual release. Generate it on every build instead. -->
+                    <skipNotDeployed>false</skipNotDeployed>
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- Generates target/bom.json and attaches it as an additional
+                             deployable artifact (classifier "cyclonedx", type "json"), so
+                             it's published to Maven Central alongside the jar/sources/javadoc
+                             (and signed by the gpg plugin below, like those other artifacts). -->
+                        <id>build-sbom</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>makeBom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>3.2.8</version>
