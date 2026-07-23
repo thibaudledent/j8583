@@ -23,9 +23,15 @@ Introduction to ISO8583
 | Fixed-length |                |
 | Alphanumeric | ALPHA          | Fixed-width alphanumeric values, padded with spaces to the right.|
 *--------------*----------------*-----------------+
+| Date         | DATE4          | Date in format mmdd, fixed width of 4. |
+*--------------*----------------*-----------------+
+| Date         | DATE6          | Date in format yyMMdd, fixed width of 6. |
+*--------------*----------------*-----------------+
 | Date         | DATE10         | Date in format mmddHHMMSS, fixed width of 10. |
 *--------------*----------------*-----------------+
-| Date         | DATE4          | Date in format mmdd, fixed width of 4. |
+| Date         | DATE12         | Date in format yyMMddHHMMSS, fixed width of 12. |
+*--------------*----------------*-----------------+
+| Date         | DATE14         | Date in format yyyyMMddHHMMSS, fixed width of 14. |
 *--------------*----------------*-----------------+
 | Expiration Date | DATE_EXP     | Date in format yymm, fixed width of 4. Used for credit card expiration dates. |
 *--------------*----------------*-----------------+
@@ -37,8 +43,13 @@ Introduction to ISO8583
 *--------------*----------------*-----------------+
 | LLLVAR       | LLLVAR         | Variable-width alphanumeric value, up to 999 characters long. The length of the value is encoded in the first 3 characters of the value, for example "HEY" is encoded as 003HEY |
 *--------------*----------------*-----------------+
+| LLLLVAR      | LLLLVAR        | Variable-width alphanumeric value, up to 9999 characters long. The length of the value is encoded in the first 4 characters of the value, for example "HEY" is encoded as 0003HEY |
+*--------------*----------------*-----------------+
 | Fixed-length |                | Similar to ALPHA, but stores byte arrays directly instead of text.
 | binary       | BINARY         |
+*--------------*----------------*-----------------+
+| Fixed-length |                | Same as BINARY, but always treated as a binary field even when the rest
+| binary       | RAW_BINARY     | of the message is encoded as text.
 *--------------*----------------*-----------------+
 | Binary       | LLBIN          | Similar to LLVAR, but stores byte arrays directly instead of text.
 | LLVAR        |                |
@@ -46,7 +57,18 @@ Introduction to ISO8583
 | Binary       | LLLBIN         | Similar to LLLVAR, but stores byte arrays directly instead of text.
 | LLLVAR       |                |
 *--------------*----------------*-----------------+
+| Binary       | LLLLBIN        | Similar to LLLLVAR, but stores byte arrays directly instead of text.
+| LLLLVAR      |                |
+*--------------*----------------*-----------------+
 ISO 8583 types and their corresponding j8583 types
+
+  <<Note:>> this table lists the most commonly used types. j8583 also supports several
+  variants used by specific providers, such as BCD-encoded lengths (<<<LLBCDBIN>>>,
+  <<<LLLBCDBIN>>>, <<<LLLLBCDBIN>>>) and fields whose length is a single literal byte
+  (<<<LLBINLENGTHNUM>>>, <<<LLBINLENGTHALPHANUM>>>, <<<LLBINLENGTHBIN>>>, and their
+  4-byte-length counterparts). See the <<<IsoType>>> enum in the
+  {{{https://javadoc.io/doc/io.github.thibaudledent.j8583/j8583}Javadoc}} for the complete,
+  up-to-date list.
 
 * Common scenarios
 
@@ -127,8 +149,11 @@ ISO 8583 types and their corresponding j8583 types
   In these cases, the sender first encodes the whole message, measures it, and sends the length as a 2- or 4-byte
   unsigned integer (most significant bit first). This way the receiver knows to read 2 or 4 bytes, interpret them
   as an unsigned integer, and read those many bytes to get an ISO message. Using 2 bytes allows for messages of up
-  to 65535 bytes, and 4 bytes allows for 2.14 billion bytes long, which is a bit of overkill, given that a message
-  can be as long as 127290 bytes, if it's encoded in ASCII and has 127 LLLVAR fields each with 999 characters.
+  to 65535 bytes, and 4 bytes allows for over 4 billion bytes long. A message encoded in ASCII with 127 LLLVAR
+  fields each holding 999 characters can already be around 127290 bytes long, which is over the 2-byte limit; and
+  j8583 also supports LLLLVAR/LLLLBIN fields (up to 9999 characters each), so providers that use those can produce
+  messages well over a million bytes. Because of this, a 2-byte length header is only safe if you know your
+  provider's messages will stay under 65535 bytes; otherwise a 4-byte length header is the safer choice.
 
 *** Message terminator
 
