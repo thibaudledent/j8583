@@ -22,14 +22,14 @@ Maven:
 <dependency>
   <groupId>io.github.thibaudledent.j8583</groupId>
   <artifactId>j8583</artifactId>
-  <version>1.26.3</version>
+  <version>1.26.4</version>
 </dependency>
 ```
 
 Gradle:
 ```gradle
 dependencies {
-  implementation 'io.github.thibaudledent.j8583:j8583:1.26.3'
+  implementation 'io.github.thibaudledent.j8583:j8583:1.26.4'
 }
 ```
 
