@@ -177,6 +177,27 @@ class TestIsoMessage {
         Assertions.assertEquals(formatWithSpace(expected), formatWithSpace(hexParseBinary));
     }
 
+    @Test
+    void testMaskedDebugString() {
+        final IsoMessage iso = mf.newMessage(0x200);
+        final String plain = iso.debugString();
+        Assertions.assertEquals(plain, iso.debugString(java.util.Set.of()),
+                "debugString() must be equivalent to masking no fields");
+        Assertions.assertTrue(plain.contains("4591700012340000="), "field 35 should be in clear text");
+
+        final String masked = iso.debugString(java.util.Set.of(35));
+        Assertions.assertEquals(plain.length(), masked.length(),
+                "masking must not change the overall length of the debug string");
+        Assertions.assertFalse(masked.contains("4591700012340000="), "field 35 value must be masked");
+        Assertions.assertTrue(masked.contains("*".repeat("4591700012340000=".length())),
+                "field 35 must be replaced by mask characters of the same length");
+        Assertions.assertTrue(masked.contains("456"), "field 32 must remain in clear text");
+
+        final String maskedCommon = iso.debugString(IsoMessage.COMMONLY_SENSITIVE_FIELDS);
+        Assertions.assertFalse(maskedCommon.contains("4591700012340000="),
+                "field 35 is in the default sensitive field set and must be masked");
+    }
+
     private static String formatWithSpace(final String toFormat) {
         return toFormat.replaceAll("..", "$0 ");
     }

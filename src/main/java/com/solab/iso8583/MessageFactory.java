@@ -674,12 +674,13 @@ public class MessageFactory<T extends IsoMessage> {
         Map<Integer, FieldParseInfo> parseGuide = parseMap.get(type);
         List<Integer> index = parseOrder.get(type);
         if (index == null) {
-            log.error(String.format("ISO8583 MessageFactory has no parsing guide for message type %04x [%s]",
-                    type, new String(buf)));
+            // Do not log or embed the raw message buffer here: it may contain sensitive
+            // cardholder data (PAN, track data, PIN blocks) and this is an error path that
+            // is more likely than most to end up in aggregated/centralized logs.
+            log.error("ISO8583 MessageFactory has no parsing guide for message type {} (buffer length {})",
+                    String.format("%04x", type), buf.length);
             throw new ParseException(String.format(
-                    "ISO8583 MessageFactory has no parsing guide for message type %04x [%s]",
-                    type,
-                    new String(buf)), 0);
+                    "ISO8583 MessageFactory has no parsing guide for message type %04x", type), 0);
         }
         //First we check if the message contains fields not specified in the parsing template
         assertAllFieldsPresentHaveParsingGuides(type, bs, index);

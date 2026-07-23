@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.BitSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents an ISO8583 message. This is the core class of the framework.
@@ -87,6 +88,17 @@ public class IsoMessage {
      * The Start of tertiary bitmap fields.
      */
     static final int START_OF_TERTIARY_BITMAP_FIELDS = END_OF_SECONDARY_BITMAP_FIELDS + 1;
+
+    /**
+     * Field numbers that commonly carry sensitive cardholder data (PAN, track 1/2/3 data,
+     * PIN block, ICC/EMV data) in typical ISO8583 implementations. This is a convenience
+     * default for {@link #debugString(Set)}; the exact field usage is defined by each
+     * institution's own message specification, so review and adjust this set for your
+     * own use case rather than relying on it blindly.
+     */
+    public static final Set<Integer> COMMONLY_SENSITIVE_FIELDS = Set.of(2, 34, 35, 36, 45, 52, 55);
+
+    private static final char MASK_CHAR = '*';
 
     /** The message type. */
     private int type;
@@ -729,10 +741,29 @@ public class IsoMessage {
 
     /**
      * Returns a string representation of the message, as if it were encoded
-     * in ASCII with no binary bitmap.  
+     * in ASCII with no binary bitmap. This includes the clear-text value of every field,
+     * which for real ISO8583 traffic commonly means cardholder data such as PANs, track
+     * data or PIN blocks. Avoid writing the result of this method to logs; use
+     * {@link #debugString(Set)} with a set of sensitive field numbers instead (see
+     * {@link #COMMONLY_SENSITIVE_FIELDS} for a reasonable starting point).
+     *
      * @return the string
      */
     public String debugString() {
+        return debugString(Set.of());
+    }
+
+    /**
+     * Returns a string representation of the message, as if it were encoded
+     * in ASCII with no binary bitmap, replacing the value of the specified fields
+     * with mask characters instead of showing them in clear text. The length header
+     * of variable-length fields, if any, still reflects the real (unmasked) length.
+     * Useful for logging/debugging without exposing sensitive cardholder data.
+     *
+     * @param maskedFields field numbers whose value should be masked instead of shown in clear text.
+     * @return the string
+     */
+    public String debugString(Set<Integer> maskedFields) {
         StringBuilder sb = new StringBuilder();
         if (isoHeader != null) {
             sb.append(isoHeader);
@@ -770,7 +801,11 @@ public class IsoMessage {
                 } else if (v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLBCDBIN || v.getType() == IsoType.LLLLVAR || v.getType() == IsoType.LLLLBINLENGTHNUM || v.getType() == IsoType.LLLLBINLENGTHBIN || v.getType() == IsoType.LLLLBINLENGTHALPHANUM) {
                     sb.append(String.format("%04d", desc.length()));
                 }
-                sb.append(desc);
+                if (maskedFields.contains(i)) {
+                    sb.append(String.valueOf(MASK_CHAR).repeat(desc.length()));
+                } else {
+                    sb.append(desc);
+                }
             }
         }
         return sb.toString();

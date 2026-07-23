@@ -56,6 +56,26 @@ class TestParsing {
 		Assertions.assertThrows(ParseException.class, () -> mf.parseMessage(new byte[]{ 2, 0, (byte)128, 0, 0, 0, 0, 0, 0, 0 }, 0));
 	}
 
+	/** When the message type has no parsing guide, the error must not leak the raw
+	 * message content (which may contain cardholder data) into the log or the
+	 * exception message. */
+	@Test
+	void testUnknownMessageTypeDoesNotLeakBufferContents() {
+		final IsoMessage m = mf.newMessage(0x200);
+		final byte[] data = m.writeData();
+		final int headerLength = mf.getIsoHeader(0x200).length();
+		//Corrupt the message type to one with no parsing guide configured, keep the rest intact
+		data[headerLength] = '9';
+		data[headerLength + 1] = '9';
+		data[headerLength + 2] = '9';
+		data[headerLength + 3] = '9';
+		final ParseException ex = Assertions.assertThrows(ParseException.class,
+				() -> mf.parseMessage(data, headerLength));
+		Assertions.assertTrue(ex.getMessage().contains("9999"), "Exception should mention the message type");
+		Assertions.assertFalse(ex.getMessage().contains("4591700012340000="),
+				"Exception message must not contain field content from the buffer");
+	}
+
 	@Test
 	void testNoFields() {
 		Assertions.assertThrows(ParseException.class, () -> mf.parseMessage("0210B23A80012EA080180000000014000004".getBytes(), 0));
