@@ -21,6 +21,7 @@ package com.solab.iso8583;
 import com.solab.iso8583.parse.ConfigParser;
 import com.solab.iso8583.parse.DateTimeParseInfo;
 import com.solab.iso8583.parse.FieldParseInfo;
+import com.solab.iso8583.util.HexCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import static com.solab.iso8583.IsoMessage.MAX_AMOUNT_OF_FIELDS;
@@ -116,6 +118,11 @@ public class MessageFactory<T extends IsoMessage> {
     /* Flag specifying that variable length fields have the length header encoded in hexadecimal format */
     private boolean variableLengthFieldsInHex;
     private String encoding = System.getProperty("file.encoding");
+    /** Field numbers propagated to every message created/parsed by this factory, to be
+     * masked by their no-arg {@link IsoMessage#debugString()}. Empty by default. */
+    private Set<Integer> sensitiveFields = Set.of();
+    /** UNSAFE, NOT PCI DSS COMPLIANT: see {@link #setUnsafeNonPciDssCompliantRawMessageLoggingEnabled(boolean)}. */
+    private boolean unsafeNonPciDssCompliantRawMessageLoggingEnabled;
 
     /**
      * Is force string encoding boolean.
@@ -223,6 +230,60 @@ public class MessageFactory<T extends IsoMessage> {
                 }
             }
         }
+    }
+
+    /**
+     * Returns the field numbers propagated to every message this factory creates or
+     * parses, to be masked by their no-arg {@link IsoMessage#debugString()}. Default is
+     * an empty set.
+     *
+     * @return the sensitive fields
+     */
+    public Set<Integer> getSensitiveFields() {
+        return sensitiveFields;
+    }
+
+    /**
+     * Sets the field numbers to be propagated to every message this factory creates or
+     * parses (via {@link IsoMessage#setSensitiveFields(Set)}), so their no-arg
+     * {@link IsoMessage#debugString()} masks them without callers having to remember
+     * to pass them in on every call. {@link IsoMessage#COMMONLY_SENSITIVE_FIELDS} is a
+     * reasonable starting point.
+     *
+     * @param value the field numbers to mask
+     */
+    public void setSensitiveFields(Set<Integer> value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Cannot set null sensitiveFields.");
+        }
+        sensitiveFields = Set.copyOf(value);
+    }
+
+    /**
+     * Returns true if, on a parse error caused by a message type with no parsing guide,
+     * the raw message buffer is hex-encoded and included in the log line. See
+     * {@link #setUnsafeNonPciDssCompliantRawMessageLoggingEnabled(boolean)}. Default is false.
+     *
+     * @return the boolean
+     */
+    public boolean isUnsafeNonPciDssCompliantRawMessageLoggingEnabled() {
+        return unsafeNonPciDssCompliantRawMessageLoggingEnabled;
+    }
+
+    /**
+     * UNSAFE, NOT PCI DSS COMPLIANT. When enabled, if a message cannot be parsed because
+     * its type has no parsing guide, the full raw message buffer is hex-encoded and
+     * written to the log at ERROR level. ISO8583 messages commonly carry cardholder data
+     * (PANs, track data, PIN blocks), so enabling this will write that data to your logs.
+     * <p>
+     * This is intended only for temporary use while developing or debugging a new
+     * parsing guide, never in production, and never against real cardholder data. Default
+     * is false.
+     *
+     * @param flag the flag
+     */
+    public void setUnsafeNonPciDssCompliantRawMessageLoggingEnabled(boolean flag) {
+        unsafeNonPciDssCompliantRawMessageLoggingEnabled = flag;
     }
 
     /**
@@ -449,6 +510,7 @@ public class MessageFactory<T extends IsoMessage> {
         m.setCharacterEncoding(encoding);
         m.setForceStringEncoding(forceStringEncoding);
         m.setEncodeVariableLengthFieldsInHex(variableLengthFieldsInHex);
+        m.setSensitiveFields(sensitiveFields);
 
         //Copy the values from the template
         IsoMessage templ = typeTemplates.get(type);
@@ -510,6 +572,7 @@ public class MessageFactory<T extends IsoMessage> {
         resp.setEtx(etx);
         resp.setForceSecondaryBitmap(forceb2);
         resp.setEncodeVariableLengthFieldsInHex(request.isEncodeVariableLengthFieldsInHex());
+        resp.setSensitiveFields(request.getSensitiveFields());
         //Copy the values from the template or the request (request has preference)
         IsoMessage templ = typeTemplates.get(resp.getType());
         if (templ == null) {
@@ -674,12 +737,20 @@ public class MessageFactory<T extends IsoMessage> {
         Map<Integer, FieldParseInfo> parseGuide = parseMap.get(type);
         List<Integer> index = parseOrder.get(type);
         if (index == null) {
-            log.error(String.format("ISO8583 MessageFactory has no parsing guide for message type %04x [%s]",
-                    type, new String(buf)));
+            // Do not log or embed the raw message buffer here by default: it may contain
+            // sensitive cardholder data (PAN, track data, PIN blocks) and this is an error
+            // path that is more likely than most to end up in aggregated/centralized logs.
+            // See setUnsafeNonPciDssCompliantRawMessageLoggingEnabled(boolean) for an opt-in,
+            // hex-encoded exception for development/debugging purposes only.
+            if (unsafeNonPciDssCompliantRawMessageLoggingEnabled) {
+                log.error("ISO8583 MessageFactory has no parsing guide for message type {} (buffer length {}), raw message (hex): {}",
+                        String.format("%04x", type), buf.length, HexCodec.hexEncode(buf, 0, buf.length));
+            } else {
+                log.error("ISO8583 MessageFactory has no parsing guide for message type {} (buffer length {})",
+                        String.format("%04x", type), buf.length);
+            }
             throw new ParseException(String.format(
-                    "ISO8583 MessageFactory has no parsing guide for message type %04x [%s]",
-                    type,
-                    new String(buf)), 0);
+                    "ISO8583 MessageFactory has no parsing guide for message type %04x", type), 0);
         }
         //First we check if the message contains fields not specified in the parsing template
         assertAllFieldsPresentHaveParsingGuides(type, bs, index);
@@ -786,6 +857,7 @@ public class MessageFactory<T extends IsoMessage> {
         m.setBinaryFields(binaryFields);
         m.setBinaryBitmap(binBitmap);
         m.setForceStringEncoding(forceStringEncoding);
+        m.setSensitiveFields(sensitiveFields);
         return m;
     }
 
