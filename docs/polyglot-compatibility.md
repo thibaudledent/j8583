@@ -1,5 +1,7 @@
 # Groovy and Scala compatibility
 
+[🏠 Documentation home](README.md)
+
 j8583 is a plain Java library, so it's compatible with any JVM language, including Groovy and
 Scala. Beyond that, a few j8583 classes have extra methods specifically to give a nicer,
 shorthand syntax in those languages.
@@ -66,3 +68,7 @@ message.setField(4, IsoType.AMOUNT(amount))
     .setField(7, IsoType.DATE10(new Date()))
     .setField(11, IsoType.NUMERIC(trace, 6))
 ```
+
+---
+
+← Previous: [Spring integration](spring-integration.md) | 🏠 [Documentation home](README.md) | Next: [Simple message parser](simple-parser.md) →

@@ -1,5 +1,7 @@
 # XML configuration
 
+[🏠 Documentation home](README.md)
+
 The `MessageFactory` can read an XML file to set up message templates, ISO headers by type, and
 parsing templates — the most cumbersome parts to configure programmatically.
 
@@ -159,3 +161,7 @@ message.setValue(125, f, f, IsoType.LLLVAR, 0);
 ```
 
 When the message is encoded, field 125 will be `018one  03two000123OK`.
+
+---
+
+← Previous: [Usage guide](usage-guide.md) | 🏠 [Documentation home](README.md) | Next: [Custom field encoders](custom-field-encoders.md) →

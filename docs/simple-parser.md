@@ -1,5 +1,7 @@
 # Simple message parser
 
+[🏠 Documentation home](README.md)
+
 The j8583 jar contains a small command-line program to parse ISO 8583 messages, using a
 configuration file specified on the command line.
 
@@ -18,3 +20,7 @@ default configuration file found on the classpath (see `ConfigParser.configureFr
 You can then paste an ISO 8583 message encoded as text, without any ISO header, and the program
 will parse it, showing the message type and, for each field present in the message, its number,
 type, length and value.
+
+---
+
+← Previous: [Groovy and Scala compatibility](polyglot-compatibility.md) | 🏠 [Documentation home](README.md)
