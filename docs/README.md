@@ -13,8 +13,8 @@ For the full API reference, see the [Javadoc on javadoc.io](https://javadoc.io/d
   structure, data types, common fields and message types, and the differences between ASCII and
   binary encoding.
 - [Usage guide](usage-guide.md) — the `MessageFactory` and `IsoMessage` classes, and how to
-  configure headers, templates, parsing templates, trace number generation and custom field
-  encoders.
+  configure headers, templates, parsing templates, trace number generation, custom field
+  encoders, and masking sensitive fields when logging.
 - [XML configuration](xml-configuration.md) — configuring a `MessageFactory` from an XML file
   instead of programmatically: headers, templates, parsing guides, template inheritance, and
   composite fields.

@@ -16,10 +16,47 @@ However, it can be cumbersome to programmatically create `IsoMessage`s all the t
 `MessageFactory` is a big aid in creating `IsoMessage`s with predefined values; it can also set
 the date and the trace number on each new message.
 
+## A quick example
+
+Before going through each configuration option in detail, here's a minimal example that ties the
+concepts above together: a `MessageFactory` with a message template and a parsing template, used
+to create a message and parse it back.
+
+```java
+MessageFactory<IsoMessage> mf = new MessageFactory<>();
+
+// A template: values shared by every 0200 message the factory creates
+IsoMessage template = new IsoMessage();
+template.setType(0x200);
+template.setValue(3, 0, IsoType.NUMERIC, 6);
+mf.addMessageTemplate(template);
+
+// A parsing template: tells the factory how to read an incoming 0200 message
+Map<Integer, FieldParseInfo> parseGuide = new HashMap<>();
+parseGuide.put(3, FieldParseInfo.getInstance(IsoType.NUMERIC, 6, mf.getCharacterEncoding()));
+parseGuide.put(41, FieldParseInfo.getInstance(IsoType.ALPHA, 8, mf.getCharacterEncoding()));
+mf.setParseMap(0x200, parseGuide);
+
+IsoMessage message = mf.newMessage(0x200);
+message.setValue(41, "TERM0001", IsoType.ALPHA, 8);
+byte[] data = message.writeData();
+
+IsoMessage parsed = mf.parseMessage(data, 0);
+// parsed now has field 3 ("000000", copied from the template) and field 41 ("TERM0001")
+```
+
+`IsoMessage` can also write itself directly to an `OutputStream` (with `write()`) or to a
+`ByteBuffer` (with `writeToBuffer()`); both can prepend a length header, useful when framing
+messages sent over a socket — see [message terminator](iso8583-protocol.md#message-terminator) for
+more on that. Setting up templates and parsing guides by hand like this works, but for anything
+beyond a handful of fields it's usually easier to use an [XML configuration
+file](xml-configuration.md) instead, as described below.
+
 ## Configuring the MessageFactory
 
-There are five main things you can configure in a `MessageFactory`: ISO headers, message
-templates, parsing templates, a `TraceNumberGenerator`, and custom field encoders.
+There are six main things you can configure in a `MessageFactory`: ISO headers, message
+templates, parsing templates, a `TraceNumberGenerator`, custom field encoders, and which fields to
+mask when logging messages.
 
 ### ISO headers
 
@@ -78,6 +115,35 @@ pass the `MessageFactory` a `CustomField` for every field where you want to stor
 so that parsed messages will return the objects decoded by the `CustomField`s instead of just
 strings; and when you set a value in an `IsoMessage`, you can specify the `CustomField` to be used
 to encode the value as a `String`. See [Custom field encoders](custom-field-encoders.md) for more.
+
+### Masking sensitive fields when logging
+
+`IsoMessage` has a `debugString()` method that returns a text representation of the message,
+useful for logging, without needing to encode it first. By default it shows every field in clear
+text, which is a problem for real ISO 8583 traffic: fields like the PAN, track data or PIN block
+are cardholder data that shouldn't end up in application logs.
+
+Tell the `MessageFactory` which fields to mask, and every message it creates or parses will pick
+up the setting automatically:
+
+```java
+messageFactory.setSensitiveFields(IsoMessage.COMMONLY_SENSITIVE_FIELDS);
+IsoMessage m = messageFactory.parseMessage(someBytes, 0);
+log.debug(m.debugString());
+```
+
+`IsoMessage.COMMONLY_SENSITIVE_FIELDS` (fields 2, 34, 35, 36, 45, 52 and 55) is a reasonable
+starting point, but you should review it against the fields your own provider actually uses for
+cardholder data. Masking replaces a field's value with `*` characters of the same length; the
+length header of variable-length fields still shows the real length. You can also skip the
+factory-wide setting and call `debugString(Set<Integer>)` directly on a message with an explicit
+set of fields to mask.
+
+`MessageFactory` also has an `unsafeNonPciDssCompliantRawMessageLoggingEnabled` flag (disabled by
+default) that logs the raw, hex-encoded message buffer at `ERROR` level when a message can't be
+parsed because its type has no parsing guide. As the name says, this is unsafe and not PCI DSS
+compliant — only enable it temporarily while developing or debugging a new parsing guide, never in
+production or against real cardholder data.
 
 ## XML configuration
 

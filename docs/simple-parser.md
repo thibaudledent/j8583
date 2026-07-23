@@ -15,5 +15,6 @@ java -cp lib/slf4j-api-2.0.18.jar:lib/slf4j-simple-2.0.18.jar:lib/j8583-1.26.2.j
 If you don't pass any argument, the program tries to configure the `MessageFactory` from a
 default configuration file found on the classpath (see `ConfigParser.configureFromDefault()`).
 
-You can then paste an ISO 8583 message encoded as text, and the program will parse it, showing
-the message type, bitmap and the value of each field.
+You can then paste an ISO 8583 message encoded as text, without any ISO header, and the program
+will parse it, showing the message type and, for each field present in the message, its number,
+type, length and value.
