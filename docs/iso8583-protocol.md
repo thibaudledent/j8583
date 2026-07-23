@@ -55,9 +55,10 @@ counterpart:
 | Variable-length binary | `LLLLBIN` | Similar to `LLLLVAR`, but stores byte arrays directly instead of text. |
 
 This table lists the most commonly used types. j8583 also supports several variants used by
-specific providers, such as BCD-encoded lengths (`LLBCDBIN`, `LLLBCDBIN`, `LLLLBCDBIN`) and fields
-whose length is a single literal byte (`LLBINLENGTHNUM`, `LLBINLENGTHALPHANUM`,
-`LLBINLENGTHBIN`, and their 4-byte-length counterparts). See the `IsoType` enum in the
+specific providers, such as BCD-encoded lengths (`LLBCDBIN`, `LLLBCDBIN`, `LLLLBCDBIN`,
+`LLBCDLENGTHALPHANUM`) and fields whose length is a single literal byte (`LLBINLENGTHNUM`,
+`LLBINLENGTHALPHANUM`, `LLBINLENGTHBIN`, and their 2-byte-length counterparts, `LLLLBINLENGTHNUM`,
+`LLLLBINLENGTHALPHANUM` and `LLLLBINLENGTHBIN`). See the `IsoType` enum in the
 [Javadoc](https://javadoc.io/doc/io.github.thibaudledent.j8583/j8583) for the complete,
 up-to-date list.
 

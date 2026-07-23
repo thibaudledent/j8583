@@ -26,6 +26,8 @@ The properties you'll typically want to set up in the Spring config are:
 | `binaryHeader` | If `true`, the message header portion is written/parsed as binary. Default `false`. |
 | `binaryFields` | If `true`, the message fields portion is written/parsed as binary. Default `false`. |
 | `useBinaryMessages` | **Deprecated**, use `binaryHeader` and `binaryFields` instead. Setting it sets both `binaryHeader` and `binaryFields` to the same value. |
+| `sensitiveFields` | A set of field numbers to mask with `*` when calling `debugString()` on messages this factory creates or parses. See [Masking sensitive fields when logging](usage-guide.md#masking-sensitive-fields-when-logging). |
+| `unsafeNonPciDssCompliantRawMessageLoggingEnabled` | **Unsafe, not PCI DSS compliant.** If `true`, logs the raw, hex-encoded message buffer at `ERROR` level when a message can't be parsed because its type has no parsing guide. Default `false`; only meant for temporary use while developing or debugging. |
 
 Example:
 
