@@ -32,7 +32,15 @@ Configuration via Spring
 *------------------------+---------------------------------+
 | useBinaryBitmap        | Set this flag to make newly created messages encode their bitmap in binary format, even if the rest of the message is encoded in text. This only works for text messages and has no effect on binary messages.
 *------------------------+---------------------------------+
-| useBinaryMessages      | Can be true or false (default false). The factory passes this value to new messages so that they're encoded in binary or ASCII.
+| useTertiaryBitmap      | If true, field 65 is interpreted as a tertiary bitmap, allowing messages to use fields 129-192.
+*------------------------+---------------------------------+
+| variableLengthFieldsInHex | If true, the length header of variable-length fields (LLVAR, LLLVAR, etc.) is encoded/decoded in hexadecimal instead of decimal.
+*------------------------+---------------------------------+
+| binaryHeader           | Can be true or false (default false). If true, the message header portion is written/parsed as binary.
+*------------------------+---------------------------------+
+| binaryFields           | Can be true or false (default false). If true, the message fields portion is written/parsed as binary.
+*------------------------+---------------------------------+
+| useBinaryMessages      | <<Deprecated>>, use <<<binaryHeader>>> and <<<binaryFields>>> instead. Can be true or false (default false); setting it sets both <<<binaryHeader>>> and <<<binaryFields>>> to the same value.
 *------------------------+---------------------------------+
 
   Example:

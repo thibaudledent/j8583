@@ -69,7 +69,8 @@ XML Configuration
   Each <<<parse>>> element defines a parsing template for a message type. It must include all the fields that
   an incoming message can contain, each field with its type and length (if needed). Only ALPHA and NUMERIC
   types need to have a length specified. The other types either have a fixed length, or have their length
-  specified as part of the field (LLVAR and LLLVAR).
+  specified as part of the field (LLVAR, LLLVAR, LLLLVAR and their binary/BCD variants). See the
+  {{{iso8583.html}ISO8583 guide}} for the complete list of supported types.
 
 +-----
 <parse type="0210">

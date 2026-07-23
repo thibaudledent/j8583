@@ -42,13 +42,18 @@ public class ListEncoder implements CustomField<List<String>> {
 
 +-----
   messageFactory.setCustomField(62, new ListEncoder());
-  IsoMessage parsed = messageFactory.parse(someBytes, 0);
+  IsoMessage parsed = messageFactory.parseMessage(someBytes, 0);
   assert parsed.getObjectValue(62) instanceof List
   IsoMessage nm = messageFactory.newMessage(0x200);
   //you need to pass the CustomField
-  nm.setValue(62, Arrays.asList("a", "b", "c", "d", "e"), messageFactory.getCustomField(126), IsoType.LLLVAR, 0);
+  nm.setValue(62, Arrays.asList("a", "b", "c", "d", "e"), messageFactory.getCustomField(62), IsoType.LLLVAR, 0);
   //when nm gets written, field 62 will be "009a,b,c,d,e"
 +-----
+
+  <<Note:>> If your custom field only needs to handle binary messages, you can implement
+  <<<CustomBinaryField>>> instead of <<<CustomField>>>. It adds <<<decodeBinaryField()>>> and
+  <<<encodeBinaryField()>>> methods for working directly with byte arrays, and the String-based
+  methods inherited from <<<CustomField>>> may simply return <<<null>>> in that case.
 
   If you setup CustomField encoders in a MessageFactory and then you configure it using the XML configuration file,
   the values for fields that have CustomField encoders defined will be decoded with them. In this example, if you
