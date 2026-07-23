@@ -21,6 +21,7 @@ package com.solab.iso8583.parse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -500,12 +502,22 @@ public class ConfigParser {
 		DocumentBuilder docb = null;
 		Document doc = null;
 		try {
+			// Harden against XXE (CWE-611): the config XML can come from a URL or a Reader
+			// supplied by the caller (see createFromUrl/createFromReader), so it must never be
+			// allowed to make this parser fetch arbitrary external resources. DOCTYPE itself
+			// can't be disallowed outright because config files legitimately declare
+			// <!DOCTYPE j8583-config ... "http://j8583.sourceforge.net/j8583.dtd">, which the
+			// EntityResolver below redirects to the bundled classpath copy; external general
+			// entities, however, are never legitimately needed, so they're disabled entirely.
+			docfact.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			docfact.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			docfact.setXIncludeAware(false);
 			docb = docfact.newDocumentBuilder();
 			docb.setEntityResolver(new EntityResolver() {
 				@Override
 				public InputSource resolveEntity(String publicId, String systemId)
 						throws SAXException, IOException {
-					if (systemId.contains("j8583.dtd")) {
+					if (systemId != null && systemId.contains("j8583.dtd")) {
 						URL dtd = getClass().getResource("j8583.dtd");
 						if (dtd == null) {
 							log.warn("Cannot find j8583.dtd in classpath. j8583 config files will not be validated.");
@@ -513,7 +525,10 @@ public class ConfigParser {
 							return new InputSource(dtd.toString());
 						}
 					}
-					return null;
+					// Never fall back to default resolution here: returning null would let the
+					// parser fetch whatever external DTD/entity the document points to (XXE).
+					// Anything other than our own known DTD is treated as empty content instead.
+					return new InputSource(new StringReader(""));
 				}
 			});
 			doc = docb.parse(source);
