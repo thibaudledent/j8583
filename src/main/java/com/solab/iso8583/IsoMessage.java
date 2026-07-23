@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.BitSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents an ISO8583 message. This is the core class of the framework.
@@ -87,6 +88,23 @@ public class IsoMessage {
      * The Start of tertiary bitmap fields.
      */
     static final int START_OF_TERTIARY_BITMAP_FIELDS = END_OF_SECONDARY_BITMAP_FIELDS + 1;
+
+    /**
+     * Field numbers that commonly carry sensitive cardholder data (PAN, track 1/2/3 data,
+     * PIN block, ICC/EMV data) in typical ISO8583 implementations. This is a convenience
+     * default for {@link #debugString(Set)}; the exact field usage is defined by each
+     * institution's own message specification, so review and adjust this set for your
+     * own use case rather than relying on it blindly.
+     */
+    public static final Set<Integer> COMMONLY_SENSITIVE_FIELDS = Set.of(2, 34, 35, 36, 45, 52, 55);
+
+    private static final char MASK_CHAR = '*';
+
+    /** Field numbers masked by the no-arg {@link #debugString()}. Empty by default so that
+     * method's behavior is unchanged unless explicitly configured, usually via
+     * {@link MessageFactory#setSensitiveFields(Set)} which propagates it to every message
+     * the factory creates or parses. */
+    private Set<Integer> sensitiveFields = Set.of();
 
     /** The message type. */
     private int type;
@@ -176,7 +194,32 @@ public class IsoMessage {
     }
 
     /**
-     * Sets the encoding to use.  
+     * Returns the field numbers masked by the no-arg {@link #debugString()}. Default is
+     * an empty set, meaning debugString() shows every field in clear text unless this
+     * is configured (usually via {@link MessageFactory#setSensitiveFields(Set)}).
+     *
+     * @return the sensitive fields
+     */
+    public Set<Integer> getSensitiveFields() {
+        return sensitiveFields;
+    }
+
+    /**
+     * Sets the field numbers to be masked by the no-arg {@link #debugString()}, instead
+     * of having to remember to pass them to {@link #debugString(Set)} on every call.
+     * {@link #COMMONLY_SENSITIVE_FIELDS} is a reasonable starting point.
+     *
+     * @param value the field numbers to mask
+     */
+    public void setSensitiveFields(Set<Integer> value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Cannot set null sensitiveFields.");
+        }
+        sensitiveFields = Set.copyOf(value);
+    }
+
+    /**
+     * Sets the encoding to use.
      *
      * @param value the value
      */
@@ -729,10 +772,31 @@ public class IsoMessage {
 
     /**
      * Returns a string representation of the message, as if it were encoded
-     * in ASCII with no binary bitmap.  
+     * in ASCII with no binary bitmap. Field values are shown in clear text, except for
+     * the field numbers configured via {@link #setSensitiveFields(Set)} (empty by
+     * default), which are masked. For real ISO8583 traffic this commonly means
+     * cardholder data such as PANs, track data or PIN blocks, so before logging the
+     * result make sure {@link #getSensitiveFields()} is configured appropriately (see
+     * {@link #COMMONLY_SENSITIVE_FIELDS} for a reasonable starting point), or call
+     * {@link #debugString(Set)} directly with an explicit set of fields to mask.
+     *
      * @return the string
      */
     public String debugString() {
+        return debugString(sensitiveFields);
+    }
+
+    /**
+     * Returns a string representation of the message, as if it were encoded
+     * in ASCII with no binary bitmap, replacing the value of the specified fields
+     * with mask characters instead of showing them in clear text. The length header
+     * of variable-length fields, if any, still reflects the real (unmasked) length.
+     * Useful for logging/debugging without exposing sensitive cardholder data.
+     *
+     * @param maskedFields field numbers whose value should be masked instead of shown in clear text.
+     * @return the string
+     */
+    public String debugString(Set<Integer> maskedFields) {
         StringBuilder sb = new StringBuilder();
         if (isoHeader != null) {
             sb.append(isoHeader);
@@ -770,7 +834,11 @@ public class IsoMessage {
                 } else if (v.getType() == IsoType.LLLLBIN || v.getType() == IsoType.LLLLBCDBIN || v.getType() == IsoType.LLLLVAR || v.getType() == IsoType.LLLLBINLENGTHNUM || v.getType() == IsoType.LLLLBINLENGTHBIN || v.getType() == IsoType.LLLLBINLENGTHALPHANUM) {
                     sb.append(String.format("%04d", desc.length()));
                 }
-                sb.append(desc);
+                if (maskedFields.contains(i)) {
+                    sb.append(String.valueOf(MASK_CHAR).repeat(desc.length()));
+                } else {
+                    sb.append(desc);
+                }
             }
         }
         return sb.toString();

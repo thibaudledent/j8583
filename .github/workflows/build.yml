@@ -34,13 +34,10 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Build, analyze and test
-        run: mvn -V -B org.jacoco:jacoco-maven-plugin:prepare-agent verify org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        run: mvn -V -B -Pcoverage org.jacoco:jacoco-maven-plugin:prepare-agent verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
                # -V triggers an output of the Maven and Java versions at the beginning of the build
                # -B batch mode makes Maven less verbose
                # -DskipDepCheck skip OWASP dependency check during this phase
-               # jacoco:report generates target/site/jacoco/jacoco.xml before the sonar goal runs;
-               # without it Sonar's JaCoCo XML Report Importer finds no report and imports zero
-               # coverage data project-wide, making every PR's "coverage on new code" read 0%.
         env:
           # Needed to get some information about the pull request, if any
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
