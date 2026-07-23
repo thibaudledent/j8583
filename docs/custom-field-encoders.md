@@ -1,5 +1,7 @@
 # Custom field encoders
 
+[🏠 Documentation home](README.md)
+
 Sometimes a field contains several sub-fields or separate pieces of data. j8583 will only parse
 the field itself for you — you still have to parse those pieces of data yourself when reading a
 message, and encode several pieces of data into a field yourself when creating one.
@@ -79,3 +81,7 @@ myIso.setValue(126, customField, messageFactory.getCustomField(126), IsoType.LLL
 j8583 cannot perform this copy operation for you: even though the `MessageFactory` can detect if
 your custom class implements `Cloneable`, it can't invoke the `clone()` method because it's
 protected, and there's no guarantee that your implementation made it public.
+
+---
+
+← Previous: [XML configuration](xml-configuration.md) | 🏠 [Documentation home](README.md) | Next: [Spring integration](spring-integration.md) →

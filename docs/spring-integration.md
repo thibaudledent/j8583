@@ -1,5 +1,7 @@
 # Spring integration
 
+[🏠 Documentation home](README.md)
+
 You can configure a `MessageFactory` as a bean in a Spring `ApplicationContext`, and inject it
 into any other components that need to create or parse `IsoMessage`s. j8583 has no dependency on
 Spring itself — `MessageFactory` is a plain Java bean, so it works with Spring's standard XML or
@@ -56,3 +58,7 @@ after retrieving the bean (or in a factory method / `@PostConstruct`):
 | `timezoneForParseGuide` | Sets the timezone for a specific field of a specific message type. Useful if you need to encode/decode dates with a timezone other than the local one. |
 | `customField` | Sets a single `CustomField` encoder for one field. |
 | `isoHeader` | Sets the ISO header to use for a specific message type. |
+
+---
+
+← Previous: [Custom field encoders](custom-field-encoders.md) | 🏠 [Documentation home](README.md) | Next: [Groovy and Scala compatibility](polyglot-compatibility.md) →
